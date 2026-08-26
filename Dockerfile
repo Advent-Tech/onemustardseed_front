@@ -18,23 +18,24 @@ ENV VITE_STRIPE_PUBLISHABLE_KEY=${VITE_STRIPE_PUBLISHABLE_KEY}
 COPY . .
 RUN npm run build
 
-# Runner Stage
+# Production Runner Stage
 FROM node:22-alpine AS runner
 
 WORKDIR /app
 
+# Install all dependencies needed for vite preview
+COPY package*.json ./
+RUN npm install --no-audit --no-fund
+
+# Copy build artifacts, source tree, public assets & configs
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/public ./public
+COPY vite.config.ts tsconfig.json ./
+
 ENV NODE_ENV=production
 
-# Copy package files and install production runtime dependencies
-COPY package*.json ./
-RUN npm install --omit=dev --no-audit --no-fund && npm install vite --no-audit --no-fund
-
-# Copy build artifacts
-COPY --from=builder /app/dist ./dist
-COPY vite.config.ts ./
-
-# Expose port
 EXPOSE 3000
 
-# Start production preview server
-CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "3000"]
+# Start production preview server on port 3000
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "3000"]
