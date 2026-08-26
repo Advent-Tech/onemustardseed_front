@@ -71,8 +71,8 @@ jobs:
             cd $DEPLOY_PATH
             docker compose up -d --no-deps --build frontend
             docker image prune -f
-            sleep 4
-            docker compose ps frontend
+            sleep 3
+            podman ps --filter name=oms-frontend
           "
 
           echo "=========================================="
