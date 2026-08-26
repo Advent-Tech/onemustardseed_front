@@ -1,0 +1,653 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import {
+  Video,
+  Plus,
+  Shield,
+  ShieldAlert,
+  UserPlus,
+  History,
+  MoreHorizontal,
+  Edit,
+  Mail,
+  User,
+  Trash2,
+  Settings,
+  TrendingUp
+} from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer
+} from "recharts";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Badge } from "../../components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "../../components/ui/table";
+import { Progress } from "../../components/ui/progress";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogDescription
+} from "../../components/ui/dialog";
+import { Label } from "../../components/ui/label";
+import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "../../components/ui/dropdown-menu";
+
+export const Route = createFileRoute("/admin/prayer")({
+  component: PrayerManagement,
+});
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+function PrayerManagement() {
+  const [seasons, setSeasons] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+
+  // Dialog States
+  const [isSeasonDialogOpen, setIsSeasonDialogOpen] = useState(false);
+  const [isGrantDialogOpen, setIsGrantDialogOpen] = useState(false);
+  const [editingSeasonId, setEditingSeasonId] = useState<string | null>(null);
+
+  // Form States
+  const [seasonForm, setSeasonForm] = useState({ title: "", theme: "", description: "", price: 29, samplePreviewVideo: "", bannerImage: "", status: "active" });
+  const [grantForm, setGrantForm] = useState({ name: "", email: "" });
+
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("user_token");
+      const authHeader: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+
+      const [seaRes, usrRes] = await Promise.all([
+        fetch(`${API_URL}/prayer/seasons`, { headers: authHeader }),
+        fetch(`${API_URL}/prayer/users`, { headers: authHeader })
+      ]);
+      const seaData = await seaRes.json();
+      const usrData = await usrRes.json();
+      if (seaData && seaData.success && Array.isArray(seaData.data)) setSeasons(seaData.data);
+      else if (Array.isArray(seaData)) setSeasons(seaData);
+
+      if (usrData && usrData.success && Array.isArray(usrData.data)) setUsers(usrData.data);
+      else if (Array.isArray(usrData)) setUsers(usrData);
+    } catch (err) {
+      toast.error("Failed to fetch data");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleSaveSeason = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("user_token");
+      const url = editingSeasonId ? `${API_URL}/prayer/seasons/${editingSeasonId}` : `${API_URL}/prayer/seasons`;
+      const method = editingSeasonId ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(seasonForm)
+      });
+      if (res.ok) {
+        setIsSeasonDialogOpen(false);
+        setEditingSeasonId(null);
+        setSeasonForm({ title: "", theme: "", description: "", price: 29, samplePreviewVideo: "", bannerImage: "", status: "active" });
+        toast.success(`Season ${editingSeasonId ? 'updated' : 'created'} successfully!`);
+        fetchData();
+      } else {
+        toast.error(`Failed to ${editingSeasonId ? 'update' : 'create'} season`);
+      }
+    } catch (err) {
+      toast.error("Error saving season");
+    }
+  };
+
+  const openEditDialog = (season: any) => {
+    setEditingSeasonId(season._id);
+    setSeasonForm({
+      title: season.title || "",
+      theme: season.theme || "",
+      description: season.description || "",
+      price: season.price || 29,
+      samplePreviewVideo: season.samplePreviewVideo || "",
+      bannerImage: season.bannerImage || "",
+      status: season.status || "active"
+    });
+    setIsSeasonDialogOpen(true);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formDataObj = new FormData();
+    formDataObj.append("file", file); // Must match upload.single('file') in backend
+
+    try {
+      const token = localStorage.getItem("user_token");
+      const res = await fetch(`${API_URL}/upload`, {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formDataObj,
+      });
+      const data = await res.json();
+      if (data.success) {
+        const fullUrl = `${API_URL}${data.url}`;
+        setSeasonForm(prev => ({ ...prev, bannerImage: fullUrl }));
+        toast.success("Image uploaded to server!");
+      } else {
+        toast.error(data.message || "Upload failed");
+      }
+    } catch (err) {
+      toast.error("Network error during upload");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleGrantAccess = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + 14); // 2-week expiration
+
+    try {
+      const token = localStorage.getItem("user_token");
+      const res = await fetch(`${API_URL}/prayer/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          name: grantForm.name,
+          email: grantForm.email,
+          status: "Active",
+          expires: expiryDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        })
+      });
+      if (res.ok) {
+        setIsGrantDialogOpen(false);
+        setGrantForm({ name: "", email: "" });
+        toast.success(`Access granted to ${grantForm.name}`);
+        fetchData();
+      }
+    } catch (err) {
+      toast.error("Failed to grant access");
+    }
+  };
+
+  const handleRevoke = async (id: string) => {
+    try {
+      const token = localStorage.getItem("user_token");
+      await fetch(`${API_URL}/prayer/users/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ status: "Expired" })
+      });
+      toast.error("Access revoked");
+      fetchData();
+    } catch (err) {
+      toast.error("Failed to revoke access");
+    }
+  };
+
+  const handleExtend = async (user: any) => {
+    try {
+      const current = new Date(user.expires);
+      current.setDate(current.getDate() + 7);
+      const token = localStorage.getItem("user_token");
+      await fetch(`${API_URL}/prayer/users/${user._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          status: "Active",
+          expires: current.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        })
+      });
+      toast.success("Access extended by 7 days");
+      fetchData();
+    } catch (err) {
+      toast.error("Failed to extend access");
+    }
+  };
+
+  const handleDeleteSeason = async (id: string) => {
+    try {
+      const token = localStorage.getItem("user_token");
+      await fetch(`${API_URL}/prayer/seasons/${id}`, {
+        method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      toast.error("Season deleted");
+      fetchData();
+    } catch (err) {
+      toast.error("Failed to delete season");
+    }
+  };
+
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin h-10 w-10 border-4 border-forest border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8 animate-fade-up">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-display font-bold text-foreground">Week Of Prayer</h1>
+          <p className="text-muted-foreground">Manage Week of Prayer seasons, episodes, and access control.</p>
+        </div>
+        <div className="flex gap-2">
+          {/* Manual Grant Dialog */}
+          <Dialog open={isGrantDialogOpen} onOpenChange={setIsGrantDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="h-11 rounded-xl border-border/50 gap-2">
+                <UserPlus className="w-4 h-4" />
+                Manual Grant
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] rounded-[2rem]">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-display font-bold">Grant Program Access</DialogTitle>
+                <DialogDescription>Manually add a user to the program with a 2-week expiration.</DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleGrantAccess} className="space-y-6 py-4">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Full Name</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="John Doe"
+                        className="pl-10 h-11 rounded-xl"
+                        value={grantForm.name}
+                        onChange={e => setGrantForm({ ...grantForm, name: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Email Address</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="email"
+                        placeholder="john@example.com"
+                        className="pl-10 h-11 rounded-xl"
+                        value={grantForm.email}
+                        onChange={e => setGrantForm({ ...grantForm, email: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="submit" className="w-full bg-forest h-11 rounded-xl shadow-md">Grant 14-Day Access</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          {/* Create Season Dialog */}
+          <Dialog open={isSeasonDialogOpen} onOpenChange={(open) => {
+            setIsSeasonDialogOpen(open);
+            if (!open) {
+              setEditingSeasonId(null);
+              setSeasonForm({ title: "", theme: "", description: "", price: 29, samplePreviewVideo: "", bannerImage: "", status: "active" });
+            }
+          }}>
+            <DialogTrigger asChild>
+              <Button className="bg-forest h-11 rounded-xl gap-2 shadow-md" onClick={() => {
+                setEditingSeasonId(null);
+                setSeasonForm({ title: "", theme: "", description: "", price: 29, samplePreviewVideo: "", bannerImage: "", status: "active" });
+              }}>
+                <Plus className="w-4 h-4" />
+                Create Season
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-xl rounded-[2rem] border-border/50 max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-display font-bold">
+                  {editingSeasonId ? 'Edit Season' : 'New Prayer Season'}
+                </DialogTitle>
+                <DialogDescription>
+                  {editingSeasonId ? 'Update details for this prayer season.' : 'Create a new Week of Prayer event series.'}
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSaveSeason} className="space-y-6 py-4">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Season Title</Label>
+                    <Input
+                      placeholder="Week of Prayer 2026"
+                      className="h-11 rounded-xl"
+                      value={seasonForm.title}
+                      onChange={e => setSeasonForm({ ...seasonForm, title: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Theme</Label>
+                    <Input
+                      placeholder="e.g. Rooted in Him"
+                      className="h-11 rounded-xl"
+                      value={seasonForm.theme}
+                      onChange={e => setSeasonForm({ ...seasonForm, theme: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Short Description</Label>
+                    <textarea
+                      placeholder="About this season..."
+                      className="flex min-h-[80px] w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
+                      value={seasonForm.description}
+                      onChange={e => setSeasonForm({ ...seasonForm, description: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Status</Label>
+                    <select
+                      className="flex h-11 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 text-sm"
+                      value={seasonForm.status}
+                      onChange={e => setSeasonForm({ ...seasonForm, status: e.target.value })}
+                    >
+                      <option value="active">Active (Available Now)</option>
+                      <option value="upcoming">Upcoming (Coming Soon)</option>
+                      <option value="archived">Archived</option>
+                    </select>
+                  </div>
+                  <div className="col-span-2 space-y-2">
+                    <Label>Banner Image Upload</Label>
+                    <div className="flex gap-4 items-center">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="h-11 rounded-xl flex-1 pt-2.5"
+                        disabled={isUploading}
+                      />
+                      {seasonForm.bannerImage && (
+                        <img src={seasonForm.bannerImage} alt="Preview" className="h-11 w-11 object-cover rounded-md border border-border" />
+                      )}
+                    </div>
+                    {isUploading && <p className="text-xs text-muted-foreground">Uploading image...</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Price ($)</Label>
+                    <Input
+                      type="number"
+                      className="h-11 rounded-xl"
+                      value={seasonForm.price}
+                      onChange={e => setSeasonForm({ ...seasonForm, price: Number(e.target.value) })}
+                    />
+                  </div>
+                  {/*
+                  <div className="space-y-2">
+                    <Label>Sample Preview Video URL</Label>
+                    <Input
+                      placeholder="https://vimeo.com/..."
+                      className="h-11 rounded-xl"
+                      value={seasonForm.samplePreviewVideo}
+                      onChange={e => setSeasonForm({ ...seasonForm, samplePreviewVideo: e.target.value })}
+                    />
+                  </div>
+                  */}
+                </div>
+                <DialogFooter>
+                  <Button type="submit" className="w-full bg-forest h-11 rounded-xl shadow-md">
+                    {editingSeasonId ? 'Save Changes' : 'Create Season'}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      {/* Analytics Section */}
+      <Card className="border-border/50 bg-card/50 backdrop-blur-sm shadow-card overflow-hidden">
+        <div className="p-6 border-b border-border/50 flex items-center gap-3 bg-muted/20">
+          <TrendingUp className="w-5 h-5 text-forest" />
+          <h2 className="text-xl font-display font-bold text-foreground">Engagement & Purchases Analysis</h2>
+        </div>
+        <div className="p-6">
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={[
+                { name: 'Week 1', engagement: 400, purchases: 240 },
+                { name: 'Week 2', engagement: 300, purchases: 139 },
+                { name: 'Week 3', engagement: 200, purchases: 980 },
+                { name: 'Week 4', engagement: 278, purchases: 390 },
+                { name: 'Week 5', engagement: 189, purchases: 480 },
+                { name: 'Week 6', engagement: 239, purchases: 380 },
+              ]}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} dy={10} />
+                <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} dx={-10} />
+                <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} dx={10} />
+                <RechartsTooltip contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
+                <Line yAxisId="left" type="monotone" dataKey="engagement" stroke="#1a2f24" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} name="Engagement" />
+                <Line yAxisId="right" type="monotone" dataKey="purchases" stroke="#D4AF37" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} name="Purchases" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </Card>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card className="md:col-span-2 border-border/50 bg-card/50 backdrop-blur-sm shadow-card overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-xl font-display flex items-center gap-2">
+              <Video className="w-5 h-5 text-forest" />
+              Prayer Seasons
+            </CardTitle>
+          </CardHeader>
+          <Table>
+            <TableHeader className="bg-muted/30">
+              <TableRow className="border-border/50">
+                <TableHead>Season / Theme</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {seasons.map((season) => (
+                <TableRow key={season._id} className="border-border/50">
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-20 rounded-md overflow-hidden bg-muted flex-shrink-0 border border-border">
+                        {season.bannerImage ? (
+                          <img src={season.bannerImage} alt={season.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                            <Video className="w-4 h-4 opacity-50" />
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <div className="font-bold text-foreground">{season.title}</div>
+                        <div className="text-xs text-muted-foreground">{season.theme}</div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>${season.price}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{season.status}</Badge>
+                  </TableCell>
+                  <TableCell className="text-right flex justify-end gap-2">
+                    <Link to="/admin/prayer-season/$seasonId" params={{ seasonId: season._id.toString() }}>
+                      <Button variant="outline" size="sm" className="h-8 rounded-lg gap-2">
+                        <Settings className="w-4 h-4" /> Manage Episodes
+                      </Button>
+                    </Link>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><MoreHorizontal className="w-4 h-4" /></Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="rounded-xl border-border/50">
+                        <DropdownMenuItem className="gap-2 cursor-pointer" onClick={() => openEditDialog(season)}>
+                          <Edit className="w-4 h-4" /> Edit Info
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="gap-2 text-destructive cursor-pointer" onClick={() => handleDeleteSeason(season._id)}>
+                          <Trash2 className="w-4 h-4" /> Delete Season
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {seasons.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">No seasons created yet.</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Card>
+
+        <Card className="border-border/50 bg-card/50 backdrop-blur-sm shadow-card">
+          <CardHeader>
+            <CardTitle className="text-xl font-display flex items-center gap-2">
+              <Shield className="w-5 h-5 text-gold" />
+              Access Policy
+            </CardTitle>
+            <CardDescription>Default settings for new purchases</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center justify-between p-4 bg-muted/20 rounded-xl">
+              <div className="space-y-0.5">
+                <div className="font-semibold text-sm">Expiration Period</div>
+                <div className="text-xs text-muted-foreground">Standard 14-day access</div>
+              </div>
+              <Badge variant="outline">14 Days</Badge>
+            </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Total Active Users</span>
+                  <span className="font-semibold">{users.filter(u => u.status === 'Active').length}</span>
+                </div>
+                <Progress value={Math.min(100, (users.filter(u => u.status === 'Active').length / (users.length || 1)) * 100)} className="h-2 bg-muted" />
+              </div>
+              <div className="pt-4 border-t border-border/30">
+                <Button className="w-full bg-gold text-gold-foreground hover:bg-gold/90 h-10 rounded-xl" onClick={() => toast.success("Policy updated for all active sessions")}>Extend All Access</Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="border-border/50 bg-card/50 backdrop-blur-sm shadow-card">
+        <CardHeader>
+          <CardTitle className="text-xl font-display">Recent Purchases & Grants</CardTitle>
+          <CardDescription>Member account access area for purchased content</CardDescription>
+        </CardHeader>
+        <Table>
+          <TableHeader className="bg-muted/30">
+            <TableRow className="border-border/50">
+              <TableHead>User</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Progress</TableHead>
+              <TableHead>Expires On</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {users.map((user) => (
+              <TableRow key={user._id} className="border-border/50">
+                <TableCell>
+                  <div>
+                    <div className="font-medium">{user.name}</div>
+                    <div className="text-xs text-muted-foreground">{user.email}</div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    variant={user.status === "Active" ? "default" : "secondary"}
+                    className={user.status === "Active" ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" : ""}
+                  >
+                    {user.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs w-8">{user.progress}%</span>
+                    <Progress value={user.progress} className="h-1.5 w-24 bg-muted" />
+                  </div>
+                </TableCell>
+                <TableCell className="text-sm font-mono">{user.expires}</TableCell>
+                <TableCell className="text-right flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-3 rounded-lg text-xs gap-1 border-border/50 transition-all active:scale-95"
+                    onClick={() => handleExtend(user)}
+                  >
+                    <History className="w-3 h-3" /> Extend
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-3 rounded-lg text-xs text-destructive hover:bg-destructive/10 transition-all active:scale-95"
+                    onClick={() => handleRevoke(user._id)}
+                  >
+                    <ShieldAlert className="w-3 h-3" /> Revoke
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+            {users.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">No recent grants.</TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </Card>
+    </div>
+  );
+}
