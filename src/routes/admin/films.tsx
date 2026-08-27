@@ -139,6 +139,7 @@ function FilmsManagement() {
 
     setIsUploading(true);
     const formDataObj = new FormData();
+    formDataObj.append("file", file);
     formDataObj.append("image", file);
 
     try {
@@ -150,8 +151,7 @@ function FilmsManagement() {
       });
       const data = await res.json();
       if (data.success) {
-        const fullUrl = `${API_URL}${data.url}`;
-        setFormData(prev => ({ ...prev, thumbnail: fullUrl }));
+        setFormData(prev => ({ ...prev, thumbnail: data.url }));
         toast.success("Image uploaded to server!");
       } else {
         toast.error(data.message || "Upload failed");
