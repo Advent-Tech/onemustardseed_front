@@ -1,3 +1,4 @@
+import { API_URL, mediaUrl } from "../../lib/api";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { CreditCard, Plus, Trash2, ShieldCheck, Activity } from "lucide-react";
@@ -22,8 +23,7 @@ function PromoCodesManagement() {
   const fetchPromoCodes = async () => {
     try {
       const token = localStorage.getItem("user_token");
-      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-      const baseUrl = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
+            const baseUrl = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
 
       const res = await fetch(`${baseUrl}/promocodes`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -52,8 +52,7 @@ function PromoCodesManagement() {
     }
     try {
       const token = localStorage.getItem("user_token");
-      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-      const baseUrl = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
+            const baseUrl = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
 
       const res = await fetch(`${baseUrl}/promocodes`, {
         method: "POST",
@@ -85,8 +84,7 @@ function PromoCodesManagement() {
     if (!confirm("Are you sure you want to delete this promo code?")) return;
     try {
       const token = localStorage.getItem("user_token");
-      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-      const baseUrl = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
+            const baseUrl = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
 
       const res = await fetch(`${baseUrl}/promocodes/${id}`, {
         method: "DELETE",

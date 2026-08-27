@@ -1,3 +1,4 @@
+import { API_URL, mediaUrl } from "../../lib/api";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -6,7 +7,6 @@ import { ShieldCheck, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const Route = createFileRoute("/prayer/checkout")({
   validateSearch: (search: Record<string, unknown>): { seriesId?: string } => {

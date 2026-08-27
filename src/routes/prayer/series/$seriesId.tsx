@@ -1,3 +1,4 @@
+import { API_URL, mediaUrl } from "../../../lib/api";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import ReactPlayer from "react-player";
@@ -22,7 +23,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const Route = createFileRoute("/prayer/series/$seriesId")({
   component: PrayerSeriesPage,

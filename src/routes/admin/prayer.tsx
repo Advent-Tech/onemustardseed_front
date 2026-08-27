@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { mediaUrl } from "../../lib/api";
+import { mediaUrl, API_URL } from "../../lib/api";
 import {
   Video,
   Plus,
@@ -61,7 +61,6 @@ export const Route = createFileRoute("/admin/prayer")({
   component: PrayerManagement,
 });
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 function PrayerManagement() {
   const [seasons, setSeasons] = useState<any[]>([]);

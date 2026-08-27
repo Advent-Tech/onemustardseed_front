@@ -1,3 +1,4 @@
+import { API_URL, mediaUrl } from "../../lib/api";
 import { useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { Plus, Edit, Trash2, Video } from "lucide-react";
@@ -9,7 +10,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { toast } from "sonner";
 import { Label } from "../ui/label";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 const Player = ReactPlayer as any;
 
 export function HeroSliderManager() {

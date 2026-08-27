@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { mediaUrl } from "../../lib/api";
+import { mediaUrl, API_URL } from "../../lib/api";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from "recharts";
@@ -98,7 +98,6 @@ const INITIAL_LIFETIME = [
   { id: 2, name: "Emma Thompson", email: "emma.t@example.com", joined: "Feb 05, 2026", source: "Promo Code" },
 ];
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 function KidsManagement() {
   const [series, setSeries] = useState<any[]>([]);

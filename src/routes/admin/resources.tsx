@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { mediaUrl } from "@/lib/api";
+import { mediaUrl, API_URL } from "@/lib/api";
 import { 
   FileText, Download, Mail, Plus, Edit, Trash2, 
   HardDrive, TrendingUp 
@@ -36,7 +36,6 @@ export const Route = createFileRoute("/admin/resources")({
   component: ResourceManagement,
 });
 
-const API = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
 
 function ResourceManagement() {
   const [resources, setResources] = useState<any[]>([]);
@@ -58,7 +57,7 @@ function ResourceManagement() {
 
   const fetchResources = async () => {
     try {
-      const r = await fetch(`${API}/api/resources`);
+      const r = await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/resources`);
       const d = await r.json();
       setResources(Array.isArray(d) ? d : (d.data && Array.isArray(d.data) ? d.data : []));
     } catch (e) {
@@ -70,7 +69,7 @@ function ResourceManagement() {
   const fetchLeads = async () => {
     try {
       const token = localStorage.getItem("user_token");
-      const r = await fetch(`${API}/api/resources/leads/all`, {
+      const r = await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/resources/leads/all`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       const d = await r.json();
@@ -133,7 +132,7 @@ function ResourceManagement() {
       if (fileUrl) payload.fileUrl = fileUrl;
       if (featuredImage) payload.featuredImage = featuredImage;
 
-      const url = editingId ? `${API}/api/resources/${editingId}` : `${API}/api/resources`;
+      const url = editingId ? `${API_URL.replace(/\/api\/?$/, "")}/api/resources/${editingId}` : `${API_URL.replace(/\/api\/?$/, "")}/api/resources`;
       const method = editingId ? "PUT" : "POST";
       const token = localStorage.getItem("user_token");
 
@@ -178,7 +177,7 @@ function ResourceManagement() {
     if (!res.isConfirmed) return;
 
     const token = localStorage.getItem("user_token");
-    await fetch(`${API}/api/resources/${id}`, {
+    await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/resources/${id}`, {
       method: "DELETE",
       headers: token ? { Authorization: `Bearer ${token}` } : {}
     });

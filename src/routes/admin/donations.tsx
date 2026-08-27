@@ -1,3 +1,4 @@
+import { API_URL, mediaUrl } from "../../lib/api";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import {
@@ -29,7 +30,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { toast } from "sonner";
 import Swal from 'sweetalert2';
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const Route = createFileRoute("/admin/donations")({
   component: DonationManagement,

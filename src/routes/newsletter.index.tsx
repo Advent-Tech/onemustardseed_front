@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { API_URL, mediaUrl } from "../lib/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -16,7 +16,6 @@ export const Route = createFileRoute("/newsletter/")({
   component: NewsletterPage,
 });
 
-const API = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
 
 function getVimeoEmbed(url: string) {
   const m = url.match(/vimeo\.com\/(\d+)/);
@@ -31,7 +30,7 @@ function NewsletterPage() {
   const [email, setEmail] = useState("");
 
   useEffect(() => {
-    fetch(`${API}/api/newsletter`)
+    fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/newsletter`)
       .then(r => r.json())
       .then(data => {
         const pub = (Array.isArray(data) ? data : []).filter((n: any) => n.status === "Published");
@@ -51,7 +50,7 @@ function NewsletterPage() {
     if (!url) return "";
     if (url.startsWith("data:")) return url;         // base64
     if (url.startsWith("http")) return url;           // full URL
-    return `${API}${url}`;                            // /uploads/... path
+    return `${API_URL.replace(/\/api\/?$/, "")}${url}`;                            // /uploads/... path
   };
 
   return (

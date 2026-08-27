@@ -27,9 +27,8 @@ import {
   Video
 } from "lucide-react";
 import logoImg from "@/assets/logo2/image3.png";
-import { mediaUrl } from "@/lib/api";
+import { mediaUrl, API_URL } from "@/lib/api";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const Route = createFileRoute("/kids/")({
 
@@ -611,8 +610,7 @@ function KidsLandingPage() {
                   <button
                     onClick={() => {
                       // Fetch the file from the backend and trigger download
-                      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-                      fetch(`${API_URL}/kids/sample-guide`)
+                                            fetch(`${API_URL}/kids/sample-guide`)
                         .then(res => res.blob())
                         .then(blob => {
                           const url = window.URL.createObjectURL(blob);

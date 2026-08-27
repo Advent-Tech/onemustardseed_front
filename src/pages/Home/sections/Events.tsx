@@ -1,8 +1,8 @@
+import { API_URL, mediaUrl } from "../../../lib/api";
 import { useState, useEffect } from "react";
 import { Calendar, MapPin, Ticket, ArrowRight, Sparkles, Clock, Users } from "lucide-react";
 import { INITIAL_EVENTS } from "../../../data/events-data";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export function Events() {
   const [events, setEvents] = useState<any[]>([]);

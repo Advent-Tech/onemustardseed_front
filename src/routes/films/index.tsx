@@ -1,4 +1,3 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -9,7 +8,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import ReactPlayer from "react-player";
 import image5 from "@/assets/logo2/image5.png";
 import { HostMovieNight, PremierePartner } from "@/pages/Films/sections/HostScreening";
-import { mediaUrl } from "@/lib/api";
+import { mediaUrl, API_URL } from "@/lib/api";
 
 export const Route = createFileRoute("/films/")({
   component: FilmsLandingPage,

@@ -1,11 +1,10 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Star, Search, Tag, Shirt, Book, ExternalLink, ShoppingBag, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { mediaUrl } from "@/lib/api";
+import { mediaUrl, API_URL } from "@/lib/api";
 
 export const Route = createFileRoute("/shop/")({
   component: ShopLandingPage,

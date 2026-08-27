@@ -1,10 +1,10 @@
+import { API_URL, mediaUrl } from "../../lib/api";
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { CheckCircle2, Crown, Ticket, ShoppingBag, ArrowRight, Heart, Film } from "lucide-react";
 import { SiteHeader } from "../../components/layout/SiteHeader";
 import { SiteFooter } from "../../components/layout/SiteFooter";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const Route = createFileRoute("/payment/success")({
   validateSearch: (search: Record<string, unknown>): { session_id?: string } => {

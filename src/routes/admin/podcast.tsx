@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { mediaUrl } from "../../lib/api";
+import { mediaUrl, API_URL } from "../../lib/api";
 import {
   Mic,
   Plus,
@@ -69,7 +69,6 @@ export const Route = createFileRoute("/admin/podcast")({
 });
 
 import { useEffect } from "react";
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 function PodcastManagement() {
   const [seasons, setSeasons] = useState<any[]>([]);

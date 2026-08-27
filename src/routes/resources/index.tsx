@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { API_URL, mediaUrl } from "../../lib/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -17,7 +17,6 @@ export const Route = createFileRoute("/resources/")({
 });
 
 const RESOURCE_TYPES = ["All", "Parents", "Teachers", "Pastors", "Youth Leaders", "General"];
-const API = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
 
 function ResourcesLandingPage() {
   const [resources, setResources] = useState<any[]>([]);
@@ -32,7 +31,7 @@ function ResourcesLandingPage() {
   const [successLink, setSuccessLink] = useState("");
 
   useEffect(() => {
-    fetch(`${API}/api/resources`)
+    fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/resources`)
       .then(res => res.json())
       .then(data => setResources(data))
       .catch(err => console.error("Failed to fetch resources:", err));
@@ -64,7 +63,7 @@ function ResourcesLandingPage() {
     setIsSubmitting(true);
     toast.loading("Unlocking your resource...");
     try {
-      const res = await fetch(`${API}/api/resources/download/${selectedResource._id}`, {
+      const res = await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/resources/download/${selectedResource._id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
@@ -185,7 +184,7 @@ function ResourcesLandingPage() {
                   >
                     <div className="relative aspect-video overflow-hidden bg-forest/5 flex items-center justify-center">
                       {res.featuredImage ? (
-                        <img src={res.featuredImage?.startsWith('/') ? `${API}${res.featuredImage}` : res.featuredImage} alt={res.title} className={`w-full h-full object-cover transition-transform duration-1000 ${res.isActive !== false ? 'group-hover:scale-110' : 'opacity-50 grayscale'}`} />
+                        <img src={res.featuredImage?.startsWith('/') ? `${API_URL.replace(/\/api\/?$/, "")}${res.featuredImage}` : res.featuredImage} alt={res.title} className={`w-full h-full object-cover transition-transform duration-1000 ${res.isActive !== false ? 'group-hover:scale-110' : 'opacity-50 grayscale'}`} />
                       ) : (
                         <FileText className={`w-16 h-16 text-forest/20 ${res.isActive === false ? 'opacity-50 grayscale' : ''}`} />
                       )}
