@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { mediaUrl } from "../../lib/api";
 import {
   Settings as SettingsIcon,
   Image as ImageIcon,
@@ -55,16 +56,22 @@ function MediaPreview({ url, label }: { url: string; label: string }) {
       </div>
     );
   }
-  if (isVideoFile(url)) {
+  const resolved = mediaUrl(url);
+  if (isVideoFile(resolved)) {
     return (
       <div className="mt-3 rounded-2xl overflow-hidden border border-border/50 bg-muted aspect-video relative">
-        <video src={url} controls className="w-full h-full object-cover" />
+        <video src={resolved} controls className="w-full h-full object-cover" />
       </div>
     );
   }
   return (
     <div className="mt-3 rounded-2xl overflow-hidden border border-border/50 bg-muted aspect-video relative">
-      <img src={url} alt={label} className="w-full h-full object-cover" />
+      <img 
+        src={resolved} 
+        alt={label} 
+        className="w-full h-full object-cover" 
+        onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1485846234645-a62644ef7467?w=800&q=80"; }}
+      />
     </div>
   );
 }

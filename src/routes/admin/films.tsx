@@ -1,6 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { mediaUrl } from "../../lib/api";
 import {
   Film,
   Plus,
@@ -335,7 +336,12 @@ function FilmsManagement() {
                       disabled={isUploading}
                     />
                     {formData.thumbnail && (
-                      <img src={formData.thumbnail} alt="Preview" className="h-11 w-11 object-cover rounded-md border border-border" />
+                      <img 
+                        src={mediaUrl(formData.thumbnail)} 
+                        alt="Preview" 
+                        className="h-11 w-11 object-cover rounded-md border border-border" 
+                        onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1485846234645-a62644ef7467?w=120&h=67"; }}
+                      />
                     )}
                   </div>
                   {isUploading && <p className="text-xs text-muted-foreground">Uploading image...</p>}
@@ -478,7 +484,12 @@ function FilmsManagement() {
                   <TableRow key={film.id} className="border-border/50 group hover:bg-muted/10 transition-colors">
                     <TableCell>
                       <div className="w-20 h-12 rounded-xl bg-muted overflow-hidden border border-border/50 shadow-sm">
-                        <img src={film.thumbnail || "https://images.unsplash.com/photo-1485846234645-a62644ef7467?w=120&h=67"} alt={film.title || "Film"} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                        <img 
+                          src={mediaUrl(film.thumbnail) || "https://images.unsplash.com/photo-1485846234645-a62644ef7467?w=120&h=67"} 
+                          alt={film.title || "Film"} 
+                          className="w-full h-full object-cover transition-transform group-hover:scale-110" 
+                          onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1485846234645-a62644ef7467?w=120&h=67"; }}
+                        />
                       </div>
                     </TableCell>
                     <TableCell>

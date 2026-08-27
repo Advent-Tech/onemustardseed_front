@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { mediaUrl } from "../../lib/api";
 import {
   Video,
   Plus,
@@ -409,7 +410,12 @@ function PrayerManagement() {
                         disabled={isUploading}
                       />
                       {seasonForm.bannerImage && (
-                        <img src={seasonForm.bannerImage} alt="Preview" className="h-11 w-11 object-cover rounded-md border border-border" />
+                        <img 
+                          src={mediaUrl(seasonForm.bannerImage)} 
+                          alt="Preview" 
+                          className="h-11 w-11 object-cover rounded-md border border-border" 
+                          onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=120&h=67"; }}
+                        />
                       )}
                     </div>
                     {isUploading && <p className="text-xs text-muted-foreground">Uploading image...</p>}
@@ -500,7 +506,12 @@ function PrayerManagement() {
                     <div className="flex items-center gap-4">
                       <div className="h-12 w-20 rounded-md overflow-hidden bg-muted flex-shrink-0 border border-border">
                         {season.bannerImage ? (
-                          <img src={season.bannerImage} alt={season.title} className="w-full h-full object-cover" />
+                          <img 
+                            src={mediaUrl(season.bannerImage)} 
+                            alt={season.title} 
+                            className="w-full h-full object-cover" 
+                            onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=120&h=67"; }}
+                          />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                             <Video className="w-4 h-4 opacity-50" />

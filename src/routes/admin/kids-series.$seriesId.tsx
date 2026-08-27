@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { mediaUrl } from "../../lib/api";
 import { ArrowLeft, Play, Settings, Plus, FileVideo, Trash2, Mic2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -200,7 +201,7 @@ function AdminSeriesPage() {
             ) : audioSrc ? (
               <div className="absolute inset-0 w-full h-full bg-forest-deep flex flex-col items-center justify-center p-6 text-cream">
                 <img
-                  src={series.img}
+                  src={mediaUrl(series.img)}
                   alt={series.name}
                   className="absolute inset-0 w-full h-full object-cover opacity-20"
                 />
@@ -213,7 +214,7 @@ function AdminSeriesPage() {
             ) : (
               <>
                 <img
-                  src={series.img}
+                  src={mediaUrl(series.img)}
                   alt={series.name}
                   className="w-full h-full object-cover opacity-60"
                   onError={(e) => {
@@ -275,7 +276,7 @@ function AdminSeriesPage() {
                 >
                   <div className="relative w-20 h-14 rounded-xl overflow-hidden bg-muted shrink-0 border-2 border-transparent group-hover:border-forest transition-all">
                     <img
-                      src={ep.img}
+                      src={mediaUrl(ep.img)}
                       alt={ep.title}
                       className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                       onError={(e) => {

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { mediaUrl } from "../../lib/api";
 import { Plus, Edit3, Trash2, Music, Disc3, ListMusic, AudioLines, Headphones, ArrowUpRight, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
@@ -261,7 +262,12 @@ function AdminMusic() {
           {albums.map((album) => (
             <Card key={album.id} className="border-border/50 bg-card/50 backdrop-blur-sm shadow-card group hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
               <div className="h-48 bg-muted relative">
-                <img src={album.cover} alt={album.title} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" />
+                <img 
+                  src={mediaUrl(album.cover) || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80"} 
+                  alt={album.title} 
+                  className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" 
+                  onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80"; }}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <Badge className={`absolute top-4 right-4 border-none ${album.status === 'Active' ? 'bg-forest text-white' : 'bg-white/20 backdrop-blur-md text-white'}`}>
                   {album.status}
@@ -377,7 +383,12 @@ function AdminMusic() {
                   />
                   {formData.cover && (
                     <div className="w-11 h-11 rounded-lg overflow-hidden border border-border shrink-0">
-                      <img src={formData.cover} alt="Preview" className="w-full h-full object-cover" />
+                      <img 
+                        src={mediaUrl(formData.cover)} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover" 
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                      />
                     </div>
                   )}
                 </div>

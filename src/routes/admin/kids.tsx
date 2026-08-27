@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { mediaUrl } from "../../lib/api";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from "recharts";
@@ -570,7 +571,7 @@ function KidsManagement() {
                 <Card key={item._id || item.id || Math.random()} className="border-border/50 bg-card/50 backdrop-blur-sm shadow-card hover:shadow-elevated transition-all group overflow-hidden flex flex-col">
                   <div className="h-32 bg-muted relative overflow-hidden">
                     <img
-                      src={item.image ? (item.image.startsWith('http') || item.image.startsWith('data:') ? item.image : `${API_URL}${item.image.startsWith('/') ? '' : '/'}${item.image}`) : item.img}
+                      src={mediaUrl(item.image || item.img)}
                       alt={item.name}
                       className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700"
                       onError={(e) => {
@@ -898,7 +899,12 @@ function KidsManagement() {
             <div className="space-y-2">
               <Label>Public Hero Banner Image</Label>
               <div className="mt-2 mb-4 h-32 rounded-xl overflow-hidden bg-muted border-2 border-border/50">
-                <img src={heroBanner} alt="Hero Banner Preview" className="w-full h-full object-cover" />
+                <img 
+                  src={mediaUrl(heroBanner)} 
+                  alt="Hero Banner Preview" 
+                  className="w-full h-full object-cover" 
+                  onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1502086223501-7ea2443054f1?w=800&h=300&fit=crop"; }}
+                />
               </div>
               <Input
                 type="file"

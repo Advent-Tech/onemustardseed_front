@@ -35,9 +35,12 @@ export function HeroSliderManager() {
 
   const fetchSliders = async () => {
     try {
-      const res = await fetch(`${API_URL}/hero-sliders/admin`);
+      const token = localStorage.getItem("user_token");
+      const res = await fetch(`${API_URL}/hero-sliders/admin`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
       const data = await res.json();
-      if (data.success) {
+      if (data && data.success && Array.isArray(data.data)) {
         setSliders(data.data);
       }
     } catch (err) {
@@ -69,6 +72,7 @@ export function HeroSliderManager() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    const token = localStorage.getItem("user_token");
     try {
       const url = editingSlider
         ? `${API_URL}/hero-sliders/${editingSlider._id}`
@@ -77,7 +81,10 @@ export function HeroSliderManager() {
 
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
         body: JSON.stringify(formData)
       });
       const data = await res.json();
@@ -96,9 +103,11 @@ export function HeroSliderManager() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this slider?")) return;
+    const token = localStorage.getItem("user_token");
     try {
       const res = await fetch(`${API_URL}/hero-sliders/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       if (res.ok) {
         setSliders(sliders.filter(s => s._id !== id));
@@ -110,10 +119,14 @@ export function HeroSliderManager() {
   };
 
   const toggleActive = async (id: string, currentStatus: boolean) => {
+    const token = localStorage.getItem("user_token");
     try {
       const res = await fetch(`${API_URL}/hero-sliders/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({ isActive: !currentStatus })
       });
       if (res.ok) {
@@ -178,10 +191,15 @@ export function HeroSliderManager() {
               <Button variant="outline" size="sm" onClick={() => handleOpenDialog(slide)}>
                 <Edit className="w-4 h-4 mr-2" /> Edit
               </Button>
-              <Button variant="outline" size="sm" onClick={() => toggleActive(slide._id, slide.isActive)}>
-                {slide.isActive ? 'Disable' : 'Enable'}
+              <Button
+                variant={slide.isActive ? "default" : "secondary"}
+                size="sm"
+                onClick={() => toggleActive(slide._id, slide.isActive)}
+                className={slide.isActive ? "bg-emerald-600 hover:bg-emerald-700 text-white" : ""}
+              >
+                {slide.isActive ? "Active" : "Inactive"}
               </Button>
-              <Button variant="destructive" size="sm" onClick={() => handleDelete(slide._id)}>
+              <Button variant="ghost" size="sm" onClick={() => handleDelete(slide._id)} className="text-destructive hover:bg-destructive/10">
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>
@@ -190,91 +208,94 @@ export function HeroSliderManager() {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border">
+        <DialogContent className="max-w-xl">
           <DialogHeader>
-            <DialogTitle>{editingSlider ? "Edit Slide" : "New Slide"}</DialogTitle>
-            <DialogDescription className="hidden">Configure the background video, titles, and button links for this hero slider.</DialogDescription>
+            <DialogTitle>{editingSlider ? "Edit Hero Slide" : "Add Hero Slide"}</DialogTitle>
+            <DialogDescription>Configure the background video and call-to-actions for the hero section.</DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSave} className="space-y-4">
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Badge Text (e.g. OMS ORIGINAL CINEMA)</Label>
-                  <Input
-                    value={formData.badgeText}
-                    onChange={e => setFormData({ ...formData, badgeText: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Title</Label>
-                  <Input
-                    required
-                    value={formData.title}
-                    onChange={e => setFormData({ ...formData, title: e.target.value })}
-                  />
-                </div>
-              </div>
-
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Description</Label>
-                <Textarea
-                  required
-                  rows={3}
-                  value={formData.description}
-                  onChange={e => setFormData({ ...formData, description: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Background Video URL (Vimeo or MP4)</Label>
+                <Label>Badge Text</Label>
                 <Input
+                  value={formData.badgeText}
+                  onChange={(e) => setFormData({ ...formData, badgeText: e.target.value })}
+                  placeholder="e.g. OMS ORIGINAL CINEMA"
                   required
-                  type="url"
-                  placeholder="https://vimeo.com/... or .mp4"
-                  value={formData.backgroundVideoUrl}
-                  onChange={e => setFormData({ ...formData, backgroundVideoUrl: e.target.value })}
                 />
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Primary Button Text</Label>
-                  <Input
-                    value={formData.primaryButtonText}
-                    onChange={e => setFormData({ ...formData, primaryButtonText: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Primary Button Link</Label>
-                  <Input
-                    placeholder="/films/some-id"
-                    value={formData.primaryButtonLink}
-                    onChange={e => setFormData({ ...formData, primaryButtonLink: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Secondary Button Text</Label>
-                  <Input
-                    value={formData.secondaryButtonText}
-                    onChange={e => setFormData({ ...formData, secondaryButtonText: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Secondary Button Link</Label>
-                  <Input
-                    placeholder="/films/trailer"
-                    value={formData.secondaryButtonLink}
-                    onChange={e => setFormData({ ...formData, secondaryButtonLink: e.target.value })}
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label>Title</Label>
+                <Input
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="e.g. Wonder. Explore. Belong."
+                  required
+                />
               </div>
             </div>
+
+            <div className="space-y-2">
+              <Label>Description / Tagline</Label>
+              <Textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Short description..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Background Video URL (Vimeo or direct MP4)</Label>
+              <Input
+                value={formData.backgroundVideoUrl}
+                onChange={(e) => setFormData({ ...formData, backgroundVideoUrl: e.target.value })}
+                placeholder="https://player.vimeo.com/video/..."
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Primary Button Text</Label>
+                <Input
+                  value={formData.primaryButtonText}
+                  onChange={(e) => setFormData({ ...formData, primaryButtonText: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Primary Button Link</Label>
+                <Input
+                  value={formData.primaryButtonLink}
+                  onChange={(e) => setFormData({ ...formData, primaryButtonLink: e.target.value })}
+                  placeholder="/films/watch"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Secondary Button Text</Label>
+                <Input
+                  value={formData.secondaryButtonText}
+                  onChange={(e) => setFormData({ ...formData, secondaryButtonText: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Secondary Button Link</Label>
+                <Input
+                  value={formData.secondaryButtonLink}
+                  onChange={(e) => setFormData({ ...formData, secondaryButtonLink: e.target.value })}
+                  placeholder="#trailer"
+                />
+              </div>
+            </div>
+
             <DialogFooter>
-              <Button type="submit" className="w-full bg-forest">
-                {editingSlider ? "Save Changes" : "Create Slide"}
+              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-forest">
+                Save Slide
               </Button>
             </DialogFooter>
           </form>

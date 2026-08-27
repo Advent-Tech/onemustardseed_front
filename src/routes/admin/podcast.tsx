@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { mediaUrl } from "../../lib/api";
 import {
   Mic,
   Plus,
@@ -460,7 +461,12 @@ function PodcastManagement() {
             {seasons.map((season) => (
               <Card key={season._id} className="border-border/50 bg-card/50 backdrop-blur-sm shadow-card group hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
                 <div className="h-40 bg-muted relative">
-                  <img src={season.image || "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800"} alt={season.title} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" onError={(e) => { const target = e.target as HTMLImageElement; if (!target.src.includes('unsplash.com')) { target.src = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800"; } }} />
+                  <img 
+                    src={mediaUrl(season.image) || "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800"} 
+                    alt={season.title} 
+                    className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" 
+                    onError={(e) => { const target = e.target as HTMLImageElement; if (!target.src.includes('unsplash.com')) { target.src = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800"; } }} 
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <Badge className={`absolute top-4 right-4 border-none ${season.status === 'Active' ? 'bg-forest text-white' : 'bg-white/20 backdrop-blur-md text-white'}`}>
                     {season.status}
@@ -726,7 +732,7 @@ function PodcastManagement() {
                 <div className="space-y-2">
                   <Label>Icon Image</Label>
                   <Input type="file" accept="image/*" className="h-11 rounded-xl file:text-xs" onChange={e => handleImageUpload(e, setPlatformForm as any, 'iconUrl')} />
-                  {platformForm.iconUrl && <img src={platformForm.iconUrl.startsWith('/') ? `${API_URL}${platformForm.iconUrl}` : platformForm.iconUrl} alt="icon" className="h-6 w-6 mt-2 object-contain" />}
+                  {platformForm.iconUrl && <img src={mediaUrl(platformForm.iconUrl)} alt="icon" className="h-6 w-6 mt-2 object-contain" />}
                 </div>
                 <div className="space-y-2">
                   <Label>Hover Tailwind Color</Label>
@@ -753,7 +759,7 @@ function PodcastManagement() {
                   <div key={p._id} className="flex items-center justify-between p-3 border border-border rounded-xl bg-card">
                     <div className="flex items-center gap-3">
                       <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center p-1 border border-border">
-                        <img src={p.iconUrl.startsWith('/') ? `${API_URL}${p.iconUrl}` : p.iconUrl} alt={p.name} className="h-full w-full object-contain" />
+                        <img src={mediaUrl(p.iconUrl)} alt={p.name} className="h-full w-full object-contain" />
                       </div>
                       <div>
                         <p className="font-bold text-sm">{p.name}</p>

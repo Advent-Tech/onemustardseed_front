@@ -1,6 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { mediaUrl } from "../../lib/api";
 import { Plus, Search, Edit, Trash2, FileText, Eye, ArrowUp, ArrowDown, GripVertical, Type, Image as ImageIcon, Video as VideoIcon, X, MessageSquare, CheckCircle, XCircle, Reply } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
@@ -280,9 +281,10 @@ function NewsletterManagement() {
                     <div className="flex items-center gap-3">
                       {nl.featuredImage && (
                         <img
-                          src={nl.featuredImage.startsWith('data:') || nl.featuredImage.startsWith('http') ? nl.featuredImage : `${API}${nl.featuredImage}`}
+                          src={mediaUrl(nl.featuredImage)}
                           className="h-10 w-16 object-cover rounded-lg shrink-0"
                           alt=""
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
                       )}
                       <div>
@@ -489,7 +491,7 @@ function NewsletterManagement() {
                 {block.type === "text" && <p className="text-lg leading-relaxed text-muted-foreground first-letter:text-5xl first-letter:font-display first-letter:font-bold first-letter:text-forest first-letter:mr-3 first-letter:float-left">{block.content}</p>}
                 {block.type === "photo" && block.url && (
                   <figure className="space-y-2">
-                    <img src={block.url} className="w-full rounded-2xl" alt={block.caption} />
+                    <img src={mediaUrl(block.url)} className="w-full rounded-2xl" alt={block.caption} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                     {block.caption && <figcaption className="text-xs text-center text-muted-foreground italic">— {block.caption}</figcaption>}
                   </figure>
                 )}

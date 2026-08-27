@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { mediaUrl } from "../../lib/api";
 import {
   Plus,
   Search,
@@ -429,9 +430,10 @@ function EventsManagement() {
                 <Card key={event.id} className="group border-border/50 bg-card/50 backdrop-blur-sm shadow-card hover:shadow-elevated transition-all overflow-hidden">
                   <div className="aspect-video relative overflow-hidden">
                     <img
-                      src={event.image?.startsWith('http') || event.image?.startsWith('data:') ? event.image : `${API_URL}${event.image?.startsWith('/') ? '' : '/'}${event.image}`}
+                      src={mediaUrl(event.image) || "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=80"}
                       alt={event.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=80"; }}
                     />
                     <div className="absolute top-4 left-4">
                       <Badge className="bg-forest/90 backdrop-blur text-white border-none">{event.status}</Badge>
@@ -745,7 +747,12 @@ function EventsManagement() {
                     disabled={isUploading}
                   />
                   {eventForm.image && (
-                    <img src={eventForm.image.startsWith('http') || eventForm.image.startsWith('data:') ? eventForm.image : `${API_URL}${eventForm.image.startsWith('/') ? '' : '/'}${eventForm.image}`} alt="Preview" className="h-11 w-11 object-cover rounded-md border border-border" />
+                    <img 
+                      src={mediaUrl(eventForm.image)} 
+                      alt="Preview" 
+                      className="h-11 w-11 object-cover rounded-md border border-border" 
+                      onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=80"; }}
+                    />
                   )}
                 </div>
                 {isUploading && <p className="text-xs text-muted-foreground">Uploading image...</p>}
@@ -767,9 +774,10 @@ function EventsManagement() {
                       {eventForm.gallery.map((img, idx) => (
                         <div key={idx} className="relative group w-16 h-16 rounded-lg border border-border overflow-hidden">
                           <img
-                            src={img.startsWith('http') || img.startsWith('data:') ? img : `${API_URL}${img.startsWith('/') ? '' : '/'}${img}`}
+                            src={mediaUrl(img)}
                             alt={`Gallery ${idx}`}
                             className="w-full h-full object-cover"
+                            onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=80"; }}
                           />
                           <button
                             type="button"

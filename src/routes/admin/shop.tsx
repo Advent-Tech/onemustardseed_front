@@ -1,6 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { mediaUrl } from "../../lib/api";
 import {
    Package,
    Plus,
@@ -220,7 +221,12 @@ function ShopManagement() {
                   {products.map((p) => (
                      <div key={p._id} className="group relative bg-background border border-border/50 rounded-[2rem] overflow-hidden hover:shadow-2xl transition-all duration-500 flex flex-col">
                         <div className="aspect-square relative overflow-hidden bg-muted">
-                           <img src={p.image} alt={p.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                           <img 
+                              src={mediaUrl(p.image)} 
+                              alt={p.title} 
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                              onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80"; }}
+                            />
                            <div className="absolute top-4 left-4">
                               <Badge className="bg-white/90 backdrop-blur text-forest-deep font-bold border-none text-[9px] uppercase tracking-widest px-3">
                                  {p.category}
@@ -322,7 +328,12 @@ function ShopManagement() {
                      <Input value={image} onChange={e => setImage(e.target.value)} placeholder="https://..." className="h-11 rounded-xl" />
                      {image && (
                         <div className="mt-2 rounded-xl overflow-hidden border border-border/50 bg-muted/50 h-32 w-32 relative">
-                           <img src={image} alt="Preview" className="object-cover w-full h-full" />
+                           <img 
+                              src={mediaUrl(image)} 
+                              alt="Preview" 
+                              className="object-cover w-full h-full" 
+                              onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80"; }}
+                           />
                         </div>
                      )}
                   </div>
@@ -389,7 +400,12 @@ function ShopManagement() {
                      <Input value={image} onChange={e => setImage(e.target.value)} className="h-11 rounded-xl" />
                      {image && (
                         <div className="mt-2 rounded-xl overflow-hidden border border-border/50 bg-muted/50 h-32 w-32 relative">
-                           <img src={image} alt="Preview" className="object-cover w-full h-full" />
+                            <img 
+                              src={mediaUrl(image)} 
+                              alt="Preview" 
+                              className="object-cover w-full h-full" 
+                              onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80"; }}
+                            />
                         </div>
                      )}
                   </div>

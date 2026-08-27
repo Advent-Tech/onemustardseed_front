@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { mediaUrl } from "@/lib/api";
 import { 
   FileText, Download, Mail, Plus, Edit, Trash2, 
   HardDrive, TrendingUp 
@@ -304,7 +305,16 @@ function ResourceManagement() {
                       <TableCell className="font-medium pl-6">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-xl bg-forest/5 flex items-center justify-center border border-forest/10 overflow-hidden shrink-0">
-                            {file.featuredImage ? <img src={file.featuredImage} className="w-full h-full object-cover" alt="" /> : <FileText className="w-5 h-5 text-forest" />}
+                            {file.featuredImage ? (
+                              <img 
+                                src={mediaUrl(file.featuredImage)} 
+                                className="w-full h-full object-cover" 
+                                alt="" 
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                              />
+                            ) : (
+                              <FileText className="w-5 h-5 text-forest" />
+                            )}
                           </div>
                           <div>
                             <div className="font-bold text-base">{file.title}</div>
