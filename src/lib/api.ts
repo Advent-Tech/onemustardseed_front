@@ -3,16 +3,14 @@
  */
 
 export function getApiBaseUrl(): string {
-  const envUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/+$/, "");
-  if (envUrl && !envUrl.includes("localhost") && !envUrl.includes("127.0.0.1")) {
-    return envUrl;
-  }
   if (typeof window !== "undefined" && window.location && window.location.hostname) {
     const host = window.location.hostname;
     if (host !== "localhost" && host !== "127.0.0.1") {
-      return `http://${host}:5001/api`;
+      const port = window.location.protocol === "https:" ? "" : ":5001";
+      return `${window.location.protocol}//${host}${port}/api`;
     }
   }
+  const envUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/+$/, "");
   return envUrl || "http://localhost:5000/api";
 }
 
@@ -25,17 +23,28 @@ export function getBackendBaseUrl(): string {
 export const BACKEND_URL = getBackendBaseUrl();
 
 /**
- * Builds a clean full API URL from any path, preventing double `/api/api` issues.
+ * Builds a clean full API URL from any path, preventing double `/api/api` issues
+ * and cleanly rewriting legacy hosts (e.g. Vercel, localhost).
  */
 export function apiUrl(path: string): string {
   if (!path) return API_URL;
-  let clean = path;
-  if (clean.includes("localhost:5000") || clean.includes("127.0.0.1:5000") || clean.includes("localhost:5001") || clean.includes("127.0.0.1:5001")) {
-    clean = clean.replace(/^https?:\/\/(localhost|127\.0\.0\.1):(5000|5001)\/?/, "/");
+  let clean = path.trim();
+
+  // If path is already a full API URL targeting any old host (e.g. vercel, localhost)
+  const apiMatch = clean.match(/^https?:\/\/[^\/]+(\/api\/.*)$/i);
+  if (apiMatch) {
+    return `${BACKEND_URL}${apiMatch[1]}`;
   }
+
+  // Strip localhost / 127.0.0.1
+  if (clean.includes("localhost:") || clean.includes("127.0.0.1:")) {
+    clean = clean.replace(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?/, "/");
+  }
+
   if (clean.startsWith("http://") || clean.startsWith("https://")) {
     return clean;
   }
+
   const cleanPath = clean.startsWith("/") ? clean : `/${clean}`;
   if (cleanPath.startsWith("/api/")) {
     return `${BACKEND_URL}${cleanPath}`;
@@ -45,17 +54,36 @@ export function apiUrl(path: string): string {
 
 /**
  * Resolves static media/asset URLs (e.g. /uploads/... or external URLs),
- * cleanly rewriting any legacy localhost/127.0.0.1 references to the active backend.
+ * cleanly rewriting any legacy host (Vercel, Render, Railway, localhost, old IPs) to the active backend.
  */
 export function mediaUrl(path?: string | null): string {
   if (!path) return "";
-  let clean = path;
-  if (clean.includes("localhost:5000") || clean.includes("127.0.0.1:5000") || clean.includes("localhost:5001") || clean.includes("127.0.0.1:5001")) {
-    clean = clean.replace(/^https?:\/\/(localhost|127\.0\.0\.1):(5000|5001)\/?/, "/");
-  }
-  if (clean.startsWith("http://") || clean.startsWith("https://") || clean.startsWith("data:")) {
+  let clean = path.trim();
+
+  // If it's a data URI or blob URL, return as is
+  if (clean.startsWith("data:") || clean.startsWith("blob:")) {
     return clean;
   }
+
+  // If it points to an upload endpoint on ANY host (Vercel, localhost, old IP, etc.)
+  // e.g. https://movie-backend-drab.vercel.app/api/upload/file/xyz.jpg
+  // or http://localhost:5000/uploads/xyz.jpg
+  const uploadMatch = clean.match(/(?:https?:\/\/[^\/]+)?(\/(?:api\/upload\/file|uploads|api\/uploads)\/[^?#\s]+)/i);
+  if (uploadMatch) {
+    const relativePath = uploadMatch[1];
+    return `${BACKEND_URL}${relativePath}`;
+  }
+
+  // Strip localhost/127.0.0.1 origins
+  if (clean.includes("localhost:") || clean.includes("127.0.0.1:")) {
+    clean = clean.replace(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?/, "/");
+  }
+
+  // If it's an external URL (e.g. Unsplash, Vimeo, YouTube, AWS S3, etc.)
+  if (clean.startsWith("http://") || clean.startsWith("https://")) {
+    return clean;
+  }
+
   const cleanPath = clean.startsWith("/") ? clean : `/${clean}`;
   return `${BACKEND_URL}${cleanPath}`;
 }

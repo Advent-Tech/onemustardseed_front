@@ -5,9 +5,8 @@ import { Play, Search, Tv, ChevronRight, Mic2, FileVideo, Lock, Crown, X } from 
 import { useState, useEffect } from "react";
 import { Badge } from "../../components/ui/badge";
 import { LayoutGrid } from "lucide-react";
-import { mediaUrl } from "@/lib/api";
+import { mediaUrl, API_URL } from "@/lib/api";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const Route = createFileRoute("/kids/library")({
   component: KidsLibraryPage,

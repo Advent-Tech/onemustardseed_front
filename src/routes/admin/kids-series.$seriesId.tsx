@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { mediaUrl } from "../../lib/api";
+import { mediaUrl, API_URL } from "../../lib/api";
 import { ArrowLeft, Play, Settings, Plus, FileVideo, Trash2, Mic2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -13,7 +13,6 @@ export const Route = createFileRoute("/admin/kids-series/$seriesId")({
   component: AdminSeriesPage,
 });
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 function AdminSeriesPage() {
   const { seriesId } = Route.useParams();

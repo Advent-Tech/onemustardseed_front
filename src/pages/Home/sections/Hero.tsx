@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { API_URL, mediaUrl } from "../../../lib/api";
 import { useState, useEffect } from "react";
 import { Play, Compass } from "lucide-react";
 import { Link } from "@tanstack/react-router";

@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { API_URL, mediaUrl } from "../lib/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -14,7 +14,6 @@ export const Route = createFileRoute("/newsletter/$id")({
   component: NewsletterDetailPage,
 });
 
-const API = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
 
 function getVimeoEmbedUrl(url: string) {
   const match = url.match(/vimeo\.com\/(\d+)/);
@@ -30,7 +29,7 @@ function NewsletterDetailPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    fetch(`${API}/api/newsletter/${id}`)
+    fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/newsletter/${id}`)
       .then(r => r.json())
       .then(data => { setNl(data); setLoading(false); })
       .catch(() => setLoading(false));
@@ -41,7 +40,7 @@ function NewsletterDetailPage() {
     if (!commentText.trim()) return;
     setIsSubmitting(true);
     try {
-      const res = await fetch(`${API}/api/newsletter/${id}/comments`, {
+      const res = await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/newsletter/${id}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user: commentName || "Anonymous", text: commentText })
@@ -100,7 +99,7 @@ function NewsletterDetailPage() {
     );
   }
 
-  const imageBase = nl.featuredImage?.startsWith("http") ? nl.featuredImage : `${API}${nl.featuredImage}`;
+  const imageBase = nl.featuredImage?.startsWith("http") ? nl.featuredImage : `${API_URL.replace(/\/api\/?$/, "")}${nl.featuredImage}`;
 
   const approvedComments = nl.comments?.filter((c: any) => !c.status || c.status === 'approved') || [];
 
@@ -209,7 +208,7 @@ function NewsletterDetailPage() {
                   rendered.push(
                     <div key={`gallery-${i}`} className={`my-12 grid ${gridCols} gap-4 items-start`}>
                       {photoGroup.map((p: any, pIdx: number) => {
-                        const src = p.url.startsWith("data:") || p.url.startsWith("http") ? p.url : `${API}${p.url}`;
+                        const src = p.url.startsWith("data:") || p.url.startsWith("http") ? p.url : `${API_URL.replace(/\/api\/?$/, "")}${p.url}`;
                         return (
                           <figure key={pIdx} className="group/img rounded-2xl shadow-xl border border-border/30 bg-card overflow-hidden">
                             {/* No forced aspect-ratio — image shows at its full natural height/width */}

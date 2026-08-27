@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { mediaUrl } from "../../lib/api";
+import { mediaUrl, API_URL } from "../../lib/api";
 import {
   Plus,
   Search,
@@ -61,7 +61,6 @@ export const Route = createFileRoute("/admin/events")({
 
 const INITIAL_TICKETS: any[] = [];
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 function EventsManagement() {
   const [events, setEvents] = useState<any[]>([]);

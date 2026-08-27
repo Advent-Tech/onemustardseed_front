@@ -1,7 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { mediaUrl } from "../../lib/api";
+import { mediaUrl, API_URL } from "../../lib/api";
 import { Plus, Search, Edit, Trash2, FileText, Eye, ArrowUp, ArrowDown, GripVertical, Type, Image as ImageIcon, Video as VideoIcon, X, MessageSquare, CheckCircle, XCircle, Reply } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
@@ -16,7 +15,6 @@ import Swal from "sweetalert2";
 
 export const Route = createFileRoute("/admin/newsletter")({ component: NewsletterManagement });
 
-const API = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
 const CATEGORIES = ["Ministry Update", "Community", "Events", "Kids", "Podcast", "Announcement"];
 
 function getVimeoEmbed(url: string) {
@@ -42,7 +40,7 @@ function NewsletterManagement() {
 
   const fetchAll = async () => {
     try {
-      const r = await fetch(`${API}/api/newsletter`);
+      const r = await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/newsletter`);
       const d = await r.json();
       setNewsletters(Array.isArray(d) ? d : []);
     } catch { setNewsletters([]); }
@@ -122,7 +120,7 @@ function NewsletterManagement() {
       payload.featuredImage = await fileToBase64(featuredFile);
     }
 
-    const url = editingId ? `${API}/api/newsletter/${editingId}` : `${API}/api/newsletter`;
+    const url = editingId ? `${API_URL.replace(/\/api\/?$/, "")}/api/newsletter/${editingId}` : `${API_URL.replace(/\/api\/?$/, "")}/api/newsletter`;
     const method = editingId ? "PUT" : "POST";
 
     try {
@@ -148,7 +146,7 @@ function NewsletterManagement() {
     const res = await Swal.fire({ title: "Delete newsletter?", text: "This cannot be undone.", icon: "warning", showCancelButton: true, confirmButtonColor: "#d33", cancelButtonColor: "#2C4A3B", confirmButtonText: "Delete" });
     if (!res.isConfirmed) return;
     const token = localStorage.getItem("user_token");
-    await fetch(`${API}/api/newsletter/${id}`, {
+    await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/newsletter/${id}`, {
       method: "DELETE",
       headers: token ? { Authorization: `Bearer ${token}` } : {}
     });
@@ -162,7 +160,7 @@ function NewsletterManagement() {
       if (adminReply !== undefined) payload.adminReply = adminReply;
       const token = localStorage.getItem("user_token");
 
-      const r = await fetch(`${API}/api/newsletter/${newsletterId}/comments/${commentId}`, {
+      const r = await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/newsletter/${newsletterId}/comments/${commentId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -198,7 +196,7 @@ function NewsletterManagement() {
     if (!res.isConfirmed) return;
     try {
       const token = localStorage.getItem("user_token");
-      const r = await fetch(`${API}/api/newsletter/${newsletterId}/comments/${commentId}`, {
+      const r = await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/newsletter/${newsletterId}/comments/${commentId}`, {
         method: "DELETE",
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
@@ -411,7 +409,7 @@ function NewsletterManagement() {
                               <div className="space-y-1">
                                 <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Current Image</p>
                                 <img
-                                  src={block.url.startsWith('data:') || block.url.startsWith('http') ? block.url : `${API}${block.url}`}
+                                  src={block.url.startsWith('data:') || block.url.startsWith('http') ? block.url : `${API_URL.replace(/\/api\/?$/, "")}${block.url}`}
                                   className="h-40 w-full object-cover rounded-xl border border-border/30"
                                   alt="current"
                                 />

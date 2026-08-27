@@ -1,3 +1,4 @@
+import { API_URL, mediaUrl } from "../../lib/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -5,7 +6,6 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Calendar, Play, BookOpen, Globe, ArrowRight, Users, CheckCircle } from "lucide-react";
 import logoImg from "@/assets/logo2/image8.png";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const Route = createFileRoute("/prayer/")({
   component: PrayerLandingPage,

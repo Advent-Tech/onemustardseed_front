@@ -10,9 +10,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "../..
 import { Input } from "../../components/ui/input";
 import { Progress } from "../../components/ui/progress";
 import { toast } from "sonner";
-import { mediaUrl } from "@/lib/api";
+import { mediaUrl, API_URL } from "@/lib/api";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const Route = createFileRoute("/support/")({
    component: SupportPage,

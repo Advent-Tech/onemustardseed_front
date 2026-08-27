@@ -1,3 +1,4 @@
+import { API_URL, mediaUrl } from "../../lib/api";
 ﻿import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -5,7 +6,6 @@ import { CheckCircle2, ShieldCheck, Users, CreditCard, Sparkles, Star, Crown, In
 import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const Route = createFileRoute("/kids/subscribe")({
    component: KidsSubscribePage,

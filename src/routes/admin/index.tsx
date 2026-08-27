@@ -1,3 +1,4 @@
+import { API_URL, mediaUrl } from "../../lib/api";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
@@ -81,8 +82,7 @@ function DashboardOverview() {
 
       try {
         const headers = { "Authorization": `Bearer ${token}` };
-        const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-        const baseUrl = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
+                const baseUrl = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
 
         const fetchEndpoint = async (endpoint: string, options = {}) => {
           try {

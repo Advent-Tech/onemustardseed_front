@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { API_URL, mediaUrl } from "../../lib/api";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -15,7 +15,6 @@ export const Route = createFileRoute("/contact/")({
   component: ContactPage,
 });
 
-const API = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
 
 const CATEGORIES = [
   "General questions",
@@ -100,7 +99,7 @@ function ContactPage() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch(`${API}/api/contact`, {
+      const res = await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

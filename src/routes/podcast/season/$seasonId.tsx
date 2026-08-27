@@ -1,3 +1,4 @@
+import { API_URL, mediaUrl } from "../../../lib/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -13,7 +14,6 @@ export const Route = createFileRoute("/podcast/season/$seasonId")({
   component: SeasonDetailsPage,
 });
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const RESOURCES = [
   { title: "Study Guide PDF", type: "Document", size: "2.4 MB" },

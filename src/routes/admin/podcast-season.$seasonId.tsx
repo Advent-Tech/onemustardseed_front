@@ -1,3 +1,4 @@
+import { API_URL, mediaUrl } from "../../lib/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { ArrowLeft, Play, Settings, Plus, Headphones, Trash2, Mic2 } from "lucide-react";
@@ -13,7 +14,6 @@ export const Route = createFileRoute("/admin/podcast-season/$seasonId")({
   component: AdminPodcastSeasonPage,
 });
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 function AdminPodcastSeasonPage() {
   const { seasonId } = Route.useParams();
