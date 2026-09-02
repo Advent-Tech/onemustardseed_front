@@ -89,41 +89,46 @@ function NewsletterManagement() {
     setBlocks(p => p.map(b => b.id === id ? { ...b, _file: file, url } : b));
   };
 
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
+  const uploadImageFile = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("image", file);
+    const token = localStorage.getItem("user_token");
+    const res = await fetch(`${API_URL}/upload`, {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData
     });
-  };
-
-  const uploadBlockImage = async (file: File): Promise<string> => {
-    return await fileToBase64(file);
+    const data = await res.json();
+    if (data.success && data.url) {
+      return data.url;
+    }
+    throw new Error(data.message || "Upload failed");
   };
 
   const handleSave = async () => {
     if (!form.title || !form.date) { toast.error("Title and date are required"); return; }
 
-    const processedBlocks = await Promise.all(blocks.map(async b => {
-      if (b.type === "photo" && b._file) {
-        const serverUrl = await uploadBlockImage(b._file);
-        const { _file, ...rest } = b;
-        return { ...rest, url: serverUrl };
-      }
-      const { _file, ...rest } = b;
-      return rest;
-    }));
-
-    const payload: any = { ...form, blocks: processedBlocks };
-    if (featuredFile) {
-      payload.featuredImage = await fileToBase64(featuredFile);
-    }
-
-    const url = editingId ? `${API_URL.replace(/\/api\/?$/, "")}/api/newsletter/${editingId}` : `${API_URL.replace(/\/api\/?$/, "")}/api/newsletter`;
-    const method = editingId ? "PUT" : "POST";
-
+    const toastId = toast.loading("Saving newsletter and uploading images...");
     try {
+      const processedBlocks = await Promise.all(blocks.map(async b => {
+        if (b.type === "photo" && b._file) {
+          const serverUrl = await uploadImageFile(b._file);
+          const { _file, ...rest } = b;
+          return { ...rest, url: serverUrl };
+        }
+        const { _file, ...rest } = b;
+        return rest;
+      }));
+
+      const payload: any = { ...form, blocks: processedBlocks };
+      if (featuredFile) {
+        payload.featuredImage = await uploadImageFile(featuredFile);
+      }
+
+      const url = editingId ? `${API_URL.replace(/\/api\/?$/, "")}/api/newsletter/${editingId}` : `${API_URL.replace(/\/api\/?$/, "")}/api/newsletter`;
+      const method = editingId ? "PUT" : "POST";
+
       const fd = new FormData();
       fd.append("data", JSON.stringify(payload));
       const token = localStorage.getItem("user_token");
@@ -134,12 +139,16 @@ function NewsletterManagement() {
         body: fd
       });
       if (r.ok) {
-        toast.success(editingId ? "Newsletter updated!" : "Newsletter created!");
+        toast.success(editingId ? "Newsletter updated!" : "Newsletter created!", { id: toastId });
         setIsEditorOpen(false);
         resetEditor();
         fetchAll();
-      } else { toast.error("Save failed"); }
-    } catch { toast.error("Network error"); }
+      } else { 
+        toast.error("Save failed", { id: toastId }); 
+      }
+    } catch (err: any) { 
+      toast.error(err.message || "Network error", { id: toastId }); 
+    }
   };
 
   const handleDelete = async (id: string) => {

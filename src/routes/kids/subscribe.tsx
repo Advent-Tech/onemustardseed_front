@@ -19,7 +19,7 @@ function KidsSubscribePage() {
    const [subscriptionType, setSubscriptionType] = useState<string | null>(null);
    const [planSettings, setPlanSettings] = useState({
       lifetimeEnabled: true, lifetimePrice: 99,
-      monthlyEnabled: true, monthlyPrice: 4.99,
+      monthlyEnabled: true, monthlyPrice: 9.99,
       yearlyEnabled: true, yearlyPrice: 49.99,
       trialDays: 7,
    });

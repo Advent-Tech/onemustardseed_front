@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { mediaUrl } from "../../lib/api";
+import { useState, useEffect } from "react";
+import { API_URL, mediaUrl } from "../../lib/api";
 import { Plus, Edit3, Trash2, Music, Disc3, ListMusic, AudioLines, Headphones, ArrowUpRight, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
@@ -76,9 +76,11 @@ const INITIAL_ALBUMS = [
 ];
 
 function AdminMusic() {
-  const [albums, setAlbums] = useState(INITIAL_ALBUMS);
+  const [albums, setAlbums] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAlbum, setEditingAlbum] = useState<any>(null);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
   
   // Form State
   const [formData, setFormData] = useState({
@@ -89,36 +91,101 @@ function AdminMusic() {
     songs: [{ title: "", audioFile: null as File | null }]
   });
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editingAlbum) {
-      toast.success("Album updated successfully (Mock)");
-      setAlbums(albums.map(a => a.id === editingAlbum.id ? { 
-        ...a, 
-        title: formData.title, 
-        description: formData.description,
-        cover: formData.cover || a.cover, 
-        status: formData.status,
-        songCount: formData.songs.length 
-      } : a));
-    } else {
-      toast.success("New album created successfully (Mock)");
-      setAlbums([
-        {
-          id: Math.random().toString(),
-          title: formData.title || "New Album",
-          description: formData.description,
-          cover: formData.cover || "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop",
-          songCount: formData.songs.length,
-          listensCount: 0,
-          status: formData.status,
-          createdAt: new Date().toISOString().split('T')[0],
-        },
-        ...albums
-      ]);
+  const fetchAlbums = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${API_URL}/albums`);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        setAlbums(data.data.map((a: any) => ({
+          ...a,
+          id: a._id || a.id,
+          songCount: a.songs?.length || 0
+        })));
+      }
+    } catch (err) {
+      console.error("Failed to fetch albums:", err);
+    } finally {
+      setIsLoading(false);
     }
-    setIsDialogOpen(false);
-    resetForm();
+  };
+
+  useEffect(() => {
+    fetchAlbums();
+  }, []);
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingCover(true);
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("image", file);
+
+    try {
+      const token = localStorage.getItem("user_token");
+      const res = await fetch(`${API_URL}/upload`, {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: fd,
+      });
+      const data = await res.json();
+      if (data.success) {
+        setFormData(prev => ({ ...prev, cover: data.url }));
+        toast.success("Cover image uploaded!");
+      } else {
+        toast.error(data.message || "Upload failed");
+      }
+    } catch (err) {
+      toast.error("Upload error");
+    } finally {
+      setIsUploadingCover(false);
+    }
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const token = localStorage.getItem("user_token");
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+
+    const payload = {
+      title: formData.title,
+      description: formData.description,
+      cover: formData.cover,
+      status: formData.status,
+      songs: formData.songs.map((s, idx) => ({
+        title: s.title || `Track ${idx + 1}`,
+        duration: "3:30",
+        order: idx + 1
+      }))
+    };
+
+    try {
+      const url = editingAlbum 
+        ? `${API_URL}/albums/${editingAlbum._id || editingAlbum.id}` 
+        : `${API_URL}/albums`;
+      const method = editingAlbum ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers,
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        toast.success(editingAlbum ? "Album updated successfully!" : "New album created successfully!");
+        setIsDialogOpen(false);
+        resetForm();
+        fetchAlbums();
+      } else {
+        toast.error(data.message || "Failed to save album");
+      }
+    } catch (err) {
+      toast.error("Network error while saving album");
+    }
   };
 
   const resetForm = () => {
@@ -134,20 +201,38 @@ function AdminMusic() {
 
   const handleEditClick = (album: any) => {
     setEditingAlbum(album);
+    const existingSongs = Array.isArray(album.songs) && album.songs.length > 0
+      ? album.songs.map((s: any) => ({ title: s.title || "", audioFile: null }))
+      : Array.from({ length: album.songCount || 1 }).map((_, i) => ({ title: `Track ${i+1}`, audioFile: null }));
+
     setFormData({
       title: album.title,
       description: album.description || "",
-      cover: album.cover,
-      status: album.status,
-      songs: Array.from({ length: album.songCount }).map((_, i) => ({ title: `Track ${i+1}`, audioFile: null }))
+      cover: album.cover || "",
+      status: album.status || "Active",
+      songs: existingSongs
     });
     setIsDialogOpen(true);
   };
 
-  const handleDeleteAlbum = (id: string, title: string) => {
-    if (confirm(`Are you sure you want to delete ${title}? All tracks will also be deleted.`)) {
-      setAlbums(albums.filter(a => a.id !== id));
-      toast.success("Album deleted (Mock)");
+  const handleDeleteAlbum = async (id: string, title: string) => {
+    if (!confirm(`Are you sure you want to delete ${title}? All tracks will also be deleted.`)) return;
+
+    try {
+      const token = localStorage.getItem("user_token");
+      const res = await fetch(`${API_URL}/albums/${id}`, {
+        method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success("Album deleted successfully");
+        setAlbums(albums.filter(a => (a._id || a.id) !== id));
+      } else {
+        toast.error(data.message || "Failed to delete album");
+      }
+    } catch (err) {
+      toast.error("Failed to delete album");
     }
   };
 
@@ -379,7 +464,9 @@ function AdminMusic() {
                   <Input 
                     type="file" 
                     accept="image/*" 
-                    className="h-11 rounded-xl flex-1 pt-2.5 file:text-xs"
+                    className="h-11 rounded-xl flex-1 pt-2.5 file:text-xs cursor-pointer"
+                    onChange={handleCoverUpload}
+                    disabled={isUploadingCover}
                   />
                   {formData.cover && (
                     <div className="w-11 h-11 rounded-lg overflow-hidden border border-border shrink-0">
@@ -391,6 +478,16 @@ function AdminMusic() {
                       />
                     </div>
                   )}
+                </div>
+                {isUploadingCover && <p className="text-xs text-muted-foreground">Uploading cover image...</p>}
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-wider shrink-0">or Image URL:</span>
+                  <Input 
+                    value={formData.cover} 
+                    onChange={e => setFormData({ ...formData, cover: e.target.value })} 
+                    placeholder="https://..." 
+                    className="h-8 rounded-lg text-xs" 
+                  />
                 </div>
               </div>
             </div>

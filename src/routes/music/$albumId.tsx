@@ -1,13 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { Play, Pause, ArrowLeft, Volume2, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMusic } from "../music";
+import { API_URL, mediaUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/music/$albumId")({
   component: AlbumDetailsPage,
 });
 
-const ALBUMS = [
+const DEFAULT_ALBUMS = [
   { id: "1", title: "Deborah", cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=800&fit=crop", description: "The courageous story of Deborah, brought to life through dynamic beats and uplifting melodies.", songs: Array.from({length: 10}, (_, i) => ({ id: `deb-${i}`, title: `Song of Deborah Track ${i+1}`, duration: "3:45" })) },
   { id: "2", title: "Abraham", cover: "https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=800&h=800&fit=crop", description: "Follow the father of faith on his incredible journey, with songs that inspire trust and obedience.", songs: Array.from({length: 12}, (_, i) => ({ id: `abr-${i}`, title: `Journey to the Promise Track ${i+1}`, duration: "4:10" })) },
   { id: "3", title: "Samuel", cover: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&h=800&fit=crop", description: "Hear the call of Samuel in this beautiful collection of worship and listening to God's voice.", songs: Array.from({length: 9}, (_, i) => ({ id: `sam-${i}`, title: `Here I Am Track ${i+1}`, duration: "2:55" })) },
@@ -19,8 +21,34 @@ const ALBUMS = [
 
 function AlbumDetailsPage() {
   const { albumId } = Route.useParams();
-  const album = ALBUMS.find(a => a.id === albumId) || ALBUMS[0];
+  const initialAlbum = DEFAULT_ALBUMS.find(a => a.id === albumId) || DEFAULT_ALBUMS[0];
+  const [album, setAlbum] = useState<any>(initialAlbum);
   const { playSong, currentSong, isPlaying, setIsPlaying } = useMusic();
+
+  useEffect(() => {
+    fetch(`${API_URL}/albums/${albumId}`)
+      .then(r => r.json())
+      .then(d => {
+        if (d.success && d.data) {
+          const fetched = d.data;
+          setAlbum({
+            id: fetched._id || fetched.id,
+            title: fetched.title,
+            cover: fetched.cover || initialAlbum.cover,
+            description: fetched.description || initialAlbum.description,
+            songs: Array.isArray(fetched.songs) && fetched.songs.length > 0
+              ? fetched.songs.map((s: any, idx: number) => ({
+                  id: s._id || s.id || `track-${idx}`,
+                  title: s.title || `Track ${idx + 1}`,
+                  duration: s.duration || "3:30",
+                  audioUrl: s.audioUrl || ""
+                }))
+              : initialAlbum.songs
+          });
+        }
+      })
+      .catch(() => {});
+  }, [albumId]);
 
   const togglePlay = (song: any) => {
     if (currentSong?.id === song.id) {
@@ -31,7 +59,7 @@ function AlbumDetailsPage() {
         title: song.title,
         duration: song.duration,
         albumTitle: album.title,
-        coverImage: album.cover
+        coverImage: mediaUrl(album.cover)
       });
     }
   };
@@ -52,7 +80,7 @@ function AlbumDetailsPage() {
 
             <div className="flex flex-col md:flex-row gap-12 md:items-end">
               <div className="relative w-64 md:w-80 shrink-0 aspect-square rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-cream/10 animate-fade-up">
-                <img src={album.cover} alt={album.title} className="w-full h-full object-cover" />
+                <img src={mediaUrl(album.cover)} alt={album.title} className="w-full h-full object-cover" />
               </div>
               
               <div className="pb-4 animate-fade-up [animation-delay:150ms]">

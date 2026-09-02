@@ -78,6 +78,38 @@ function ShopManagement() {
       }
    };
 
+   const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      setIsUploadingImage(true);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("image", file);
+
+      try {
+         const token = localStorage.getItem("user_token");
+         const res = await fetch(`${API_URL}/upload`, {
+            method: "POST",
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+            body: formData,
+         });
+         const data = await res.json();
+         if (data.success) {
+            setImage(data.url);
+            toast.success("Image uploaded successfully!");
+         } else {
+            toast.error(data.message || "Image upload failed");
+         }
+      } catch (err) {
+         toast.error("Upload error");
+      } finally {
+         setIsUploadingImage(false);
+      }
+   };
+
    const handleEdit = (product: any) => {
       setSelectedProduct(product);
       setTitle(product.title || "");
@@ -323,18 +355,26 @@ function ShopManagement() {
                      <Input value={desc} onChange={e => setDesc(e.target.value)} placeholder="Product description..." className="h-11 rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                     <Label>Product Image URL</Label>
-                     <Input value={image} onChange={e => setImage(e.target.value)} placeholder="https://..." className="h-11 rounded-xl" />
-                     {image && (
-                        <div className="mt-2 rounded-xl overflow-hidden border border-border/50 bg-muted/50 h-32 w-32 relative">
-                           <img 
-                              src={mediaUrl(image)} 
-                              alt="Preview" 
-                              className="object-cover w-full h-full" 
-                              onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80"; }}
-                           />
-                        </div>
-                     )}
+                     <Label>Product Photo</Label>
+                     <div className="flex gap-3 items-center">
+                        <Input
+                           type="file"
+                           accept="image/*"
+                           onChange={handleImageUpload}
+                           className="h-11 rounded-xl flex-1 pt-2 cursor-pointer"
+                           disabled={isUploadingImage}
+                        />
+                        {image && (
+                           <div className="h-11 w-11 rounded-lg overflow-hidden border border-border shrink-0">
+                              <img src={mediaUrl(image)} alt="Preview" className="h-full w-full object-cover" />
+                           </div>
+                        )}
+                     </div>
+                     {isUploadingImage && <p className="text-xs text-muted-foreground">Uploading photo...</p>}
+                     <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-wider shrink-0">or Photo URL:</span>
+                        <Input value={image} onChange={e => setImage(e.target.value)} placeholder="https://..." className="h-8 rounded-lg text-xs" />
+                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                      <div className="space-y-2">
@@ -395,18 +435,26 @@ function ShopManagement() {
                      <Input value={desc} onChange={e => setDesc(e.target.value)} className="h-11 rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                     <Label>Product Image URL</Label>
-                     <Input value={image} onChange={e => setImage(e.target.value)} className="h-11 rounded-xl" />
-                     {image && (
-                        <div className="mt-2 rounded-xl overflow-hidden border border-border/50 bg-muted/50 h-32 w-32 relative">
-                            <img 
-                              src={mediaUrl(image)} 
-                              alt="Preview" 
-                              className="object-cover w-full h-full" 
-                              onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80"; }}
-                            />
-                        </div>
-                     )}
+                     <Label>Product Photo</Label>
+                     <div className="flex gap-3 items-center">
+                        <Input
+                           type="file"
+                           accept="image/*"
+                           onChange={handleImageUpload}
+                           className="h-11 rounded-xl flex-1 pt-2 cursor-pointer"
+                           disabled={isUploadingImage}
+                        />
+                        {image && (
+                           <div className="h-11 w-11 rounded-lg overflow-hidden border border-border shrink-0">
+                              <img src={mediaUrl(image)} alt="Preview" className="h-full w-full object-cover" />
+                           </div>
+                        )}
+                     </div>
+                     {isUploadingImage && <p className="text-xs text-muted-foreground">Uploading photo...</p>}
+                     <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-wider shrink-0">or Photo URL:</span>
+                        <Input value={image} onChange={e => setImage(e.target.value)} placeholder="https://..." className="h-8 rounded-lg text-xs" />
+                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                      <div className="space-y-2">

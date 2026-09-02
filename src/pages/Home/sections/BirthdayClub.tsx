@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Gift, Calendar, Send } from "lucide-react";
 import Swal from "sweetalert2";
 import image7 from "@/assets/logo2/image7.png";
+import { API_URL } from "@/lib/api";
 
 export function BirthdayClub() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -14,40 +15,55 @@ export function BirthdayClub() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    const formData = new FormData(e.currentTarget);
+    const formElement = e.currentTarget;
+    const formData = new FormData(formElement);
     const parentName = formData.get("parentName");
     const parentEmail = formData.get("parentEmail");
     const childName = formData.get("childName");
     const childDob = formData.get("childDob");
     const instructions = formData.get("instructions");
 
-    // Simulate submission (e.g. to backend or formspree)
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const res = await fetch(`${API_URL}/forms/birthday-club`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          parentName,
+          parentEmail,
+          childName,
+          childDob,
+          instructions
+        })
+      });
 
-    // Constructing a mailto link as a fallback if no backend is present,
-    // though typically this would be handled via an API route.
-    const subject = encodeURIComponent(`New Birthday Club Signup: ${childName}`);
-    const body = encodeURIComponent(`
-Parent's Name: ${parentName}
-Parent's Email: ${parentEmail}
-Child's Name: ${childName}
-Child's Date of Birth: ${childDob}
-
-Special Instructions/Pronunciation:
-${instructions}
-    `);
-    
-    window.location.href = `mailto:angelisse@onemustardseed.com?subject=${subject}&body=${body}`;
-
-    Swal.fire({
-      title: "Success!",
-      text: "You've successfully started the sign-up process for Rich's Birthday Club!",
-      icon: "success",
-      confirmButtonColor: "#cba052"
-    });
-    
-    (e.target as HTMLFormElement).reset();
-    setIsSubmitting(false);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        Swal.fire({
+          title: "Success!",
+          text: `Thank you! ${childName} is now registered for Rich's Birthday Club!`,
+          icon: "success",
+          confirmButtonColor: "#cba052"
+        });
+        formElement.reset();
+      } else {
+        Swal.fire({
+          title: "Notice",
+          text: data.message || "Failed to submit. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#cba052"
+        });
+      }
+    } catch (err) {
+      console.error("Birthday Club submission error:", err);
+      Swal.fire({
+        title: "Error",
+        text: "Could not submit form at this moment. Please try again later.",
+        icon: "error",
+        confirmButtonColor: "#cba052"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

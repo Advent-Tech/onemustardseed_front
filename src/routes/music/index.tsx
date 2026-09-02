@@ -1,15 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { Play, Music } from "lucide-react";
 import applePodcastsLogo from "@/assets/logo/Apple Podcasts.png";
 import spotifyLogo from "@/assets/logo/Spotify.png";
 import youtubeMusicLogo from "@/assets/logo/YouTube Music.png";
 import logoImg from "@/assets/logo2/image1.png";
+import { API_URL, mediaUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/music/")({
   component: MusicPage,
 });
 
-const ALBUMS = [
+const DEFAULT_ALBUMS = [
   { id: "1", title: "Deborah", cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=800&fit=crop", description: "The courageous story of Deborah, brought to life through dynamic beats and uplifting melodies.", songs: Array.from({length: 10}, (_, i) => ({ id: `deb-${i}`, title: `Song of Deborah Track ${i+1}`, duration: "3:45" })) },
   { id: "2", title: "Abraham", cover: "https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=800&h=800&fit=crop", description: "Follow the father of faith on his incredible journey, with songs that inspire trust and obedience.", songs: Array.from({length: 12}, (_, i) => ({ id: `abr-${i}`, title: `Journey to the Promise Track ${i+1}`, duration: "4:10" })) },
   { id: "3", title: "Samuel", cover: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&h=800&fit=crop", description: "Hear the call of Samuel in this beautiful collection of worship and listening to God's voice.", songs: Array.from({length: 9}, (_, i) => ({ id: `sam-${i}`, title: `Here I Am Track ${i+1}`, duration: "2:55" })) },
@@ -26,7 +28,24 @@ const PLATFORMS = [
 ];
 
 function MusicPage() {
-  const featuredAlbum = ALBUMS[0]; // Deborah as featured
+  const [albums, setAlbums] = useState(DEFAULT_ALBUMS);
+
+  useEffect(() => {
+    fetch(`${API_URL}/albums`)
+      .then(r => r.json())
+      .then(d => {
+        if (d.success && Array.isArray(d.data) && d.data.length > 0) {
+          setAlbums(d.data.map((a: any) => ({
+            id: a._id || a.id,
+            title: a.title,
+            cover: a.cover || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=800&fit=crop",
+            description: a.description || "",
+            songs: a.songs || []
+          })));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="bg-background min-h-screen flex flex-col">
@@ -62,12 +81,12 @@ function MusicPage() {
                 <p className="mt-4 text-muted-foreground text-[18px]">Music That Gets Kids Singing, Moving, and Loving God!</p>
               </div>
               <div className="flex gap-2">
-                <span className="px-4 py-2 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest">{ALBUMS.length} Albums Total</span>
+                <span className="px-4 py-2 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest">{albums.length} Albums Total</span>
               </div>
             </div>
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {ALBUMS.map((album, index) => (
+              {albums.map((album, index) => (
                 <Link
                   key={album.id}
                   to="/music/$albumId"
@@ -75,7 +94,7 @@ function MusicPage() {
                   className="group cursor-pointer block"
                 >
                   <div className="relative overflow-hidden rounded-3xl aspect-square bg-muted">
-                    <img src={album.cover} alt={album.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <img src={mediaUrl(album.cover)} alt={album.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
                     <div className="absolute bottom-8 left-8 right-8">
                       <p className="text-[10px] font-bold uppercase tracking-widest text-gold/90 mb-2">Album {index + 1} • {album.songs.length} Tracks</p>

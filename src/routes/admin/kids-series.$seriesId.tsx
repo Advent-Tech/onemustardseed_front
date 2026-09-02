@@ -363,7 +363,6 @@ function AdminSeriesPage() {
                   className="h-11 rounded-xl"
                   value={uploadForm.vimeoLink}
                   onChange={e => setUploadForm({ ...uploadForm, vimeoLink: e.target.value })}
-                  disabled={!!uploadForm.audioLink}
                 />
               </div>
               <div className="space-y-2">
@@ -371,7 +370,7 @@ function AdminSeriesPage() {
                 <Input
                   type="file"
                   accept="audio/*"
-                  className="h-11 rounded-xl file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-forest/10 file:text-forest hover:file:bg-forest/20 transition-all cursor-pointer disabled:opacity-50"
+                  className="h-11 rounded-xl file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-forest/10 file:text-forest hover:file:bg-forest/20 transition-all cursor-pointer"
                   onChange={async e => {
                     const file = e.target.files?.[0];
                     if (file) {
@@ -385,7 +384,7 @@ function AdminSeriesPage() {
                         });
                         const data = await res.json();
                         if (data.success) {
-                          setUploadForm({ ...uploadForm, audioLink: `${API_URL}${data.url}` });
+                          setUploadForm(prev => ({ ...prev, audioLink: data.url }));
                           toast.success('Audio uploaded!', { id: toastId });
                         } else {
                           toast.error('Upload failed', { id: toastId });
@@ -395,7 +394,6 @@ function AdminSeriesPage() {
                       }
                     }
                   }}
-                  disabled={!!uploadForm.vimeoLink}
                 />
                 {uploadForm.audioLink && (
                   <button

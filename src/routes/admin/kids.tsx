@@ -1118,17 +1118,33 @@ function KidsManagement() {
                   type="file"
                   accept="audio/*"
                   className="h-11 rounded-xl file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-forest/10 file:text-forest hover:file:bg-forest/20 transition-all cursor-pointer"
-                  onChange={e => {
+                  onChange={async e => {
                     const file = e.target.files?.[0];
                     if (file) {
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setUploadForm({ ...uploadForm, audioLink: reader.result as string });
-                      };
-                      reader.readAsDataURL(file);
+                      const formData = new FormData();
+                      formData.append('file', file);
+                      const toastId = toast.loading('Uploading audio...');
+                      try {
+                        const res = await fetch(`${API_URL}/upload`, {
+                          method: 'POST',
+                          body: formData,
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                          setUploadForm(prev => ({ ...prev, audioLink: data.url }));
+                          toast.success('Audio uploaded!', { id: toastId });
+                        } else {
+                          toast.error('Upload failed', { id: toastId });
+                        }
+                      } catch (err) {
+                        toast.error('Upload error', { id: toastId });
+                      }
                     }
                   }}
                 />
+                {uploadForm.audioLink && (
+                  <p className="text-[10px] text-forest font-bold">✓ Audio uploaded</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Select Series</Label>

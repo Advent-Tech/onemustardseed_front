@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Users, ShieldCheck, Megaphone, Link as LinkIcon, Heart, Send, Star, Globe } from "lucide-react";
 import Swal from "sweetalert2";
+import { API_URL } from "@/lib/api";
 
 const features = [
   {
@@ -76,36 +77,55 @@ export function PremierePartner() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    const formData = new FormData(e.currentTarget);
+    const formElement = e.currentTarget;
+    const formData = new FormData(formElement);
     const name = formData.get("name");
     const email = formData.get("email");
     const phone = formData.get("phone");
     const church = formData.get("church");
-    const newsletter = formData.get("newsletter") ? "Yes" : "No";
+    const newsletter = formData.get("newsletter") ? true : false;
 
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    const subject = encodeURIComponent(`New Premiere Partner Registration: ${church}`);
-    const body = encodeURIComponent(`
-Name: ${name}
-Email: ${email}
-Phone: ${phone}
-Church: ${church}
+    try {
+      const res = await fetch(`${API_URL}/forms/premiere-partner`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          church,
+          newsletter
+        })
+      });
 
-Newsletter Opt-In: ${newsletter}
-    `);
-    
-    window.location.href = `mailto:leo@onemustardseed.com?subject=${subject}&body=${body}`;
-    
-    Swal.fire({
-      title: "Success!",
-      text: "Thank you for registering your interest! Our team will contact you soon.",
-      icon: "success",
-      confirmButtonColor: "#cba052"
-    });
-    
-    (e.target as HTMLFormElement).reset();
-    setIsSubmitting(false);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        Swal.fire({
+          title: "Success!",
+          text: "Thank you for registering your interest! Our team will contact you soon.",
+          icon: "success",
+          confirmButtonColor: "#cba052"
+        });
+        formElement.reset();
+      } else {
+        Swal.fire({
+          title: "Notice",
+          text: data.message || "Failed to register. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#cba052"
+        });
+      }
+    } catch (err) {
+      console.error("Premiere partner submission error:", err);
+      Swal.fire({
+        title: "Error",
+        text: "Could not submit registration at this moment. Please try again later.",
+        icon: "error",
+        confirmButtonColor: "#cba052"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

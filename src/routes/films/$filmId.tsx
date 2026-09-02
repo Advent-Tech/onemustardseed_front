@@ -220,17 +220,44 @@ function IndividualFilmPage() {
     }
   };
 
-  const getEmbedUrl = (url: string) => {
-    if (!url) return "";
+  const renderVideoPlayer = (url: string, fallbackMessage: string) => {
+    if (!url) {
+      return <div className="flex h-full items-center justify-center text-white/50">{fallbackMessage}</div>;
+    }
+
     if (url.includes("youtube.com") || url.includes("youtu.be")) {
-      const videoId = url.split("v=")[1] || url.split("/").pop();
-      return `https://www.youtube.com/embed/${videoId?.split("&")[0]}`;
+      const videoId = url.split("v=")[1]?.split("&")[0] || url.split("/").pop()?.split("?")[0];
+      return (
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+          className="w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      );
     }
+
     if (url.includes("vimeo.com")) {
-      const videoId = url.split("/").pop();
-      return `https://player.vimeo.com/video/${videoId}`;
+      const vimeoMatch = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/);
+      const vimeoId = vimeoMatch ? vimeoMatch[3] : url.split("/").pop()?.split("?")[0];
+      return (
+        <iframe
+          src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1&title=0&byline=0&portrait=0`}
+          className="w-full h-full"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+        />
+      );
     }
-    return url;
+
+    return (
+      <video
+        src={mediaUrl(url)}
+        controls
+        autoPlay
+        className="w-full h-full object-contain bg-black"
+      />
+    );
   };
 
   if (!film) {
@@ -244,14 +271,14 @@ function IndividualFilmPage() {
         {/* Film Header / Banner */}
         <section className="relative h-[60vh] flex items-end pb-20 overflow-hidden bg-[#050704]">
           <div className="absolute inset-0">
-            <img src={film.thumbnail || "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=2000"} alt="Film Banner" className="w-full h-full object-cover opacity-40 blur-sm" />
+            <img src={mediaUrl(film.thumbnail) || "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=2000"} alt="Film Banner" className="w-full h-full object-cover opacity-40 blur-sm" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#050704] via-[#050704]/60 to-transparent" />
           </div>
 
           <div className="relative mx-auto max-w-7xl px-6 w-full">
             <div className="flex flex-col md:flex-row items-end gap-12">
               <div className="hidden md:block w-64 aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl border border-white/10 shrink-0">
-                <img src={film.thumbnail || "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800"} alt="Poster" className="w-full h-full object-cover" />
+                <img src={mediaUrl(film.thumbnail) || "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800"} alt="Poster" className="w-full h-full object-cover" />
               </div>
               <div className="flex-grow pb-4">
                 <div className="flex items-center gap-4 mb-6">
@@ -476,16 +503,7 @@ function IndividualFilmPage() {
             <button onClick={() => setShowTrailer(false)} className="absolute top-4 right-4 z-50 p-2 bg-black/50 hover:bg-gold hover:text-black text-white rounded-full transition-colors backdrop-blur-md">
               <X className="w-5 h-5" />
             </button>
-            {film.trailer ? (
-              <iframe
-                src={getEmbedUrl(film.trailer)}
-                className="w-full h-full"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            ) : (
-              <div className="flex h-full items-center justify-center text-white/50">No trailer available</div>
-            )}
+            {renderVideoPlayer(film.trailer, "No trailer available")}
           </div>
         </DialogContent>
       </Dialog>
@@ -498,16 +516,7 @@ function IndividualFilmPage() {
             <button onClick={() => setShowMovie(false)} className="absolute top-4 right-4 z-50 p-2 bg-black/50 hover:bg-gold hover:text-black text-white rounded-full transition-colors backdrop-blur-md">
               <X className="w-5 h-5" />
             </button>
-            {film.movieLink ? (
-              <iframe
-                src={getEmbedUrl(film.movieLink)}
-                className="w-full h-full"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            ) : (
-              <div className="flex h-full items-center justify-center text-white/50">Movie not available</div>
-            )}
+            {renderVideoPlayer(film.movieLink, "Movie not available")}
           </div>
         </DialogContent>
       </Dialog>
@@ -521,7 +530,7 @@ function IndividualFilmPage() {
           <div className="p-8 border-b border-white/5 bg-white/5">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-16 h-24 shrink-0 rounded bg-black overflow-hidden shadow-lg border border-white/10">
-                <img src={film.thumbnail || film.image} alt={film.title} className="w-full h-full object-cover" />
+                <img src={mediaUrl(film.thumbnail || film.image)} alt={film.title} className="w-full h-full object-cover" />
               </div>
               <div>
                 <h3 className="font-display text-2xl font-medium">{film.title}</h3>
