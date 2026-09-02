@@ -119,7 +119,7 @@ function AlbumDetailsPage() {
             
             {/* Tracks */}
             <div className="space-y-1">
-              {album.songs.map((song, index) => {
+              {album.songs.map((song: any, index: number) => {
                 const isCurrentSong = currentSong?.id === song.id;
                 const isSongPlaying = isCurrentSong && isPlaying;
                 
