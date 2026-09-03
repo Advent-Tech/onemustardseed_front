@@ -1,4 +1,4 @@
-import { API_URL, mediaUrl } from "../../../lib/api";
+import { API_URL, mediaUrl, getVimeoEmbedUrl } from "../../../lib/api";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import ReactPlayer from "react-player";
@@ -161,7 +161,7 @@ function PrayerSeriesPage() {
             <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black">
               {playingVideo.videoUrl && playingVideo.videoUrl.includes('vimeo.com') ? (
                 <iframe
-                  src={`https://player.vimeo.com/video/${playingVideo.videoUrl.split('vimeo.com/')[1]?.split('?')[0]?.split('/')[0]}?autoplay=1&title=0&byline=0&portrait=0`}
+                  src={getVimeoEmbedUrl(playingVideo.videoUrl, { autoplay: 1, title: 0, byline: 0, portrait: 0 })}
                   className="w-full h-full"
                   frameBorder="0"
                   allow="autoplay; fullscreen; picture-in-picture"
@@ -216,7 +216,7 @@ function PrayerSeriesPage() {
             <div className="absolute inset-0 z-20">
               {series.samplePreviewVideo.includes('vimeo.com') ? (
                 <iframe
-                  src={`https://player.vimeo.com/video/${series.samplePreviewVideo.split('vimeo.com/')[1]?.split('?')[0]?.split('/')[0]}?autoplay=1&background=0`}
+                  src={getVimeoEmbedUrl(series.samplePreviewVideo, { autoplay: 1, background: 0 })}
                   className="w-full h-full"
                   frameBorder="0"
                   allow="autoplay; fullscreen; picture-in-picture"

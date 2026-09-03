@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Play, ArrowLeft, ChevronRight, Sparkles, Star, Lock, Mic2, Eye, Crown } from "lucide-react";
-import { mediaUrl, API_URL } from "@/lib/api";
+import { mediaUrl, API_URL, getVimeoEmbedUrl } from "@/lib/api";
 
 
 export const Route = createFileRoute("/kids/watch/$seriesId")({
@@ -202,7 +202,7 @@ function KidsWatchPage() {
               <div className="relative aspect-video rounded-[3rem] overflow-hidden bg-gray-900 shadow-2xl border-[12px] border-white group">
                 {currentLink ? (
                   <iframe
-                    src={currentLink.replace("vimeo.com", "player.vimeo.com/video").replace(/\?.*/, "")}
+                    src={getVimeoEmbedUrl(currentLink, { autoplay: 1, title: 0, byline: 0, portrait: 0 })}
                     title={currentTitle}
                     className="absolute inset-0 w-full h-full"
                     allow="autoplay; fullscreen; picture-in-picture"

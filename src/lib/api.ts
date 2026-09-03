@@ -88,6 +88,48 @@ export function mediaUrl(path?: string | null): string {
   return `${BACKEND_URL}${cleanPath}`;
 }
 
+
+/**
+ * Transforms any Vimeo URL (standard, unlisted with privacy hash, or embed) into a valid player embed URL.
+ * Handles:
+ * - https://vimeo.com/861733736/0bb606118e -> https://player.vimeo.com/video/861733736?h=0bb606118e
+ * - https://vimeo.com/861733736 -> https://player.vimeo.com/video/861733736
+ * - https://player.vimeo.com/video/861733736?h=...
+ */
+export function getVimeoEmbedUrl(url?: string | null, params: Record<string, string | number | boolean> = {}): string {
+  if (!url) return "";
+  const clean = url.trim();
+  try {
+    if (clean.includes("player.vimeo.com/video/")) {
+      const urlObj = new URL(clean);
+      for (const [k, v] of Object.entries(params)) {
+        if (!urlObj.searchParams.has(k)) {
+          urlObj.searchParams.set(k, String(v));
+        }
+      }
+      return urlObj.toString();
+    }
+
+    const match = clean.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/)?(\d+)(?:\/([a-zA-Z0-9_-]+))?/i);
+    if (match) {
+      const videoId = match[3];
+      const hash = match[4];
+      const sp = new URLSearchParams();
+      if (hash) {
+        sp.set("h", hash);
+      }
+      for (const [k, v] of Object.entries(params)) {
+        sp.set(k, String(v));
+      }
+      const query = sp.toString();
+      return `https://player.vimeo.com/video/${videoId}${query ? `?${query}` : ""}`;
+    }
+  } catch (e) {
+    console.error("Error parsing Vimeo URL:", e);
+  }
+  return clean;
+}
+
 /**
  * Gets current auth token from localStorage
  */

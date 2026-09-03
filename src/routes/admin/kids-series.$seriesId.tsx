@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { mediaUrl, API_URL } from "../../lib/api";
+import { mediaUrl, API_URL, getVimeoEmbedUrl } from "../../lib/api";
 import { ArrowLeft, Play, Settings, Plus, FileVideo, Trash2, Mic2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -191,7 +191,7 @@ function AdminSeriesPage() {
           <div className="relative aspect-video rounded-[3rem] overflow-hidden bg-gray-900 shadow-xl border-8 border-card">
             {videoSrc ? (
               <iframe
-                src={videoSrc.replace("vimeo.com", "player.vimeo.com/video").replace(/\?.*/, "")}
+                src={getVimeoEmbedUrl(videoSrc, { autoplay: 0, title: 0, byline: 0, portrait: 0 })}
                 title={displayTitle}
                 className="absolute inset-0 w-full h-full"
                 allow="autoplay; fullscreen; picture-in-picture"

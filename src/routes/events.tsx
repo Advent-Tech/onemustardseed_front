@@ -1,4 +1,4 @@
-import { API_URL, mediaUrl } from "../lib/api";
+import { API_URL, mediaUrl, getVimeoEmbedUrl } from "../lib/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -559,8 +559,7 @@ function EventsPage() {
                             const url = selectedEvent.recapVideoUrl;
                             const ytMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
                             if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-                            const vimeoMatch = url.match(/(?:vimeo\.com\/)(\d+)/);
-                            if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+                            if (url.includes("vimeo.com")) return getVimeoEmbedUrl(url, { autoplay: 1, loop: 1, byline: 0, title: 0, muted: 1, controls: 0, autopause: 0 });
                             return url;
                           })()}
                           className="absolute inset-0 w-full h-full"

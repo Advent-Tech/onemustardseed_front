@@ -1,4 +1,4 @@
-import { API_URL, mediaUrl } from "../../lib/api";
+import { API_URL, mediaUrl, getVimeoEmbedUrl } from "../../lib/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -238,11 +238,9 @@ function IndividualFilmPage() {
     }
 
     if (url.includes("vimeo.com")) {
-      const vimeoMatch = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/);
-      const vimeoId = vimeoMatch ? vimeoMatch[3] : url.split("/").pop()?.split("?")[0];
       return (
         <iframe
-          src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1&title=0&byline=0&portrait=0`}
+          src={getVimeoEmbedUrl(url, { autoplay: 1, title: 0, byline: 0, portrait: 0 })}
           className="w-full h-full"
           allow="autoplay; fullscreen; picture-in-picture"
           allowFullScreen
