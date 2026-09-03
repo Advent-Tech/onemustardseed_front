@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { mediaUrl, API_URL } from "@/lib/api";
+import { mediaUrl, API_URL, apiUrl } from "@/lib/api";
 import { 
   FileText, Download, Mail, Plus, Edit, Trash2, 
   HardDrive, TrendingUp 
@@ -57,7 +57,7 @@ function ResourceManagement() {
 
   const fetchResources = async () => {
     try {
-      const r = await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/resources`);
+      const r = await fetch(apiUrl("/resources"));
       const d = await r.json();
       setResources(Array.isArray(d) ? d : (d.data && Array.isArray(d.data) ? d.data : []));
     } catch (e) {
@@ -69,7 +69,7 @@ function ResourceManagement() {
   const fetchLeads = async () => {
     try {
       const token = localStorage.getItem("user_token");
-      const r = await fetch(`${API_URL.replace(/\/api\/?$/, "")}/api/resources/leads/all`, {
+      const r = await fetch(apiUrl("/resources/leads/all"), {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       const d = await r.json();
@@ -132,7 +132,7 @@ function ResourceManagement() {
       if (fileUrl) payload.fileUrl = fileUrl;
       if (featuredImage) payload.featuredImage = featuredImage;
 
-      const url = editingId ? `${API_URL.replace(/\/api\/?$/, "")}/api/resources/${editingId}` : `${API_URL.replace(/\/api\/?$/, "")}/api/resources`;
+      const url = editingId ? apiUrl(`/resources/${editingId}`) : apiUrl("/resources");
       const method = editingId ? "PUT" : "POST";
       const token = localStorage.getItem("user_token");
 
@@ -155,12 +155,13 @@ function ResourceManagement() {
         setImage(null);
         fetchResources();
       } else {
+        const errData = await res.json().catch(() => ({}));
         toast.dismiss();
-        toast.error("Failed to save resource");
+        toast.error(errData.message || "Failed to save resource");
       }
-    } catch (err) {
+    } catch (err: any) {
       toast.dismiss();
-      toast.error("Network error");
+      toast.error(err?.message || "Network error");
     }
   };
 
