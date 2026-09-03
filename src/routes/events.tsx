@@ -571,7 +571,8 @@ function EventsPage() {
                     ) : selectedEvent.image && selectedEvent.image !== 'no-photo.jpg' && (
                       <div className="w-full h-[300px] sm:h-[400px] rounded-[2rem] overflow-hidden border border-white/10 mb-8 shadow-2xl">
                         <img
-                          src={selectedEvent.image?.startsWith('http') || selectedEvent.image?.startsWith('data:') ? selectedEvent.image : `${API_URL}${selectedEvent.image.startsWith('/') ? '' : '/'}${selectedEvent.image}`}
+                          src={mediaUrl(selectedEvent.image)}
+                          onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80"; }}
                           alt={selectedEvent.name}
                           className="w-full h-full object-cover"
                         />
@@ -622,10 +623,11 @@ function EventsPage() {
                           {selectedEvent.gallery.map((img: string, idx: number) => (
                             <div key={idx} className="aspect-square rounded-2xl overflow-hidden border border-white/10 hover:border-gold/50 transition-colors shadow-lg">
                               <img
-                                src={img.startsWith('http') || img.startsWith('data:') ? img : `${API_URL}${img.startsWith('/') ? '' : '/'}${img}`}
+                                src={mediaUrl(img)}
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                                 alt={`${selectedEvent.name} Gallery ${idx}`}
                                 className="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer"
-                                onClick={() => window.open(img.startsWith('http') || img.startsWith('data:') ? img : `${API_URL}${img.startsWith('/') ? '' : '/'}${img}`, '_blank')}
+                                onClick={() => window.open(mediaUrl(img), '_blank')}
                               />
                             </div>
                           ))}

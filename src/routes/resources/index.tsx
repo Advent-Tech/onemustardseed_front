@@ -184,7 +184,7 @@ function ResourcesLandingPage() {
                   >
                     <div className="relative aspect-video overflow-hidden bg-forest/5 flex items-center justify-center">
                       {res.featuredImage ? (
-                        <img src={res.featuredImage?.startsWith('/') ? `${API_URL.replace(/\/api\/?$/, "")}${res.featuredImage}` : res.featuredImage} alt={res.title} className={`w-full h-full object-cover transition-transform duration-1000 ${res.isActive !== false ? 'group-hover:scale-110' : 'opacity-50 grayscale'}`} />
+                        <img src={mediaUrl(res.featuredImage)} alt={res.title} className={`w-full h-full object-cover transition-transform duration-1000 ${res.isActive !== false ? 'group-hover:scale-110' : 'opacity-50 grayscale'}`} onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&q=80"; }} />
                       ) : (
                         <FileText className={`w-16 h-16 text-forest/20 ${res.isActive === false ? 'opacity-50 grayscale' : ''}`} />
                       )}

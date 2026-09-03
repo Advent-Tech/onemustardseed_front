@@ -212,7 +212,7 @@ function ProfilePage() {
                       {tickets.map(ticket => (
                         <div key={ticket._id} className="p-6 rounded-[2rem] bg-card border border-border flex flex-col md:flex-row gap-6 items-center shadow-sm hover:shadow-md transition-all">
                           {ticket.event?.image && ticket.event.image !== 'no-photo.jpg' && (
-                            <img src={ticket.event.image.startsWith('http') ? ticket.event.image : `${API_URL}${ticket.event.image}`} alt="Event" className="w-full md:w-48 h-32 object-cover rounded-2xl" />
+                            <img src={mediaUrl(ticket.event.image)} alt="Event" className="w-full md:w-48 h-32 object-cover rounded-2xl" onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=80"; }} />
                           )}
                           <div className="flex-grow space-y-2 text-center md:text-left">
                             <h4 className="font-display font-medium text-2xl">{ticket.event?.name}</h4>
