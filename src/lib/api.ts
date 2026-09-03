@@ -68,7 +68,7 @@ export function mediaUrl(path?: string | null): string {
   // If it points to an upload endpoint on ANY host (Vercel, localhost, old IP, etc.)
   // e.g. https://movie-backend-drab.vercel.app/api/upload/file/xyz.jpg
   // or http://localhost:5000/uploads/xyz.jpg
-  const uploadMatch = clean.match(/(?:https?:\/\/[^\/]+)?(\/(?:api\/upload\/file|uploads|api\/uploads)\/[^?#\s]+)/i);
+  const uploadMatch = clean.match(/(?:https?:\/\/[^\/]+)?(\/(?:api\/upload\/file|uploads|api\/uploads|api\/resources\/files)\/[^?#\s]+)/i);
   if (uploadMatch) {
     const relativePath = uploadMatch[1];
     return `${BACKEND_URL}${relativePath}`;

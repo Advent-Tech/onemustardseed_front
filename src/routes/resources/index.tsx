@@ -73,7 +73,7 @@ function ResourcesLandingPage() {
       if (res.ok) {
         toast.dismiss();
         toast.success("Success! Your resource is ready.");
-        setSuccessLink(data.fileUrl);
+        setSuccessLink(data.fileUrl ? mediaUrl(data.fileUrl) : "");
         // Optional: automatically trigger download or open in new tab
         // window.open(data.fileUrl, '_blank');
       } else {
@@ -89,15 +89,25 @@ function ResourcesLandingPage() {
   };
 
   const handleTriggerDownload = () => {
-    if (successLink.startsWith('data:')) {
+    if (!successLink) return;
+    const downloadUrl = mediaUrl(successLink);
+
+    if (downloadUrl.startsWith('data:')) {
       const a = document.createElement("a");
-      a.href = successLink;
+      a.href = downloadUrl;
       a.download = `${selectedResource?.title || 'resource'}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
     } else {
-      window.location.href = successLink;
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.setAttribute("download", `${selectedResource?.title || 'resource'}`);
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
   };
 
@@ -299,9 +309,21 @@ function ResourcesLandingPage() {
 
           {successLink ? (
             <div className="py-6 space-y-4">
-              <Button onClick={handleTriggerDownload} className="w-full bg-gold hover:bg-gold/90 text-forest-deep h-14 rounded-xl text-base font-bold shadow-lg flex items-center justify-center">
+              <a
+                href={mediaUrl(successLink)}
+                target="_blank"
+                rel="noopener noreferrer"
+                download={selectedResource?.title || "resource"}
+                className="w-full bg-gold hover:bg-gold/90 text-forest-deep h-14 rounded-xl text-base font-bold shadow-lg flex items-center justify-center transition-colors cursor-pointer"
+                onClick={(e) => {
+                  if (successLink.startsWith('data:')) {
+                    e.preventDefault();
+                    handleTriggerDownload();
+                  }
+                }}
+              >
                 <Download className="w-5 h-5 mr-2" /> Download Now
-              </Button>
+              </a>
               <Button variant="ghost" onClick={() => setIsModalOpen(false)} className="w-full">
                 Close
               </Button>
