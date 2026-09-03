@@ -134,7 +134,7 @@ function PodcastLandingPage() {
       .catch(console.error);
   }, []);
 
-  const resolveUrl = (url: string) => !url ? '' : url.startsWith('http') || url.startsWith('data:') ? url : `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+  const resolveUrl = (url: string) => !url ? '' : mediaUrl(url);
 
   const featuredEpisode = {
     id: "featured",
@@ -193,7 +193,14 @@ function PodcastLandingPage() {
 
             <div className="relative hidden lg:block animate-fade-up [animation-delay:200ms]">
               <div className="relative z-10 overflow-hidden rounded-[2.5rem] shadow-2xl border border-cream/10">
-                <img src={resolveUrl(bannerData.image)} alt="Podcast Studio" className="w-full aspect-square object-cover" />
+                <img 
+                  src={resolveUrl(bannerData.image)} 
+                  alt="Podcast Studio" 
+                  className="w-full aspect-square object-cover" 
+                  onError={(e) => { 
+                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800"; 
+                  }} 
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute bottom-10 left-10 right-10 flex items-center justify-between">
                   <div>

@@ -27,7 +27,7 @@ function SeasonDetailsPage() {
   const [season, setSeason] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const resolveUrl = (url: string) => !url ? '' : url.startsWith('http') || url.startsWith('data:') ? url : `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+  const resolveUrl = (url: string) => !url ? '' : mediaUrl(url);
 
   // Email capture state
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
