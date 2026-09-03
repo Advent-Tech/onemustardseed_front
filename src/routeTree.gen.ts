@@ -76,6 +76,8 @@ import { Route as KidsWatchSeriesIdRouteImport } from './routes/kids/watch.$seri
 import { Route as AdminPrayerSeasonSeasonIdRouteImport } from './routes/admin/prayer-season.$seasonId'
 import { Route as AdminPodcastSeasonSeasonIdRouteImport } from './routes/admin/podcast-season.$seasonId'
 import { Route as AdminKidsSeriesSeriesIdRouteImport } from './routes/admin/kids-series.$seriesId'
+import { Route as ApiUploadFileFilenameRouteImport } from './routes/api/upload/file/$filename'
+import { Route as ApiResourcesFilesFileIdRouteImport } from './routes/api/resources/files/$fileId'
 
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
@@ -414,6 +416,16 @@ const AdminKidsSeriesSeriesIdRoute = AdminKidsSeriesSeriesIdRouteImport.update({
   path: '/kids-series/$seriesId',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiUploadFileFilenameRoute = ApiUploadFileFilenameRouteImport.update({
+  id: '/api/upload/file/$filename',
+  path: '/api/upload/file/$filename',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiResourcesFilesFileIdRoute = ApiResourcesFilesFileIdRouteImport.update({
+  id: '/api/resources/files/$fileId',
+  path: '/api/resources/files/$fileId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -483,6 +495,8 @@ export interface FileRoutesByFullPath {
   '/kids/watch/$seriesId': typeof KidsWatchSeriesIdRoute
   '/podcast/season/$seasonId': typeof PodcastSeasonSeasonIdRoute
   '/prayer/series/$seriesId': typeof PrayerSeriesSeriesIdRoute
+  '/api/resources/files/$fileId': typeof ApiResourcesFilesFileIdRoute
+  '/api/upload/file/$filename': typeof ApiUploadFileFilenameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -543,6 +557,8 @@ export interface FileRoutesByTo {
   '/kids/watch/$seriesId': typeof KidsWatchSeriesIdRoute
   '/podcast/season/$seasonId': typeof PodcastSeasonSeasonIdRoute
   '/prayer/series/$seriesId': typeof PrayerSeriesSeriesIdRoute
+  '/api/resources/files/$fileId': typeof ApiResourcesFilesFileIdRoute
+  '/api/upload/file/$filename': typeof ApiUploadFileFilenameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -613,6 +629,8 @@ export interface FileRoutesById {
   '/kids/watch/$seriesId': typeof KidsWatchSeriesIdRoute
   '/podcast/season/$seasonId': typeof PodcastSeasonSeasonIdRoute
   '/prayer/series/$seriesId': typeof PrayerSeriesSeriesIdRoute
+  '/api/resources/files/$fileId': typeof ApiResourcesFilesFileIdRoute
+  '/api/upload/file/$filename': typeof ApiUploadFileFilenameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -684,6 +702,8 @@ export interface FileRouteTypes {
     | '/kids/watch/$seriesId'
     | '/podcast/season/$seasonId'
     | '/prayer/series/$seriesId'
+    | '/api/resources/files/$fileId'
+    | '/api/upload/file/$filename'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -744,6 +764,8 @@ export interface FileRouteTypes {
     | '/kids/watch/$seriesId'
     | '/podcast/season/$seasonId'
     | '/prayer/series/$seriesId'
+    | '/api/resources/files/$fileId'
+    | '/api/upload/file/$filename'
   id:
     | '__root__'
     | '/'
@@ -813,6 +835,8 @@ export interface FileRouteTypes {
     | '/kids/watch/$seriesId'
     | '/podcast/season/$seasonId'
     | '/prayer/series/$seriesId'
+    | '/api/resources/files/$fileId'
+    | '/api/upload/file/$filename'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -844,6 +868,8 @@ export interface RootRouteChildren {
   NewsletterIndexRoute: typeof NewsletterIndexRoute
   SupportIndexRoute: typeof SupportIndexRoute
   KidsWatchSeriesIdRoute: typeof KidsWatchSeriesIdRoute
+  ApiResourcesFilesFileIdRoute: typeof ApiResourcesFilesFileIdRoute
+  ApiUploadFileFilenameRoute: typeof ApiUploadFileFilenameRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1317,6 +1343,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminKidsSeriesSeriesIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/upload/file/$filename': {
+      id: '/api/upload/file/$filename'
+      path: '/api/upload/file/$filename'
+      fullPath: '/api/upload/file/$filename'
+      preLoaderRoute: typeof ApiUploadFileFilenameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/resources/files/$fileId': {
+      id: '/api/resources/files/$fileId'
+      path: '/api/resources/files/$fileId'
+      fullPath: '/api/resources/files/$fileId'
+      preLoaderRoute: typeof ApiResourcesFilesFileIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1503,6 +1543,8 @@ const rootRouteChildren: RootRouteChildren = {
   NewsletterIndexRoute: NewsletterIndexRoute,
   SupportIndexRoute: SupportIndexRoute,
   KidsWatchSeriesIdRoute: KidsWatchSeriesIdRoute,
+  ApiResourcesFilesFileIdRoute: ApiResourcesFilesFileIdRoute,
+  ApiUploadFileFilenameRoute: ApiUploadFileFilenameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
