@@ -5,19 +5,21 @@ export default defineConfig({
     server: { entry: "server" },
   },
   cloudflare: false,
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://165.101.215.46:5001',
-        changeOrigin: true,
+  vite: {
+    server: {
+      proxy: {
+        "/api": {
+          target: "http://165.101.215.46:5001",
+          changeOrigin: true,
+        },
       },
     },
-  },
-  preview: {
-    proxy: {
-      '/api': {
-        target: process.env.VITE_INTERNAL_BACKEND_URL || 'http://oms-backend:5000',
-        changeOrigin: true,
+    preview: {
+      proxy: {
+        "/api": {
+          target: process.env.VITE_INTERNAL_BACKEND_URL || "http://oms-backend:5000",
+          changeOrigin: true,
+        },
       },
     },
   },
