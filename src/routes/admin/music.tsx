@@ -88,7 +88,7 @@ function AdminMusic() {
     description: "",
     cover: "",
     status: "Active",
-    songs: [{ title: "", audioFile: null as File | null }]
+    songs: [{ title: "", duration: "3:30", audioUrl: "", isUploading: false }]
   });
 
   const fetchAlbums = async () => {
@@ -144,8 +144,59 @@ function AdminMusic() {
     }
   };
 
+  const handleTrackAudioUpload = async (index: number, file: File) => {
+    if (!file) return;
+
+    setFormData(prev => {
+      const updated = [...prev.songs];
+      updated[index] = { ...updated[index], isUploading: true };
+      return { ...prev, songs: updated };
+    });
+
+    const fd = new FormData();
+    fd.append("file", file);
+
+    try {
+      const token = localStorage.getItem("user_token");
+      const res = await fetch(`${API_URL}/upload`, {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: fd,
+      });
+      const data = await res.json();
+      if (data.success) {
+        setFormData(prev => {
+          const updated = [...prev.songs];
+          updated[index] = { ...updated[index], audioUrl: data.url, isUploading: false };
+          return { ...prev, songs: updated };
+        });
+        toast.success(`Track ${index + 1} audio uploaded!`);
+      } else {
+        toast.error(data.message || "Track upload failed");
+        setFormData(prev => {
+          const updated = [...prev.songs];
+          updated[index] = { ...updated[index], isUploading: false };
+          return { ...prev, songs: updated };
+        });
+      }
+    } catch (err) {
+      toast.error("Network error during track upload");
+      setFormData(prev => {
+        const updated = [...prev.songs];
+        updated[index] = { ...updated[index], isUploading: false };
+        return { ...prev, songs: updated };
+      });
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formData.songs.some(s => s.isUploading)) {
+      toast.error("Please wait for all audio uploads to finish");
+      return;
+    }
+
     const token = localStorage.getItem("user_token");
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (token) headers["Authorization"] = `Bearer ${token}`;
@@ -157,7 +208,8 @@ function AdminMusic() {
       status: formData.status,
       songs: formData.songs.map((s, idx) => ({
         title: s.title || `Track ${idx + 1}`,
-        duration: "3:30",
+        duration: s.duration || "3:30",
+        audioUrl: s.audioUrl || "",
         order: idx + 1
       }))
     };
@@ -195,15 +247,20 @@ function AdminMusic() {
       description: "",
       cover: "",
       status: "Active",
-      songs: [{ title: "", audioFile: null }]
+      songs: [{ title: "", duration: "3:30", audioUrl: "", isUploading: false }]
     });
   };
 
   const handleEditClick = (album: any) => {
     setEditingAlbum(album);
     const existingSongs = Array.isArray(album.songs) && album.songs.length > 0
-      ? album.songs.map((s: any) => ({ title: s.title || "", audioFile: null }))
-      : Array.from({ length: album.songCount || 1 }).map((_, i) => ({ title: `Track ${i+1}`, audioFile: null }));
+      ? album.songs.map((s: any, i: number) => ({
+          title: s.title || `Track ${i + 1}`,
+          duration: s.duration || "3:30",
+          audioUrl: s.audioUrl || "",
+          isUploading: false
+        }))
+      : [{ title: "Track 1", duration: "3:30", audioUrl: "", isUploading: false }];
 
     setFormData({
       title: album.title,
@@ -239,7 +296,7 @@ function AdminMusic() {
   const addSongField = () => {
     setFormData(prev => ({
       ...prev,
-      songs: [...prev.songs, { title: "", audioFile: null }]
+      songs: [...prev.songs, { title: `Track ${prev.songs.length + 1}`, duration: "3:30", audioUrl: "", isUploading: false }]
     }));
   };
 
@@ -507,8 +564,8 @@ function AdminMusic() {
                     <div className="w-8 h-8 rounded-full bg-background flex items-center justify-center font-bold text-sm shrink-0 border border-border">
                       {idx + 1}
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-                      <div className="space-y-1.5">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 flex-1">
+                      <div className="space-y-1.5 md:col-span-5">
                         <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Track Title</Label>
                         <Input 
                           placeholder={`Track ${idx + 1} Title`} 
@@ -522,13 +579,54 @@ function AdminMusic() {
                           required
                         />
                       </div>
-                      <div className="space-y-1.5">
-                        <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest flex items-center gap-1"><AudioLines className="w-3 h-3"/> Audio File (MP3)</Label>
+                      <div className="space-y-1.5 md:col-span-2">
+                        <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Duration</Label>
+                        <Input 
+                          placeholder="3:30" 
+                          value={song.duration}
+                          onChange={(e) => {
+                            const newSongs = [...formData.songs];
+                            newSongs[idx].duration = e.target.value;
+                            setFormData({...formData, songs: newSongs});
+                          }}
+                          className="h-10 rounded-lg"
+                        />
+                      </div>
+                      <div className="space-y-1.5 md:col-span-5">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest flex items-center gap-1">
+                            <AudioLines className="w-3 h-3 text-forest"/> Audio File (MP3)
+                          </Label>
+                          {song.audioUrl && (
+                            <span className="text-[10px] text-emerald-600 font-bold">
+                              ✓ Uploaded
+                            </span>
+                          )}
+                        </div>
                         <Input 
                           type="file" 
                           accept="audio/*" 
-                          className="h-10 rounded-lg pt-1.5 file:text-xs"
+                          className="h-10 rounded-lg pt-1.5 file:text-xs cursor-pointer"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleTrackAudioUpload(idx, file);
+                          }}
+                          disabled={song.isUploading}
                         />
+                        {song.isUploading && <p className="text-[11px] text-amber-600 animate-pulse">Uploading track audio...</p>}
+                        <div className="flex items-center gap-1 mt-1">
+                          <span className="text-[9px] text-muted-foreground uppercase tracking-wider shrink-0">or URL:</span>
+                          <Input 
+                            value={song.audioUrl} 
+                            onChange={(e) => {
+                              const newSongs = [...formData.songs];
+                              newSongs[idx].audioUrl = e.target.value;
+                              setFormData({ ...formData, songs: newSongs });
+                            }}
+                            placeholder="https://... or /api/upload/file/..." 
+                            className="h-7 rounded-md text-xs" 
+                          />
+                        </div>
                       </div>
                     </div>
                     {formData.songs.length > 1 && (

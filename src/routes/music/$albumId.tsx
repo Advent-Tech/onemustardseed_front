@@ -58,6 +58,7 @@ function AlbumDetailsPage() {
         id: song.id,
         title: song.title,
         duration: song.duration,
+        audioUrl: song.audioUrl ? mediaUrl(song.audioUrl) : "",
         albumTitle: album.title,
         coverImage: mediaUrl(album.cover)
       });

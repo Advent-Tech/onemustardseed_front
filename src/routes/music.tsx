@@ -3,6 +3,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Play, Pause, X, Volume2, VolumeX } from "lucide-react";
+import { mediaUrl } from "@/lib/api";
 
 export interface Song {
   id: string;
@@ -193,7 +194,7 @@ function MusicLayout() {
 
               <audio 
                 ref={audioRef}
-                src={currentSong.audioUrl || "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"} /* placeholder audio for design */
+                src={currentSong.audioUrl ? mediaUrl(currentSong.audioUrl) : "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"}
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
                 onEnded={handleAudioEnded}
