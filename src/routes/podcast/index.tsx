@@ -136,14 +136,15 @@ function PodcastLandingPage() {
 
   const resolveUrl = (url: string) => !url ? '' : mediaUrl(url);
 
+  const latestEp = episodes[0];
   const featuredEpisode = {
-    id: "featured",
-    title: bannerData.audioTitle,
-    duration: "00:00",
-    date: new Date().toLocaleDateString(),
-    audioUrl: resolveUrl(bannerData.audioUrl),
-    coverImage: resolveUrl(bannerData.image),
-    seasonTitle: bannerData.audioSeasonTitle,
+    id: latestEp?._id || "featured",
+    title: latestEp?.title || bannerData.audioTitle || bannerData.videoTitle || bannerData.title,
+    duration: latestEp?.duration || "0:00",
+    date: latestEp?.createdAt ? new Date(latestEp.createdAt).toLocaleDateString() : new Date().toLocaleDateString(),
+    audioUrl: mediaUrl(bannerData.audioUrl || latestEp?.audioUrl),
+    coverImage: mediaUrl(bannerData.image || latestEp?.image || "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800"),
+    seasonTitle: bannerData.audioSeasonTitle || latestEp?.seasonTitle || "Season 1, Episode 1",
   };
 
   return (

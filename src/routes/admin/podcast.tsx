@@ -310,7 +310,7 @@ function PodcastManagement() {
         const data = await res.json();
         if (data.success) {
           // Store the full url for images, audio, etc.
-          const fullUrl = `${API_URL}${data.url}`;
+          const fullUrl = mediaUrl(data.url);
           setForm((prev: any) => ({ ...prev, [formField]: fullUrl }));
           toast.success("Upload complete!", { id: toastId });
         } else {

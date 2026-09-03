@@ -88,10 +88,7 @@ export function Events() {
     if (!imagePath || imagePath === 'no-photo.jpg') {
       return "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&q=80";
     }
-    if (imagePath.startsWith('http') || imagePath.startsWith('data:')) {
-      return imagePath;
-    }
-    return `${API_URL}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
+    return mediaUrl(imagePath) || "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&q=80";
   };
 
   const formatEventDate = (dateStr: string) => {
@@ -122,6 +119,9 @@ export function Events() {
                 src={getImageUrl(featuredEvent.image)}
                 alt={featuredEvent.name}
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-[3000ms] group-hover:scale-105"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&q=80";
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-[#050704] via-transparent to-transparent hidden lg:block" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#050704] via-transparent to-transparent lg:hidden" />

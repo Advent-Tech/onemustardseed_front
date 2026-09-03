@@ -64,7 +64,7 @@ function AdminPodcastSeasonPage() {
         });
         const data = await res.json();
         if (data.success) {
-          const fullUrl = `${API_URL}${data.url}`;
+          const fullUrl = mediaUrl(data.url);
           setUploadForm(prev => ({ ...prev, audioUrl: fullUrl }));
           toast.success("Upload complete!", { id: toastId });
         } else {
@@ -197,7 +197,7 @@ function AdminPodcastSeasonPage() {
         const res = await fetch(`${API_URL}/upload`, { method: 'POST', body: formData });
         const data = await res.json();
         if (data.success) {
-          setResourceForm({ ...resourceForm, fileUrl: `${API_URL}${data.url}`, size: `${(file.size / (1024 * 1024)).toFixed(1)} MB` });
+          setResourceForm({ ...resourceForm, fileUrl: mediaUrl(data.url), size: `${(file.size / (1024 * 1024)).toFixed(1)} MB` });
           toast.success("Upload complete!", { id: toastId });
         }
       } catch (err) {
