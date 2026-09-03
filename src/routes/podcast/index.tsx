@@ -249,7 +249,7 @@ function PodcastLandingPage() {
                         <p className="mt-2 text-sm text-cream/70 line-clamp-2">{ep.description}</p>
                       </div>
                       <button 
-                        onClick={() => playEpisode({ id: ep._id, title: ep.title, duration: ep.duration || "0:00", date: new Date(ep.createdAt).toLocaleDateString(), audioUrl: resolveUrl(ep.audioUrl), coverImage: bannerData.image ? resolveUrl(bannerData.image) : "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800", seasonTitle: `Episode ${epNumber}` })}
+                        onClick={() => playEpisode({ id: ep._id, title: ep.title, duration: ep.duration || "0:00", date: new Date(ep.createdAt).toLocaleDateString(), audioUrl: mediaUrl(ep.audioUrl), coverImage: ep.image ? mediaUrl(ep.image) : (bannerData.image ? mediaUrl(bannerData.image) : "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800"), seasonTitle: `Episode ${epNumber}` })}
                         className="flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl bg-gold text-gold-foreground font-bold text-xs uppercase tracking-widest hover:scale-[1.02] transition-transform shadow-lg cursor-pointer mt-2"
                       >
                         <Play className="w-4 h-4 fill-current" /> Listen Now

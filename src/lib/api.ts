@@ -58,7 +58,7 @@ export function apiUrl(path: string): string {
  */
 export function mediaUrl(path?: string | null): string {
   if (!path) return "";
-  let clean = path.trim();
+  let clean = path.trim().replace(/\/api\/api\//g, "/api/");
 
   // If it's a data URI or blob URL, return as is
   if (clean.startsWith("data:") || clean.startsWith("blob:")) {

@@ -1,3 +1,4 @@
+import { mediaUrl } from "@/lib/api";
 import { useState, useRef, useEffect, createContext, useContext } from "react";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Play, Pause, X, Volume2, VolumeX } from "lucide-react";
@@ -123,9 +124,10 @@ function PodcastLayout() {
               {/* Episode Info */}
               <div className="flex items-center gap-4">
                 <img 
-                  src={currentEpisode.coverImage || "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800"} 
+                  src={mediaUrl(currentEpisode.coverImage) || "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800"} 
                   alt={currentEpisode.title} 
                   className="h-14 w-14 rounded-2xl object-cover border border-cream/10 flex-shrink-0"
+                  onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800"; }}
                 />
                 <div className="min-w-0">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-gold">{currentEpisode.seasonTitle || "OMS Podcast"}</span>
@@ -183,7 +185,7 @@ function PodcastLayout() {
 
               <audio 
                 ref={audioRef}
-                src={currentEpisode.audioUrl}
+                src={mediaUrl(currentEpisode.audioUrl)}
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
                 onEnded={handleAudioEnded}
