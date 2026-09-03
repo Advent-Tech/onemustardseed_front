@@ -116,7 +116,7 @@ function PrayerCheckoutPage() {
           <div className="p-12 bg-forest-deep text-cream flex flex-col justify-between relative overflow-hidden">
             <div className="absolute inset-0 opacity-10">
               {series.bannerImage && (
-                <img src={series.bannerImage} alt="" className="w-full h-full object-cover blur-sm" />
+                <img src={mediaUrl(series.bannerImage)} alt="" className="w-full h-full object-cover blur-sm" />
               )}
             </div>
             <div className="relative z-10 space-y-8">

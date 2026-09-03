@@ -250,7 +250,7 @@ function PrayerSeriesPage() {
           ) : (
             <div className="w-full h-full max-w-5xl mx-auto p-8 relative flex items-center justify-center">
               <img
-                src={series.bannerImage || "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&q=80"}
+                src={mediaUrl(series.bannerImage) || "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&q=80"}
                 alt={series.title}
                 className="w-full h-full object-contain"
               />
@@ -362,7 +362,7 @@ function PrayerSeriesPage() {
                       >
                         {/* Thumbnail */}
                         <div className="relative flex-shrink-0 w-36 h-24 rounded-xl overflow-hidden bg-muted">
-                          <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
+                          <img src={mediaUrl(video.thumbnail)} alt={video.title} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&q=80"; }} />
                           <div className={`absolute inset-0 flex items-center justify-center ${isAccessible ? "bg-black/30 group-hover:bg-black/20" : "bg-black/60"}`}>
                             {isAccessible ? (
                               <div className="h-10 w-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">

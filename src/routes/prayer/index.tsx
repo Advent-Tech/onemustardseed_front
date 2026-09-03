@@ -116,7 +116,7 @@ function PrayerLandingPage() {
                 >
                   <div className="relative aspect-video overflow-hidden">
                     <img
-                      src={series.bannerImage}
+                      src={mediaUrl(series.bannerImage)}
                       alt={series.title}
                       className="w-full h-full object-cover"
                     />
@@ -188,7 +188,7 @@ function PrayerLandingPage() {
                 >
                   <div className="relative sm:w-2/5 aspect-video sm:aspect-auto overflow-hidden bg-muted min-h-[160px]">
                     <img
-                      src={series.bannerImage}
+                      src={mediaUrl(series.bannerImage)}
                       alt={series.title}
                       className="w-full h-full object-cover"
                     />

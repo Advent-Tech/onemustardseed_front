@@ -164,8 +164,7 @@ function PrayerManagement() {
       });
       const data = await res.json();
       if (data.success) {
-        const fullUrl = `${API_URL}${data.url}`;
-        setSeasonForm(prev => ({ ...prev, bannerImage: fullUrl }));
+        setSeasonForm(prev => ({ ...prev, bannerImage: data.url }));
         toast.success("Image uploaded to server!");
       } else {
         toast.error(data.message || "Upload failed");
