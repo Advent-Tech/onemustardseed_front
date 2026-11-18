@@ -9,6 +9,7 @@ import ReactPlayer from "react-player";
 import image5 from "@/assets/logo2/image5.png";
 import { HostMovieNight, PremierePartner } from "@/pages/Films/sections/HostScreening";
 import { mediaUrl, API_URL } from "@/lib/api";
+import { VideoCard, VideoGridSkeleton, VIDEO_GRID } from "@/components/oms/cinema";
 
 export const Route = createFileRoute("/films/")({
   component: FilmsLandingPage,
@@ -87,17 +88,17 @@ function FilmsLandingPage() {
     });
 
   return (
-    <div className="bg-[#050704] min-h-screen flex flex-col text-cream selection:bg-gold/30">
+    <div className="theme-cinema theme-promo min-h-screen flex flex-col text-cream selection:bg-gold/30">
       <SiteHeader />
       <main className="flex-grow">
         {/* Cinematic Video Header */}
-        <section className="relative h-[75vh] min-h-[500px] flex items-center overflow-hidden bg-[#050704]">
+        <section className="relative h-[75vh] min-h-[500px] flex items-center overflow-hidden bg-cinema">
           <div className="absolute inset-0 z-0" ref={emblaRef}>
             <div className="flex h-full w-full">
               {sliders.length > 0 ? sliders.map((slide, index) => (
                 <div key={slide._id || index} className="relative flex-[0_0_100%] h-full w-full min-w-0">
                   {/* Loop Video Background */}
-                  <div className="absolute inset-0 w-full h-full bg-[#050704] pointer-events-none">
+                  <div className="absolute inset-0 w-full h-full bg-cinema pointer-events-none">
                     {React.createElement(ReactPlayer as any, {
                       url: slide.backgroundVideoUrl,
                       playing: true,
@@ -110,7 +111,7 @@ function FilmsLandingPage() {
                       config: { vimeo: { playerOptions: { controls: false, autoplay: true, playsinline: true, loop: true, autopause: false } } }
                     })}
                     {/* Gradient Overlays */}
-                    <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#050704] to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-cinema to-transparent" />
                     <div className="absolute inset-y-0 left-0 w-full md:w-[60%] bg-gradient-to-r from-black/85 via-black/40 to-transparent" />
                   </div>
 
@@ -153,7 +154,7 @@ function FilmsLandingPage() {
                 </div>
               )) : (
                 <div className="relative flex-[0_0_100%] h-full w-full min-w-0">
-                  <div className="absolute inset-0 w-full h-full bg-[#050704] pointer-events-none">
+                  <div className="absolute inset-0 w-full h-full bg-cinema pointer-events-none">
                     <div className="absolute inset-0 w-full h-full overflow-hidden opacity-50">
                       {filmsHeroVimeo.match(/\.(mp4|webm|ogg)$/i) ? (
                         <video
@@ -175,7 +176,7 @@ function FilmsLandingPage() {
                       )}
                     </div>
                     {/* Gradient Overlays */}
-                    <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#050704] to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-cinema to-transparent" />
                     <div className="absolute inset-y-0 left-0 w-full md:w-[60%] bg-gradient-to-r from-black/85 via-black/40 to-transparent" />
                   </div>
 
@@ -221,54 +222,38 @@ function FilmsLandingPage() {
 
         <HostMovieNight />
 
-        {/* Film Catalog */}
-        <section className="py-12 relative z-10 min-h-[600px]">
-          <div className="mx-auto max-w-7xl px-6">
-            <div className="flex items-end justify-between mb-16 border-b border-white/10 pb-8">
+        {/* Film catalog — YouTube-style grid */}
+        <section id="library" className="relative z-10 min-h-[600px] scroll-mt-24 py-12">
+          <div className="mx-auto max-w-[1700px] px-4 sm:px-6">
+            <div className="mb-8 flex items-end justify-between border-b border-white/10 pb-6">
               <div>
                 <h2 className="font-display text-3xl font-medium text-cream">Official <span className="italic text-gold">Library</span></h2>
-                <p className="mt-2 text-sm text-gold/70 uppercase tracking-widest">Our Exclusive Films</p>
+                <p className="mt-2 text-sm text-cream/60">Our exclusive films</p>
               </div>
+              <span className="text-sm text-cream/50">{films.length} {films.length === 1 ? "film" : "films"}</span>
             </div>
 
-            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 animate-in fade-in duration-500">
-              {filteredFilms.map((film) => (
-                <Link key={film.id} to="/films/$filmId" params={{ filmId: film.id }} className="group flex flex-col">
-                  <div className="relative aspect-[16/9] overflow-hidden rounded-[2rem] bg-white/5 border border-white/10 shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
-                    <img
-                      src={mediaUrl(film.thumbnail || film.image || "https://images.unsplash.com/photo-1485846234645-a62644ef7467?w=800")}
-                      alt={film.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1485846234645-a62644ef7467?w=800"; }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="h-16 w-16 rounded-full bg-cream/90 text-forest-deep flex items-center justify-center shadow-2xl">
-                        <Play className="h-6 w-6 fill-current ml-1" />
-                      </div>
-                    </div>
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-display text-2xl font-medium text-cream group-hover:text-gold transition-colors">{film.title}</h3>
-                        </div>
-                        <div className="flex items-center gap-1 text-gold">
-                          <Star className="h-3 w-3 fill-current" />
-                          <span className="text-[10px] font-bold">{film.rating || "0.0"}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-6 px-4">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold mb-2">{film.year} • {film.duration}</p>
-                    <p className="text-sm text-cream/60 leading-relaxed line-clamp-2">{film.desc || "A cinematic journey exploring the wonders of God's creation."}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            {films.length === 0 ? <VideoGridSkeleton count={4} /> : (
+              <div className={VIDEO_GRID}>
+                {filteredFilms.map((film, i) => (
+                  <VideoCard
+                    key={film.id}
+                    index={i}
+                    to="/films/$filmId"
+                    params={{ filmId: film.id }}
+                    image={mediaUrl(film.thumbnail || film.image) || "https://images.unsplash.com/photo-1485846234645-a62644ef7467?w=800"}
+                    title={film.title}
+                    badge={film.duration}
+                    avatar={image5}
+                    channel="OMS Films"
+                    meta={[film.year, film.rating ? `★ ${film.rating}` : ""].filter(Boolean).join(" · ")}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </section>
-        
+
         <PremierePartner />
       </main>
       <SiteFooter />

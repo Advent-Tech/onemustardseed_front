@@ -15,12 +15,12 @@ export const Route = createFileRoute("/mission")({
 
 function MissionPage() {
   return (
-    <div className="bg-[#050704] min-h-screen flex flex-col text-cream selection:bg-gold/30">
+    <div className="bg-background min-h-screen flex flex-col text-cream selection:bg-gold/30">
       <SiteHeader />
       <main className="flex-grow">
         {/* Hero */}
         <section className="relative min-h-[70vh] flex items-center justify-center pt-24 overflow-hidden">
-          <div className="absolute inset-0 z-0 bg-[#050704]">
+          <div className="absolute inset-0 z-0 bg-forest-night">
             <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80')] bg-cover bg-center" />
             <div className="absolute inset-0 bg-gradient-to-b from-[#050704]/40 via-[#050704]/80 to-[#050704]" />
           </div>

@@ -32,7 +32,7 @@ function TrailerPage() {
   const displayDesc = desc || '"The Seed" takes you on a journey through the unseen world. Experience the documentary that critics are calling \'a visual prayer.\' Coming to the OMS Cinema Hub this fall.';
 
   return (
-    <div className="bg-foreground min-h-screen flex flex-col">
+    <div className="theme-cinema theme-promo min-h-screen flex flex-col">
       <SiteHeader />
       <main className="flex-grow pt-24 flex items-center justify-center bg-black">
         <div className="mx-auto max-w-6xl px-6 w-full py-12">

@@ -114,7 +114,7 @@ function PodcastLayout() {
 
   return (
     <PodcastContext.Provider value={{ playEpisode, currentEpisode, isPlaying, setIsPlaying } satisfies PodcastContextType}>
-      <div className="podcast-layout relative min-h-screen" style={{ fontFamily: 'HelveticaNeue, Arial, "Open Sans", sans-serif' }}>
+      <div className="podcast-layout relative min-h-screen">
         <Outlet />
 
         {/* Floating Audio Player */}

@@ -259,7 +259,7 @@ function IndividualFilmPage() {
   };
 
   if (!film) {
-    return <div className="bg-[#050704] min-h-screen flex items-center justify-center text-gold font-display text-2xl">Loading...</div>;
+    return <div className="theme-cinema theme-promo min-h-screen flex items-center justify-center text-gold font-display text-2xl">Loading...</div>;
   }
 
   return (

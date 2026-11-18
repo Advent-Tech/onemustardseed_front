@@ -112,7 +112,7 @@ function ResourcesLandingPage() {
   };
 
   return (
-    <div className="bg-[#FAF7EE] min-h-screen flex flex-col">
+    <div className="bg-background min-h-screen flex flex-col">
       <SiteHeader />
       <main className="flex-grow pt-24">
         {/* Resources Hero with Blurred Background Image */}
@@ -144,15 +144,15 @@ function ResourcesLandingPage() {
         <section className="pt-20 pb-8 -mt-10 relative z-10">
           <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-3 gap-8 items-start">
 
-            <Card className="p-8 rounded-[2.5rem] bg-white shadow-xl border-cream/10 space-y-8 lg:col-span-3">
+            <Card className="p-8 rounded-[2.5rem] bg-card shadow-xl border-white/10 space-y-8 lg:col-span-3">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="space-y-4">
-                  <h3 className="text-xl font-display font-bold text-forest-deep">Search Library</h3>
+                  <h3 className="text-xl font-display font-bold text-cream">Search Library</h3>
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-forest-deep/30" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-cream/30" />
                     <Input
                       placeholder="Search by title or keyword..."
-                      className="pl-11 h-12 rounded-xl bg-cream/20 border-transparent focus:bg-white transition-all"
+                      className="pl-11 h-12 rounded-xl bg-white/[0.02] border-transparent focus:bg-card transition-all"
                       value={searchQuery}
                       onChange={e => setSearchQuery(e.target.value)}
                     />
@@ -160,13 +160,13 @@ function ResourcesLandingPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-forest-deep/40">Filter by Audience</h4>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-cream/40">Filter by Audience</h4>
                   <div className="flex flex-wrap gap-2">
                     {RESOURCE_TYPES.map(cat => (
                       <button
                         key={cat}
                         onClick={() => setActiveCategory(cat)}
-                        className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${activeCategory === cat ? "bg-forest-deep text-white shadow-lg" : "bg-cream/50 text-forest-deep/50 hover:bg-cream"}`}
+                        className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${activeCategory === cat ? "bg-forest-deep text-white shadow-lg" : "bg-white/[0.05] text-forest-deep/50 hover:bg-cream"}`}
                       >
                         {cat}
                       </button>
@@ -182,7 +182,7 @@ function ResourcesLandingPage() {
         <section className="pb-10 pt-2">
           <div className="mx-auto max-w-7xl px-6">
             <div className="flex items-center justify-between mb-10">
-              <h3 className="text-2xl font-display font-bold text-forest-deep">Free <span className="italic text-primary">Downloads</span> <span className="text-forest-deep/30 font-sans text-lg">({filteredResources.length})</span></h3>
+              <h3 className="text-2xl font-display font-bold text-cream">Free <span className="italic text-primary">Downloads</span> <span className="text-cream/30 font-sans text-lg">({filteredResources.length})</span></h3>
             </div>
 
             {filteredResources.length > 0 ? (
@@ -190,17 +190,17 @@ function ResourcesLandingPage() {
                 {filteredResources.map((res) => (
                   <div
                     key={res._id}
-                    className="group flex flex-col rounded-[2.5rem] border border-cream/10 bg-white overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2"
+                    className="group flex flex-col rounded-[2.5rem] border border-white/10 bg-card overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2"
                   >
                     <div className="relative aspect-video overflow-hidden bg-forest/5 flex items-center justify-center">
                       {res.featuredImage ? (
                         <img src={mediaUrl(res.featuredImage)} alt={res.title} className={`w-full h-full object-cover transition-transform duration-1000 ${res.isActive !== false ? 'group-hover:scale-110' : 'opacity-50 grayscale'}`} onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&q=80"; }} />
                       ) : (
-                        <FileText className={`w-16 h-16 text-forest/20 ${res.isActive === false ? 'opacity-50 grayscale' : ''}`} />
+                        <FileText className={`w-16 h-16 text-gold/20 ${res.isActive === false ? 'opacity-50 grayscale' : ''}`} />
                       )}
                       {res.isActive === false && (
                         <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-10 flex items-center justify-center">
-                          <Badge variant="secondary" className="bg-white text-forest-deep font-bold border-none shadow-sm">Not Available</Badge>
+                          <Badge variant="secondary" className="bg-white/10 text-cream font-bold border-none shadow-sm">Not Available</Badge>
                         </div>
                       )}
                       <div className="absolute top-4 left-4 z-20">
@@ -212,12 +212,12 @@ function ResourcesLandingPage() {
                     <div className="p-8 flex-grow flex flex-col space-y-4">
                       <div className="space-y-1">
                         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60">{res.category}</span>
-                        <h3 className="font-display text-2xl font-bold text-forest-deep group-hover:text-gold transition-colors">{res.title}</h3>
+                        <h3 className="font-display text-2xl font-bold text-cream group-hover:text-gold transition-colors">{res.title}</h3>
                       </div>
-                      <p className="text-sm text-forest-deep/50 leading-relaxed line-clamp-3 flex-grow">{res.description}</p>
+                      <p className="text-sm text-cream/50 leading-relaxed line-clamp-3 flex-grow">{res.description}</p>
 
-                      <div className="pt-6 border-t border-cream/10 flex items-center justify-between">
-                        <div className="text-[10px] font-bold uppercase tracking-widest text-forest-deep/30 flex items-center gap-2 group-hover:text-forest-deep transition-colors">
+                      <div className="pt-6 border-t border-white/10 flex items-center justify-between">
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-cream/30 flex items-center gap-2 group-hover:text-cream transition-colors">
                           {res.isActive === false ? "Currently Unavailable" : <><span className="hidden sm:inline">Available Now</span> <ArrowRight className="h-3 w-3" /></>}
                         </div>
                         <Button
@@ -235,11 +235,11 @@ function ResourcesLandingPage() {
               </div>
             ) : (
               <div className="py-24 text-center space-y-6">
-                <div className="p-6 bg-cream/30 rounded-full w-fit mx-auto">
-                  <Search className="h-12 w-12 text-forest-deep/20" />
+                <div className="p-6 bg-white/[0.03] rounded-full w-fit mx-auto">
+                  <Search className="h-12 w-12 text-cream/20" />
                 </div>
                 <div className="space-y-2">
-                  <h4 className="text-xl font-bold text-forest-deep">No results</h4>
+                  <h4 className="text-xl font-bold text-cream">No results</h4>
                   <p className="text-muted-foreground text-sm">Try another search term or category.</p>
                 </div>
                 <Button onClick={() => { setActiveCategory("All"); setSearchQuery(""); }} variant="outline" className="rounded-xl">Reset Filters</Button>
@@ -249,12 +249,12 @@ function ResourcesLandingPage() {
         </section>
 
         {/* Importance of Quality Materials Text Section */}
-        <section className="pb-32 pt-8 bg-[#FAF7EE]">
+        <section className="pb-32 pt-8 bg-background">
           <div className="mx-auto max-w-7xl px-6">
-            <div className="bg-white rounded-[3rem] p-10 sm:p-16 border border-[#EFECE3] shadow-sm grid lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
+            <div className="bg-card rounded-[3rem] p-10 sm:p-16 border border-white/10 shadow-sm grid lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
               <div className="space-y-6">
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">Our Educational Philosophy</span>
-                <h2 className="font-display text-4xl sm:text-5xl font-bold text-forest-deep tracking-tight">
+                <h2 className="font-display text-4xl sm:text-5xl font-bold text-cream tracking-tight">
                   Why <span className="italic text-gold font-medium">Quality Media</span> Matters for Kids
                 </h2>
                 <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
@@ -264,8 +264,8 @@ function ResourcesLandingPage() {
                   Every printable card, discussion guide, and curriculum package in our library is designed by professionals, vetted by theologians, and tested in active ministry environments. We do not compromise on illustrations, typography, or theological rigor, because we know that the seeds planted in young hearts require rich, nutritious soil to flourish.
                 </p>
               </div>
-              <div className="bg-[#FAF7EE] rounded-[2.5rem] p-8 border border-[#EFECE3] space-y-6">
-                <h4 className="font-display font-bold text-lg text-forest-deep">Our Three Quality Pillars</h4>
+              <div className="bg-background rounded-[2.5rem] p-8 border border-white/10 space-y-6">
+                <h4 className="font-display font-bold text-lg text-cream">Our Three Quality Pillars</h4>
                 <div className="space-y-4">
                   {[
                     { title: "Theological Integrity", desc: "No watering down. We anchor every message in the historical truths of scripture." },
@@ -277,7 +277,7 @@ function ResourcesLandingPage() {
                         0{index + 1}
                       </div>
                       <div>
-                        <h5 className="font-bold text-xs sm:text-sm text-forest-deep">{pillar.title}</h5>
+                        <h5 className="font-bold text-xs sm:text-sm text-cream">{pillar.title}</h5>
                         <p className="text-muted-foreground text-xs leading-relaxed mt-0.5">{pillar.desc}</p>
                       </div>
                     </div>
@@ -292,15 +292,15 @@ function ResourcesLandingPage() {
 
       {/* Lead Capture Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[425px] rounded-[2.5rem] bg-white border-none shadow-2xl">
+        <DialogContent className="sm:max-w-[425px] rounded-[2.5rem] bg-card border-none shadow-2xl">
           <DialogHeader className="space-y-3">
             <div className="w-12 h-12 rounded-2xl bg-forest/10 flex items-center justify-center mb-2">
-              <Download className="w-6 h-6 text-forest" />
+              <Download className="w-6 h-6 text-gold" />
             </div>
-            <DialogTitle className="text-2xl font-display text-forest-deep">
+            <DialogTitle className="text-2xl font-display text-cream">
               {successLink ? "Resource Ready!" : "Unlock this Resource"}
             </DialogTitle>
-            <DialogDescription className="text-forest-deep/60">
+            <DialogDescription className="text-cream/60">
               {successLink
                 ? "Your download is ready. We've also sent a copy to your email."
                 : `Enter your details to get instant access to "${selectedResource?.title}".`}
@@ -332,12 +332,12 @@ function ResourcesLandingPage() {
             <form onSubmit={handleLeadSubmit} className="space-y-6 py-4">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-xs uppercase tracking-widest text-forest-deep/60">Full Name *</Label>
+                  <Label className="text-xs uppercase tracking-widest text-cream/60">Full Name *</Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-forest-deep/40" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cream/40" />
                     <Input
                       required
-                      className="pl-10 h-12 rounded-xl border-forest/20 focus-visible:ring-forest bg-forest/5"
+                      className="pl-10 h-12 rounded-xl border-white/10 focus-visible:ring-forest bg-forest/5"
                       placeholder="John Doe"
                       value={formData.name}
                       onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
@@ -345,13 +345,13 @@ function ResourcesLandingPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs uppercase tracking-widest text-forest-deep/60">Email Address *</Label>
+                  <Label className="text-xs uppercase tracking-widest text-cream/60">Email Address *</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-forest-deep/40" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cream/40" />
                     <Input
                       required
                       type="email"
-                      className="pl-10 h-12 rounded-xl border-forest/20 focus-visible:ring-forest bg-forest/5"
+                      className="pl-10 h-12 rounded-xl border-white/10 focus-visible:ring-forest bg-forest/5"
                       placeholder="john@example.com"
                       value={formData.email}
                       onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
@@ -359,12 +359,12 @@ function ResourcesLandingPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs uppercase tracking-widest text-forest-deep/60">Phone Number (Optional)</Label>
+                  <Label className="text-xs uppercase tracking-widest text-cream/60">Phone Number (Optional)</Label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-forest-deep/40" />
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cream/40" />
                     <Input
                       type="tel"
-                      className="pl-10 h-12 rounded-xl border-forest/20 focus-visible:ring-forest bg-forest/5"
+                      className="pl-10 h-12 rounded-xl border-white/10 focus-visible:ring-forest bg-forest/5"
                       placeholder="(555) 000-0000"
                       value={formData.phone}
                       onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))}

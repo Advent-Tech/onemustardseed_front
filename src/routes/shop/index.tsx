@@ -68,7 +68,7 @@ function ShopLandingPage() {
           </div>
 
           <div className="relative mx-auto max-w-7xl px-6 flex flex-col items-center text-center z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cream/10 border border-cream/20 text-[10px] font-bold tracking-[0.3em] text-gold uppercase backdrop-blur-sm mb-8 animate-fade-up">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.01] border border-white/10 text-[10px] font-bold tracking-[0.3em] text-gold uppercase backdrop-blur-sm mb-8 animate-fade-up">
               <ShoppingBag className="w-3 h-3" /> Supporting the Mission
             </div>
 
@@ -81,11 +81,11 @@ function ShopLandingPage() {
             </p>
 
             <div className="mt-12 w-full max-w-xl animate-fade-up [animation-delay:300ms]">
-              <div className="relative flex items-center rounded-2xl bg-cream/5 border border-cream/10 p-1.5 backdrop-blur-md focus-within:ring-2 focus-within:ring-gold/30 transition-all">
+              <div className="relative flex items-center rounded-2xl bg-white/[0.01] border border-white/10 p-1.5 backdrop-blur-md focus-within:ring-2 focus-within:ring-gold/30 transition-all">
                 <Search className="ml-4 h-5 w-5 text-cream/30" />
                 <input
                   type="text"
-                  placeholder="Search the collections..."
+                  aria-label="Search the collections" placeholder="Search the collections..."
                   className="flex-1 bg-transparent px-4 py-3 text-sm focus:outline-none placeholder:text-cream/30"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -97,17 +97,17 @@ function ShopLandingPage() {
 
         {/* Categories Bar */}
         <section className="sticky top-24 z-40 bg-background/80 backdrop-blur-md border-b border-border py-4">
-          <div className="mx-auto max-w-7xl px-6 flex items-center justify-center gap-2 sm:gap-6">
+          <div className="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto px-6 sm:justify-center sm:gap-6 scrollbar-hide">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveTab(cat.id)}
                 className={`group flex items-center gap-2.5 px-6 py-2.5 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all ${activeTab === cat.id
                   ? "bg-forest-deep text-white shadow-lg shadow-forest-deep/20"
-                  : "text-muted-foreground hover:text-forest-deep hover:bg-muted/50"
+                  : "text-muted-foreground hover:text-cream hover:bg-muted/50"
                   }`}
               >
-                <cat.icon className={`h-3.5 w-3.5 transition-colors ${activeTab === cat.id ? "text-gold" : "text-muted-foreground group-hover:text-forest-deep"}`} />
+                <cat.icon className={`h-3.5 w-3.5 transition-colors ${activeTab === cat.id ? "text-gold" : "text-muted-foreground group-hover:text-cream"}`} />
                 {cat.label}
               </button>
             ))}
@@ -144,7 +144,7 @@ function ShopLandingPage() {
                       <div className="absolute top-6 left-6">
                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur shadow-sm border border-white/20">
                           <ShoppingBag className="w-3 h-3 text-gold" />
-                          <span className="text-[9px] font-black uppercase tracking-widest text-forest-deep">{product.storeName || "Store"}</span>
+                          <span className="text-[9px] font-black uppercase tracking-widest text-cream">{product.storeName || "Store"}</span>
                         </div>
                       </div>
 

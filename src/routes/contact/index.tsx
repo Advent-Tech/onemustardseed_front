@@ -1,4 +1,7 @@
 import { API_URL, mediaUrl } from "../../lib/api";
+import teamRich from "@/assets/oms/team-rich.webp";
+import teamLeo from "@/assets/oms/team-leo.webp";
+import teamJim from "@/assets/oms/team-jim.webp";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -57,19 +60,19 @@ const TEAM = [
   {
     name: "Rich Aguilera",
     role: "President/Creative Director",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400",
+    image: teamRich,
     email: "rich@onemustardseed.com"
   },
   {
     name: "Leo Aguilera",
     role: "Marketing/Operations",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400",
+    image: teamLeo,
     email: "leo@onemustardseed.com"
   },
   {
     name: "Jim Aumack",
     role: "Sales/Tours",
-    image: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=400",
+    image: teamJim,
     email: "jim@onemustardseed.com"
   }
 ];
@@ -135,12 +138,12 @@ function ContactPage() {
   };
 
   return (
-    <div className="bg-[#FAF7EE] min-h-screen flex flex-col font-sans">
+    <div className="bg-background text-foreground min-h-screen flex flex-col font-sans">
       <SiteHeader />
 
       <main className="flex-grow pt-24">
         {/* Hero Section */}
-        <section className="bg-forest-deep text-cream py-20 relative overflow-hidden">
+        <section className="bg-forest-night text-cream py-20 relative overflow-hidden">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1528312635006-8ea0bc49ecaa?auto=format&fit=crop&q=80&w=1200')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-forest-deep/90"></div>
           <div className="relative mx-auto max-w-7xl px-6 text-center space-y-6">
@@ -162,20 +165,20 @@ function ContactPage() {
               {/* FAQ Section */}
               <div className="space-y-8">
                 <div className="space-y-3">
-                  <h2 className="text-3xl font-display font-bold text-forest-deep flex items-center gap-3">
+                  <h2 className="text-3xl font-display font-bold text-cream flex items-center gap-3">
                     <HelpCircle className="w-8 h-8 text-gold" /> Frequently Asked Questions
                   </h2>
-                  <p className="text-forest-deep/60">Find quick answers to common questions about our ministry and resources.</p>
+                  <p className="text-cream/70">Find quick answers to common questions about our ministry and resources.</p>
                 </div>
 
                 <div className="w-full space-y-4">
                   {FAQS.map((faq, idx) => (
-                    <details key={idx} className="group bg-white rounded-2xl border-none shadow-sm px-2 [&_summary::-webkit-details-marker]:hidden">
-                      <summary className="flex cursor-pointer items-center justify-between px-4 py-5 font-bold text-forest-deep hover:text-primary transition-colors">
+                    <details key={idx} className="group bg-card rounded-2xl border-none shadow-sm px-2 [&_summary::-webkit-details-marker]:hidden">
+                      <summary className="flex cursor-pointer items-center justify-between px-4 py-5 font-bold text-cream hover:text-primary transition-colors">
                         {faq.question}
                         <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180" />
                       </summary>
-                      <div className="px-4 pb-5 text-forest-deep/70 leading-relaxed text-sm">
+                      <div className="px-4 pb-5 text-cream/70 leading-relaxed text-sm">
                         {faq.answer}
                       </div>
                     </details>
@@ -184,21 +187,21 @@ function ContactPage() {
               </div>
 
               {/* Team Section */}
-              <div className="space-y-6 pt-4 border-t border-cream/20">
+              <div className="space-y-6 pt-4 border-t border-white/10">
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-display font-bold text-forest-deep">Meet the Team</h3>
-                  <p className="text-forest-deep/60 text-sm">Dedicated to equipping families with faithful media.</p>
+                  <h3 className="text-2xl font-display font-bold text-cream">Meet the Team</h3>
+                  <p className="text-cream/70 text-sm">Dedicated to equipping families with faithful media.</p>
                 </div>
 
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {TEAM.map((member, i) => (
-                    <div key={i} className="group bg-white rounded-3xl p-4 shadow-sm border border-cream/50 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div key={i} className="group bg-card rounded-3xl p-4 shadow-sm border border-white/10 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                       <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4 border-4 border-[#FAF7EE]">
                         <img src={member.image} alt={member.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                       </div>
-                      <h4 className="font-bold text-forest-deep text-sm">{member.name}</h4>
+                      <h4 className="font-bold text-cream text-sm">{member.name}</h4>
                       <p className="text-gold font-bold text-[10px] uppercase tracking-widest mb-3">{member.role}</p>
-                      <a href={`mailto:${member.email}`} className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-forest/5 text-forest hover:bg-forest hover:text-white transition-colors">
+                      <a href={`mailto:${member.email}`} aria-label={`Email ${member.name}`} className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-white/[0.06] text-gold hover:bg-forest hover:text-white transition-colors">
                         <Mail className="w-3.5 h-3.5" />
                       </a>
                     </div>
@@ -210,33 +213,35 @@ function ContactPage() {
 
             {/* Right Column: Contact Form */}
             <div className="lg:col-span-6 relative">
-              <div className="sticky top-24 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-2xl border border-cream/20">
+              <div className="sticky top-24 bg-card rounded-[2.5rem] p-8 md:p-10 shadow-2xl border border-white/10">
                 <div className="space-y-2 mb-8 text-center">
-                  <div className="w-12 h-12 bg-forest/5 rounded-2xl flex items-center justify-center mx-auto mb-4 text-forest">
+                  <div className="w-12 h-12 bg-white/[0.06] rounded-2xl flex items-center justify-center mx-auto mb-4 text-gold">
                     <MessageCircle className="w-6 h-6" />
                   </div>
-                  <h3 className="text-2xl font-display font-bold text-forest-deep">Send a Message</h3>
-                  <p className="text-sm text-forest-deep/60">Select a category below to ensure your message reaches the right team member.</p>
+                  <h3 className="text-2xl font-display font-bold text-cream">Send a Message</h3>
+                  <p className="text-sm text-cream/70">Select a category below to ensure your message reaches the right team member.</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-xs uppercase tracking-widest text-forest-deep/60">First Name *</Label>
+                      <Label htmlFor="c-first" className="text-xs uppercase tracking-widest text-cream/80">First Name *</Label>
                       <Input
+                        id="c-first" autoComplete="given-name"
                         required
                         placeholder="John"
-                        className="h-12 rounded-xl bg-forest/5 border-transparent focus:bg-white transition-colors"
+                        className="h-12 rounded-xl bg-white/[0.06] border-transparent focus:bg-card transition-colors"
                         value={formData.firstName}
                         onChange={e => setFormData({ ...formData, firstName: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-xs uppercase tracking-widest text-forest-deep/60">Last Name *</Label>
+                      <Label htmlFor="c-last" className="text-xs uppercase tracking-widest text-cream/80">Last Name *</Label>
                       <Input
+                        id="c-last" autoComplete="family-name"
                         required
                         placeholder="Doe"
-                        className="h-12 rounded-xl bg-forest/5 border-transparent focus:bg-white transition-colors"
+                        className="h-12 rounded-xl bg-white/[0.06] border-transparent focus:bg-card transition-colors"
                         value={formData.lastName}
                         onChange={e => setFormData({ ...formData, lastName: e.target.value })}
                       />
@@ -244,21 +249,22 @@ function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-xs uppercase tracking-widest text-forest-deep/60">Email Address *</Label>
+                    <Label htmlFor="c-email" className="text-xs uppercase tracking-widest text-cream/80">Email Address *</Label>
                     <Input
+                      id="c-email" autoComplete="email"
                       required
                       type="email"
                       placeholder="john@example.com"
-                      className="h-12 rounded-xl bg-forest/5 border-transparent focus:bg-white transition-colors"
+                      className="h-12 rounded-xl bg-white/[0.06] border-transparent focus:bg-card transition-colors"
                       value={formData.email}
                       onChange={e => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-xs uppercase tracking-widest text-forest-deep/60">Inquiry Category *</Label>
+                    <Label htmlFor="c-cat" className="text-xs uppercase tracking-widest text-cream/80">Inquiry Category *</Label>
                     <Select required value={formData.category} onValueChange={val => setFormData({ ...formData, category: val })}>
-                      <SelectTrigger className="h-12 rounded-xl bg-forest/5 border-transparent font-medium">
+                      <SelectTrigger id="c-cat" className="h-12 rounded-xl bg-white/[0.06] border-white/10 font-medium text-cream">
                         <SelectValue placeholder="Select a topic..." />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -270,11 +276,12 @@ function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-xs uppercase tracking-widest text-forest-deep/60">Your Message *</Label>
+                    <Label htmlFor="c-msg" className="text-xs uppercase tracking-widest text-cream/80">Your Message *</Label>
                     <textarea
+                      id="c-msg"
                       required
                       placeholder="How can we help you today?"
-                      className="w-full min-h-[120px] p-4 rounded-xl bg-forest/5 border border-transparent focus:border-forest/20 focus:bg-white focus:outline-none transition-colors resize-y text-sm"
+                      className="w-full min-h-[120px] p-4 rounded-xl bg-white/[0.06] border border-transparent focus:border-forest/20 focus:bg-card focus:outline-none transition-colors resize-y text-sm"
                       value={formData.message}
                       onChange={e => setFormData({ ...formData, message: e.target.value })}
                     />

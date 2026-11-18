@@ -91,6 +91,8 @@ function EventsManagement() {
     image: string;
     gallery: string[];
     recapVideoUrl: string;
+    ticketUrl: string;
+    dateLabel: string;
     categories: { name: string; price: number; available: number; facilities: string }[];
   }>({
     name: "",
@@ -104,6 +106,8 @@ function EventsManagement() {
     image: "",
     gallery: [],
     recapVideoUrl: "",
+    ticketUrl: "",
+    dateLabel: "",
     categories: [],
   });
 
@@ -262,7 +266,7 @@ function EventsManagement() {
       } else {
         const payload = {
           ...eventForm,
-          price: eventForm.price.startsWith("$") ? eventForm.price : `$${eventForm.price}`,
+          price: !eventForm.price ? "" : eventForm.price.startsWith("$") ? eventForm.price : `$${eventForm.price}`,
           capacity: capacityNum,
           categories: fullCategories
         };
@@ -295,13 +299,15 @@ function EventsManagement() {
       subtitle: event.subtitle || "",
       date: event.date,
       location: event.location,
-      price: generalCat ? String(generalCat.price) : event.price.replace("$", ""),
+      price: generalCat ? String(generalCat.price) : (event.price || "").replace("$", ""),
       capacity: generalCat ? String(generalCat.available) : String(event.capacity),
       generalFacilities: generalCat ? (generalCat.facilities || "") : "",
       description: event.description || "",
       image: event.image || "",
       gallery: (event as any).gallery || [],
       recapVideoUrl: (event as any).recapVideoUrl || "",
+      ticketUrl: (event as any).ticketUrl || "",
+      dateLabel: (event as any).dateLabel || "",
       categories: extraCats.map(c => ({ ...c, facilities: c.facilities || "" })),
     });
     setIsEventDialogOpen(true);
@@ -399,6 +405,8 @@ function EventsManagement() {
                 image: "",
                 gallery: [],
                 recapVideoUrl: "",
+                ticketUrl: "",
+                dateLabel: "",
                 categories: [],
               });
               setIsEventDialogOpen(true);
@@ -707,13 +715,32 @@ function EventsManagement() {
                   className="h-11 rounded-xl" required
                 />
               </div>
+              <div className="col-span-2 space-y-2">
+                <Label>Dates shown on the card</Label>
+                <Input
+                  value={eventForm.dateLabel}
+                  onChange={e => setEventForm({ ...eventForm, dateLabel: e.target.value })}
+                  placeholder="e.g. Mar 6–8, 2027  (leave blank to use the date above)"
+                  className="h-11 rounded-xl"
+                />
+              </div>
+              <div className="col-span-2 space-y-2">
+                <Label>Zeffy ticket link (Buy Tickets button)</Label>
+                <Input
+                  type="url"
+                  value={eventForm.ticketUrl}
+                  onChange={e => setEventForm({ ...eventForm, ticketUrl: e.target.value })}
+                  placeholder="https://www.zeffy.com/ticketing/your-event"
+                  className="h-11 rounded-xl"
+                />
+              </div>
               <div className="space-y-2">
                 <Label>Base Ticket Price ($)</Label>
                 <Input
                   value={eventForm.price}
                   onChange={e => setEventForm({ ...eventForm, price: e.target.value })}
-                  placeholder="25.00"
-                  className="h-11 rounded-xl" required
+                  placeholder="Optional — tickets are sold on Zeffy"
+                  className="h-11 rounded-xl"
                 />
               </div>
               <div className="col-span-1 space-y-2">

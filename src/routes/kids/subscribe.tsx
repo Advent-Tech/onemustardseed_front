@@ -150,10 +150,10 @@ function KidsSubscribePage() {
    // Already subscribed banner
    if (alreadySubscribed) {
       return (
-         <div className="bg-[#FAF7EE] min-h-screen flex flex-col">
+         <div className="theme-cinema min-h-screen flex flex-col">
             <SiteHeader />
             <main className="flex-grow pt-24 flex items-center justify-center px-6">
-               <div className="max-w-lg w-full bg-white rounded-[3rem] p-12 text-center border border-[#EFECE3] shadow-2xl">
+               <div className="max-w-lg w-full bg-card rounded-[3rem] p-12 text-center border border-white/10 shadow-2xl">
                   <div className="h-24 w-24 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-8">
                      <CheckCircle2 className="h-12 w-12 text-emerald-500" />
                   </div>
@@ -161,7 +161,7 @@ function KidsSubscribePage() {
                      <Crown className="h-4 w-4" />
                      <span className="text-xs font-bold uppercase tracking-widest capitalize">{subscriptionType || "Active"} Member</span>
                   </div>
-                  <h1 className="font-display text-4xl font-bold text-forest-deep mb-4">You're Already In!</h1>
+                  <h1 className="font-display text-4xl font-bold text-cream mb-4">You're Already In!</h1>
                   <p className="text-muted-foreground mb-8 leading-relaxed">
                      You already have an active KidsBibleFlix {subscriptionType === "lifetime" ? "lifetime" : subscriptionType} subscription.
                      Head to the library to start watching!
@@ -177,7 +177,7 @@ function KidsSubscribePage() {
    }
 
    return (
-      <div className="bg-[#FAFAFA] min-h-screen flex flex-col">
+      <div className="theme-cinema min-h-screen flex flex-col">
          <SiteHeader />
          <main className="flex-grow pt-24">
             {/* Header */}
@@ -187,11 +187,11 @@ function KidsSubscribePage() {
                      <Sparkles className="h-4 w-4" />
                      <span className="text-[10px] font-black uppercase tracking-widest">Join Thousands of Families</span>
                   </div>
-                  <h1 className="font-display text-5xl sm:text-6xl font-bold tracking-tight text-gray-900 mb-8 leading-tight">
+                  <h1 className="font-display text-5xl sm:text-6xl font-bold tracking-tight text-cream mb-8 leading-tight">
                      Unlock the World of <br />
-                     <span className="italic text-blue-600">Pure Wonder</span>
+                     <span className="italic text-gold">Pure Wonder</span>
                   </h1>
-                  <p className="text-gray-500 text-lg leading-relaxed">
+                  <p className="text-cream/70 text-lg leading-relaxed">
                      Join thousands of families who trust KidsBibleFlix for safe, faith-building content. No ads, no hidden fees, just wonder.
                   </p>
                </div>
@@ -231,28 +231,28 @@ function KidsSubscribePage() {
             </section>
 
             {/* Trust Badges */}
-            <section className="py-24 bg-white">
+            <section className="py-24 bg-card">
                <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-3 gap-12">
                   <div className="text-center">
-                     <div className="mx-auto h-16 w-16 rounded-3xl bg-blue-50 text-blue-600 flex items-center justify-center mb-6">
+                     <div className="mx-auto h-16 w-16 rounded-3xl bg-gold/10 text-gold flex items-center justify-center mb-6">
                         <ShieldCheck className="h-8 w-8" />
                      </div>
-                     <h4 className="font-bold text-gray-900 mb-2">Secure Checkout</h4>
-                     <p className="text-sm text-gray-500">Industry-standard 256-bit SSL encryption for all transactions.</p>
+                     <h4 className="font-bold text-cream mb-2">Secure Checkout</h4>
+                     <p className="text-sm text-cream/70">Industry-standard 256-bit SSL encryption for all transactions.</p>
                   </div>
                   <div className="text-center">
                      <div className="mx-auto h-16 w-16 rounded-3xl bg-rose-50 text-rose-500 flex items-center justify-center mb-6">
                         <Users className="h-8 w-8" />
                      </div>
-                     <h4 className="font-bold text-gray-900 mb-2">Family Focused</h4>
-                     <p className="text-sm text-gray-500">Every piece of content is hand-picked and vetted by our pastoral team.</p>
+                     <h4 className="font-bold text-cream mb-2">Family Focused</h4>
+                     <p className="text-sm text-cream/70">Every piece of content is hand-picked and vetted by our pastoral team.</p>
                   </div>
                   <div className="text-center">
                      <div className="mx-auto h-16 w-16 rounded-3xl bg-amber-50 text-amber-600 flex items-center justify-center mb-6">
                         <CreditCard className="h-8 w-8" />
                      </div>
-                     <h4 className="font-bold text-gray-900 mb-2">No Surprises</h4>
-                     <p className="text-sm text-gray-500">Clear pricing with no auto-renewal tricks. We'll remind you before any charge.</p>
+                     <h4 className="font-bold text-cream mb-2">No Surprises</h4>
+                     <p className="text-sm text-cream/70">Clear pricing with no auto-renewal tricks. We'll remind you before any charge.</p>
                   </div>
                </div>
             </section>

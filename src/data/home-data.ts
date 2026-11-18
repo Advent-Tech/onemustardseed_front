@@ -1,64 +1,73 @@
-export const FEATURED_PROJECTS = [
-  { 
-    id: "kids-flix",
-    img: "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&q=80&w=800",
-    tag: "Watch", 
-    title: "Kid’s Bible Flix", 
-    desc: "Safe, wonder-filled Bible stories, songs, and adventures for kids.", 
-    cta: "Start Watching",
-    to: "/kids"
-  },
-  { 
-    id: "newsletter",
-    img: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&q=80&w=800",
-    tag: "Join", 
-    title: "Newsletter", 
-    desc: "Get free family devotionals, curriculum samples, and the latest releases.", 
-    cta: "Subscribe Now",
-    to: "/newsletter"
-  },
-  { 
-    id: "podcast",
-    img: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=800",
-    tag: "Podcast", 
-    title: "God’s Great Earth", 
-    desc: "A weekly journey through creation, science, and Scripture.", 
-    cta: "Listen Now",
-    to: "/podcast"
-  },
-  { 
-    id: "dinosaur-encounter",
-    img: "https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&q=80&w=800",
-    tag: "Events", 
-    title: "Dinosaur Encounter", 
-    desc: "Experience a thrilling, faith-building live dinosaur encounter.", 
-    cta: "View Events",
-    to: "/events"
-  },
-  { 
-    id: "about-us",
-    img: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=800",
-    tag: "History", 
-    title: "About Us", 
-    desc: "Discover our journey, mission, and the history behind our ministry.", 
-    cta: "Read Our Story",
-    to: "/about"
-  },
-  { 
-    id: "prayer",
-    img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=800",
-    tag: "Live Event", 
-    title: "Week of Prayer Online", 
-    desc: "Join thousands worldwide for 7 nights of guided prayer.", 
-    cta: "Join Free",
-    to: "/prayer"
-  },
-];
+import imgKidsFlix from "@/assets/oms/card-kidsbibleflix.webp";
+import imgNewsletter from "@/assets/oms/card-newsletter.webp";
+import imgGge from "@/assets/oms/card-gge.webp";
+import imgLive from "@/assets/oms/card-live-shows.webp";
+import imgAbout from "@/assets/oms/card-about.webp";
+import imgPrayer from "@/assets/oms/card-prayer.webp";
 
+/** Homepage "Section Two" — copy and images supplied by the client (Homepage Document OMS Website). */
+export const FEATURED_PROJECTS = [
+  {
+    id: "kids-flix",
+    img: imgKidsFlix,
+    tag: "Watch",
+    title: "Kids Bible Flix",
+    desc: "Bible stories, songs, and faith-filled videos made just for kids.",
+    cta: "Start watching",
+    to: "/kids",
+  },
+  {
+    id: "newsletter",
+    img: imgNewsletter,
+    tag: "Join",
+    title: "Newsletter",
+    desc: "Fresh updates, family resources, and encouragement from One Mustard Seed.",
+    cta: "Subscribe",
+    to: "/newsletter",
+  },
+  {
+    id: "podcast",
+    img: imgGge,
+    tag: "Listen",
+    title: "God’s Great Earth",
+    desc: "A fun audio adventure through nature, science, Scripture, and song.",
+    cta: "Listen now",
+    to: "/podcast",
+  },
+  {
+    id: "live-stage-shows",
+    img: imgLive,
+    tag: "Live",
+    title: "Live Stage Shows",
+    desc: "Engaging live experiences that bring faith, adventure, and unforgettable storytelling to the stage.",
+    cta: "See events",
+    to: "/events",
+  },
+  {
+    id: "about-us",
+    img: imgAbout,
+    tag: "About",
+    title: "About Us",
+    desc: "Meet the team helping kids know God through media, events, and resources.",
+    cta: "Meet the team",
+    to: "/about",
+  },
+  {
+    id: "prayer",
+    img: imgPrayer,
+    tag: "Watch",
+    title: "Week of Prayer Online",
+    desc: "Guided prayer videos and resources created for schools and classrooms.",
+    cta: "Explore",
+    to: "/prayer",
+  },
+] as const;
+
+/** Homepage "Section One" */
 export const HERO_CONTENT = {
   subtitle: "A faith-centered media ministry",
-  title: "Wonder. Explore. Belong.",
-  description: "Discover the Creator through His creation.",
-  primaryCTA: { label: "Watch Now", href: "/films" },
-  secondaryCTA: { label: "Explore More", href: "#projects" }
+  title: "Helping Kids Know God",
+  description: "Through Media, Live Events & Resources",
+  primaryCTA: { label: "Live Events", href: "/events" },
+  secondaryCTA: { label: "Explore Now", href: "#projects" },
 };

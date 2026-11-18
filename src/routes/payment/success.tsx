@@ -82,10 +82,10 @@ function PaymentSuccessPage() {
   }, [session_id]);
 
   return (
-    <div className="bg-[#FAF7EE] min-h-screen flex flex-col">
+    <div className="bg-background min-h-screen flex flex-col">
       <SiteHeader />
       <main className="flex-grow pt-32 pb-24 flex items-center justify-center px-6">
-        <div className="max-w-lg w-full bg-white rounded-[3rem] p-12 text-center border border-[#EFECE3] shadow-2xl relative overflow-hidden">
+        <div className="max-w-lg w-full bg-card rounded-[3rem] p-12 text-center border border-white/10 shadow-2xl relative overflow-hidden">
           {loading ? (
             <div className="space-y-6 py-12">
               <div className="w-16 h-16 border-4 border-gold/30 border-t-gold rounded-full animate-spin mx-auto"></div>
@@ -96,7 +96,7 @@ function PaymentSuccessPage() {
               <div className="h-24 w-24 rounded-full bg-rose-50 flex items-center justify-center mx-auto mb-4 border border-rose-100">
                 <span className="text-rose-500 text-4xl">✕</span>
               </div>
-              <h1 className="font-display text-3xl font-bold text-gray-900">Verification Failed</h1>
+              <h1 className="font-display text-3xl font-bold text-cream">Verification Failed</h1>
               <p className="text-muted-foreground leading-relaxed">{error}</p>
               <Link to="/" className="block w-full py-4 rounded-2xl bg-forest-deep text-cream font-bold text-sm uppercase tracking-widest shadow-xl hover:bg-forest-deep/90 transition-all text-center">
                 Back to Safety
@@ -114,7 +114,7 @@ function PaymentSuccessPage() {
                     <Crown className="h-4 w-4" />
                     <span className="text-xs font-bold uppercase tracking-widest capitalize">{details?.purchase?.plan} Member</span>
                   </div>
-                  <h1 className="font-display text-4xl font-bold text-forest-deep">Welcome to the Family!</h1>
+                  <h1 className="font-display text-4xl font-bold text-cream">Welcome to the Family!</h1>
                   <p className="text-muted-foreground leading-relaxed">
                     Your subscription of <strong>{details?.purchase?.amount}</strong> is now active. You have full access to the KidsBibleFlix library.
                   </p>
@@ -130,9 +130,9 @@ function PaymentSuccessPage() {
                     <Ticket className="h-4 w-4" />
                     <span className="text-xs font-bold uppercase tracking-widest">Ticket Confirmed</span>
                   </div>
-                  <h1 className="font-display text-4xl font-bold text-forest-deep">Registration Successful!</h1>
+                  <h1 className="font-display text-4xl font-bold text-cream">Registration Successful!</h1>
                   <p className="text-muted-foreground leading-relaxed">
-                    Your ticket for <strong>{details?.ticket?.category} Admission</strong> has been confirmed. Ticket ID: <code className="bg-muted px-2 py-1 rounded text-sm font-mono font-bold text-forest-deep">{details?.ticket?.ticketId}</code>
+                    Your ticket for <strong>{details?.ticket?.category} Admission</strong> has been confirmed. Ticket ID: <code className="bg-muted px-2 py-1 rounded text-sm font-mono font-bold text-cream">{details?.ticket?.ticketId}</code>
                   </p>
                   <Link to="/profile" className="block w-full py-5 rounded-3xl bg-forest-deep text-cream font-bold text-sm uppercase tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-2">
                     View My Tickets <ArrowRight className="h-4 w-4" />
@@ -146,7 +146,7 @@ function PaymentSuccessPage() {
                     <ShoppingBag className="h-4 w-4" />
                     <span className="text-xs font-bold uppercase tracking-widest">Order Confirmed</span>
                   </div>
-                  <h1 className="font-display text-4xl font-bold text-forest-deep">Thank You For Your Order!</h1>
+                  <h1 className="font-display text-4xl font-bold text-cream">Thank You For Your Order!</h1>
                   <p className="text-muted-foreground leading-relaxed">
                     Your transaction was completed successfully. You will receive an email confirmation with your shipment tracking details shortly.
                   </p>
@@ -162,7 +162,7 @@ function PaymentSuccessPage() {
                     <Crown className="h-4 w-4" />
                     <span className="text-xs font-bold uppercase tracking-widest">Access Granted</span>
                   </div>
-                  <h1 className="font-display text-4xl font-bold text-forest-deep">Registration Successful!</h1>
+                  <h1 className="font-display text-4xl font-bold text-cream">Registration Successful!</h1>
                   <p className="text-muted-foreground leading-relaxed">
                     Your access to <strong>{details?.seasonTitle || 'the Week of Prayer season'}</strong> is now active.
                   </p>
@@ -178,7 +178,7 @@ function PaymentSuccessPage() {
                     <Film className="h-4 w-4" />
                     <span className="text-xs font-bold uppercase tracking-widest">{details?.purchaseType === 'buy' ? 'Purchased' : 'Rented'}</span>
                   </div>
-                  <h1 className="font-display text-4xl font-bold text-forest-deep">Payment Successful!</h1>
+                  <h1 className="font-display text-4xl font-bold text-cream">Payment Successful!</h1>
                   <p className="text-muted-foreground leading-relaxed">
                     You now have access to watch <strong>{details?.filmTitle || 'the film'}</strong>.
                   </p>
@@ -195,7 +195,7 @@ function PaymentSuccessPage() {
                     <Heart className="h-4 w-4 fill-current" />
                     <span className="text-xs font-bold uppercase tracking-widest">Donation Received</span>
                   </div>
-                  <h1 className="font-display text-4xl font-bold text-forest-deep">Thank You For Your Support!</h1>
+                  <h1 className="font-display text-4xl font-bold text-cream">Thank You For Your Support!</h1>
                   <p className="text-muted-foreground leading-relaxed">
                     Your generous donation of <strong>${details?.amount || '0'}</strong> has been received. Your stewardship fuels the production of faith-building media.
                   </p>

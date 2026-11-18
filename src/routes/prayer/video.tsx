@@ -15,7 +15,7 @@ function VideoAccessPage() {
   const { url, title, day, desc } = search;
 
   return (
-    <div className="bg-background min-h-screen flex flex-col">
+    <div className="theme-cinema min-h-screen flex flex-col">
       <SiteHeader />
       <main className="flex-grow pt-24 bg-foreground"> {/* Dark background for video focus */}
         <div className="mx-auto max-w-7xl px-6 py-12">

@@ -65,6 +65,11 @@ export function mediaUrl(path?: string | null): string {
     return clean;
   }
 
+  // Files bundled with the site itself (public/ or imported assets) are not on the backend
+  if (/^\/(assets|media|downloads|src|@fs)\//.test(clean)) {
+    return clean;
+  }
+
   // If it points to an upload endpoint on ANY host (Vercel, localhost, old IP, etc.)
   // e.g. https://movie-backend-drab.vercel.app/api/upload/file/xyz.jpg
   // or http://localhost:5000/uploads/xyz.jpg

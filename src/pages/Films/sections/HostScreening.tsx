@@ -37,7 +37,7 @@ const features = [
 
 export function HostMovieNight() {
   return (
-    <section className="py-24 bg-[#0a0f08] relative border-t border-white/5">
+    <section className="py-24 bg-[#0a0a0b] relative border-t border-white/5">
       <div className="mx-auto max-w-7xl px-6 relative z-10">
         
         {/* Main Info Section */}
@@ -129,12 +129,12 @@ export function PremierePartner() {
   };
 
   return (
-    <section className="pb-24 pt-4 bg-[#0a0f08] relative">
+    <section className="pb-24 pt-4 bg-[#0a0a0b] relative">
       <div className="mx-auto max-w-7xl px-6 relative z-10">
         {/* Registration Form Section */}
         <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border border-gold/20">
           <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070" alt="Cinematic Theater" className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#050704] via-[#050704]/95 to-forest-deep/90" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#050506] via-[#050506]/95 to-forest-deep/90" />
           
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 relative z-10 p-8 md:p-12 lg:p-16 items-center">
             <div className="space-y-10">

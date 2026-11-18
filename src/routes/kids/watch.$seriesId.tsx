@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { Play, ArrowLeft, ChevronRight, Sparkles, Star, Lock, Mic2, Eye, Crown } from "lucide-react";
+import { Play, ArrowLeft, Lock, Mic2, Eye, Crown, ChevronDown } from "lucide-react";
+import logoImg from "@/assets/logo2/image3.png";
 import { mediaUrl, API_URL, getVimeoEmbedUrl } from "@/lib/api";
 
 
@@ -114,57 +115,62 @@ function KidsWatchPage() {
     setEpisodeViews(initial);
   }, [episodes]);
 
+  const activeEpisode = episodes.find((e) => e.id === activeEpisodeId) || episodes[0] || null;
+  const currentTitle = activeEpisode?.title || series?.name;
+  const currentDesc = activeEpisode?.description || series?.desc;
+  const currentLink = activeEpisode?.link || series?.trailer;
+  const currentAudio = activeEpisode?.audioLink || series?.audioLink;
+  const fallbackThumb = "https://images.unsplash.com/photo-1502086223501-7ea2443054f1?w=800&h=400&fit=crop";
+
   if (checkingAccess || !series) {
     return (
-      <div className="bg-[#FAFAFA] min-h-screen flex flex-col">
+      <div className="theme-cinema min-h-screen flex flex-col">
         <SiteHeader />
-        <main className="flex-grow pt-32 pb-20 flex items-center justify-center">
-          <div className="animate-pulse flex flex-col items-center gap-4">
-            <div className="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-            <p className="text-muted-foreground font-medium uppercase tracking-widest text-sm">{checkingAccess ? "Verifying Access..." : "Loading Adventure..."}</p>
+        <main className="mx-auto w-full max-w-[1700px] flex-grow px-4 pb-16 pt-24 sm:px-6">
+          <div className="grid gap-6 lg:grid-cols-[1fr_400px]">
+            <div className="skeleton aspect-video rounded-2xl" />
+            <div className="space-y-3">
+              {[0, 1, 2, 3].map((i) => <div key={i} className="skeleton h-24 rounded-xl" />)}
+            </div>
           </div>
+          <p className="sr-only" role="status">{checkingAccess ? "Verifying access" : "Loading"}</p>
         </main>
-        <SiteFooter />
       </div>
     );
   }
 
-  // No access — show paywall overlay
+  // No access — blurred preview + plans
   if (!hasAccess) {
     return (
-      <div className="bg-[#FAFAFA] min-h-screen flex flex-col">
+      <div className="theme-cinema min-h-screen flex flex-col">
         <SiteHeader />
         <main className="flex-grow pt-24">
-          <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-            <Link to="/kids/library" className="inline-flex items-center gap-2 text-sm font-bold text-gray-400 uppercase tracking-widest hover:text-forest-deep transition-all mb-12">
-              <ArrowLeft className="h-4 w-4" /> Back to Library
+          <div className="mx-auto max-w-4xl px-6 py-12 text-center">
+            <Link to="/kids/library" className="mb-10 inline-flex items-center gap-2 text-sm font-semibold text-cream/60 transition hover:text-cream">
+              <ArrowLeft className="h-4 w-4" /> Back to library
             </Link>
-            {/* Blurred series preview */}
-            <div className="relative rounded-[3rem] overflow-hidden mb-12 shadow-2xl">
-              <img src={mediaUrl(series.img || series.image)} alt={series.name} className="w-full aspect-video object-cover blur-md opacity-40" onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1502086223501-7ea2443054f1?w=800&h=400&fit=crop"; }} />
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-forest-deep/60">
-                <div className="h-20 w-20 rounded-full bg-white/10 backdrop-blur flex items-center justify-center mb-6 border border-white/20">
-                  <Lock className="h-10 w-10 text-gold" />
-                </div>
-                <h1 className="text-white font-display text-3xl font-bold mb-2">{series.name}</h1>
-                <p className="text-white/60 text-sm">{series.topic} Series · {series.episodeCount || 0} Episodes</p>
+            <div className="relative mb-10 overflow-hidden rounded-2xl">
+              <img src={mediaUrl(series.img || series.image) || fallbackThumb} alt="" className="aspect-video w-full object-cover opacity-40 blur-md" onError={(e) => { (e.target as HTMLImageElement).src = fallbackThumb; }} />
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 p-6">
+                <div className="mb-5 grid h-16 w-16 place-items-center rounded-full border border-white/20 bg-white/10 backdrop-blur"><Lock className="h-7 w-7 text-gold" /></div>
+                <h1 className="font-display text-3xl font-semibold text-cream">{series.name}</h1>
+                <p className="mt-1 text-sm text-cream/60">{series.topic} series · {series.episodeCount || 0} episodes</p>
               </div>
             </div>
-            <div className="bg-white rounded-[3rem] p-12 border border-[#EFECE3] shadow-xl">
-              <Crown className="h-12 w-12 text-gold mx-auto mb-6" />
-              <h2 className="font-display text-3xl font-bold text-forest-deep mb-4">Unlock This Series</h2>
-              <p className="text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">
-                Subscribe to KidsBibleFlix to watch <strong>{series.name}</strong> and access the full library of kid-safe Bible content.
+            <div className="rounded-3xl border border-white/10 bg-cinema-raise p-8 sm:p-12">
+              <Crown className="mx-auto mb-5 h-10 w-10 text-gold" />
+              <h2 className="font-display text-3xl font-semibold text-cream">Unlock this series</h2>
+              <p className="mx-auto mt-3 max-w-md leading-relaxed text-cream/70">
+                Subscribe to Kids Bible Flix to watch <strong className="text-cream">{series.name}</strong> and the full library of kid-safe Bible videos.
               </p>
-              <div className="grid sm:grid-cols-2 gap-4 mb-8">
-                <Link to="/kids/subscribe" className="block py-5 rounded-3xl bg-forest-deep text-cream font-bold text-sm uppercase tracking-widest shadow-xl hover:bg-forest-deep/90 transition-all text-center">
-                  View Plans →
-                </Link>
-                <Link to="/kids/subscribe" className="block py-5 rounded-3xl bg-gold text-forest-deep font-bold text-sm uppercase tracking-widest shadow-xl hover:bg-gold/90 transition-all text-center">
-                  Get Lifetime — $99
-                </Link>
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                <Link to="/kids/subscribe" className="rounded-full bg-cream py-4 text-sm font-bold uppercase tracking-widest text-black transition hover:scale-[1.02]">View plans</Link>
+                <Link to="/kids/subscribe" className="rounded-full bg-gradient-gold py-4 text-sm font-bold uppercase tracking-widest text-gold-foreground transition hover:scale-[1.02]">Get lifetime — $99</Link>
               </div>
-              <p className="text-xs text-muted-foreground">Already subscribed? <Link to="/login" search={{ redirect: `/kids/watch/${seriesId}`, theme: "kids" }} className="text-gold font-bold hover:underline">Sign in</Link></p>
+              <p className="mt-6 text-xs text-cream/50">
+                Already subscribed?{" "}
+                <Link to="/login" search={{ redirect: `/kids/watch/${seriesId}`, theme: "kids" }} className="font-bold text-gold hover:underline">Sign in</Link>
+              </p>
             </div>
           </div>
         </main>
@@ -173,183 +179,108 @@ function KidsWatchPage() {
     );
   }
 
-  const activeEpisode = episodes.find(e => e.id === activeEpisodeId) || episodes[0] || null;
-  const currentTitle = activeEpisode?.title || series.name;
-  const currentDesc = activeEpisode?.description || series.desc;
-  const currentLink = activeEpisode?.link || series.trailer;
-  const currentAudio = activeEpisode?.audioLink || series.audioLink;
-
   return (
-    <div className="bg-[#FAFAFA] min-h-screen flex flex-col">
+    <div className="theme-cinema min-h-screen flex flex-col">
       <SiteHeader />
-      <main className="flex-grow pt-24 bg-white">
-        <div className="mx-auto max-w-[1600px] px-6 py-8">
-          <div className="mb-8 relative flex items-center justify-center min-h-[40px]">
-            <Link to="/kids/library" className="absolute left-0 flex items-center gap-2 text-sm font-bold text-gray-400 uppercase tracking-widest hover:text-blue-600 transition-all">
-              <ArrowLeft className="h-4 w-4" /> Back to Library
-            </Link>
-            <div className="hidden sm:flex items-center justify-center gap-4 w-full max-w-[60%]">
-              <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-yellow-400 rounded-full shrink-0">Now Playing</span>
-              <h1 className="font-display text-xl font-bold text-gray-900 truncate">
-                {series.name}{series.name !== currentTitle ? `: ${currentTitle}` : ''}
-              </h1>
-            </div>
-          </div>
+      <main className="flex-grow pt-20 sm:pt-24">
+        <div className="mx-auto max-w-[1700px] px-4 pb-16 sm:px-6">
+          <Link to="/kids/library" className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-cream/60 transition hover:text-cream">
+            <ArrowLeft className="h-4 w-4" /> Library
+          </Link>
 
-          <div className="grid lg:grid-cols-[1fr_400px] gap-8">
-            {/* Player Area */}
-            <div className="space-y-8">
-              <div className="relative aspect-video rounded-[3rem] overflow-hidden bg-gray-900 shadow-2xl border-[12px] border-white group">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_400px] xl:grid-cols-[minmax(0,1fr)_420px]">
+            {/* Player + details */}
+            <div>
+              <div className="relative aspect-video overflow-hidden rounded-2xl bg-black ring-1 ring-white/10">
                 {currentLink ? (
                   <iframe
+                    key={activeEpisodeId}
                     src={getVimeoEmbedUrl(currentLink, { autoplay: 1, title: 0, byline: 0, portrait: 0 })}
                     title={currentTitle}
-                    className="absolute inset-0 w-full h-full"
+                    className="absolute inset-0 h-full w-full"
                     allow="autoplay; fullscreen; picture-in-picture"
                     allowFullScreen
                   />
                 ) : currentAudio ? (
-                  <div className="absolute inset-0 w-full h-full bg-forest-deep flex flex-col items-center justify-center p-6 text-cream">
-                    <img
-                      src={mediaUrl(activeEpisode?.img || series.img || series.image)}
-                      alt={currentTitle}
-                      className="absolute inset-0 w-full h-full object-cover opacity-20"
-                      onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1502086223501-7ea2443054f1?w=800&h=400&fit=crop"; }}
-                    />
-                    <div className="relative z-10 flex flex-col items-center w-full max-w-md">
-                      <Mic2 className="h-20 w-20 text-gold mb-6 opacity-90 drop-shadow-lg" />
-                      <h3 className="text-2xl font-bold mb-8 text-center drop-shadow-md">{currentTitle}</h3>
-                      <audio controls src={currentAudio} className="w-full shadow-2xl rounded-full" />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-cream">
+                    <img src={mediaUrl(activeEpisode?.img || series.img || series.image)} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" onError={(e) => { (e.target as HTMLImageElement).src = fallbackThumb; }} />
+                    <div className="relative z-10 flex w-full max-w-md flex-col items-center">
+                      <Mic2 className="mb-5 h-16 w-16 text-gold" />
+                      <h3 className="mb-6 text-center text-2xl font-bold">{currentTitle}</h3>
+                      <audio controls src={currentAudio} className="w-full" />
                     </div>
                   </div>
                 ) : (
                   <>
-                    <img
-                      src={mediaUrl(activeEpisode?.img || series.img || series.image)}
-                      alt={currentTitle}
-                      className="w-full h-full object-cover opacity-50"
-                      onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1502086223501-7ea2443054f1?w=800&h=400&fit=crop"; }}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-black/60 px-6 py-3 rounded-full text-white font-bold tracking-widest uppercase text-sm">
-                        Content Unavailable
-                      </div>
+                    <img src={mediaUrl(activeEpisode?.img || series.img || series.image)} alt="" className="h-full w-full object-cover opacity-40" onError={(e) => { (e.target as HTMLImageElement).src = fallbackThumb; }} />
+                    <div className="absolute inset-0 grid place-items-center">
+                      <span className="rounded-full bg-black/70 px-5 py-2.5 text-sm font-bold uppercase tracking-widest text-cream">Video coming soon</span>
                     </div>
                   </>
                 )}
               </div>
 
-              <div className="p-10 rounded-[3rem] bg-white border border-gray-100 shadow-sm transition-all duration-300">
-                <div className="flex items-center justify-between mb-8">
-                  <div>
-                    <h2 className="font-display text-3xl font-bold text-gray-900 mb-2">{series.name}</h2>
-                    <p className="text-blue-600 font-bold uppercase tracking-[0.2em] text-xs">{currentTitle}</p>
-                  </div>
-                  <div className="flex gap-4">
-                    {/* <button className="h-14 w-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition">
-                      <Share2 className="h-6 w-6" />
-                    </button> */}
-                  </div>
-                </div>
-                <p className="text-gray-500 leading-relaxed max-w-3xl whitespace-pre-wrap">
-                  {currentDesc}
-                </p>
-                <div className="mt-8 pt-8 border-t border-gray-100 flex flex-wrap gap-8">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 block mb-1">Focus Virtue</span>
-                    <span className="font-bold text-purple-600">{series.topic}</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 block mb-1">Total Episodes</span>
-                    <span className="font-bold text-emerald-600">{episodes.length}</span>
-                  </div>
-                  {activeEpisode && (
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 block mb-1">Episode Views</span>
-                      <span className="font-bold text-blue-500 flex items-center gap-1">
-                        <Eye className="h-4 w-4" />
-                        {(episodeViews[activeEpisode.id] ?? activeEpisode.views ?? 0).toLocaleString()}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+              <h1 className="mt-4 font-display text-xl font-semibold leading-snug text-cream sm:text-2xl">
+                {series.name}{series.name !== currentTitle ? `: ${currentTitle}` : ""}
+              </h1>
 
-            {/* Up Next Sidebar */}
-            <div className="space-y-8">
-              <div className="p-8 rounded-[3rem] bg-white border border-gray-100 shadow-sm">
-                <h3 className="font-bold text-gray-900 mb-8 flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-yellow-500" />
-                  More to Watch
-                </h3>
-                <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                  {episodes.map((ep) => (
-                    <div
-                      key={ep.id}
-                      className={`flex gap-4 group cursor-pointer p-3 rounded-2xl transition-all ${activeEpisodeId === ep.id ? 'bg-blue-50/80 ring-1 ring-blue-100' : 'hover:bg-gray-50'}`}
-                      onClick={() => setActiveEpisodeId(ep.id)}
-                    >
-                      <div className={`relative w-32 aspect-video rounded-2xl overflow-hidden bg-gray-100 shrink-0 border-2 transition-all ${activeEpisodeId === ep.id ? 'border-blue-500 shadow-md' : 'border-transparent group-hover:border-blue-300'}`}>
-                        <img
-                          src={mediaUrl(ep.img)}
-                          alt={ep.title}
-                          className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = series?.img || series?.image || "https://images.unsplash.com/photo-1502086223501-7ea2443054f1?w=400&h=200&fit=crop";
-                          }}
-                        />
-                        {activeEpisodeId !== ep.id && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Play className="h-6 w-6 text-white fill-current" />
-                          </div>
-                        )}
-                        {activeEpisodeId === ep.id && (
-                          <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center">
-                            <Play className="h-5 w-5 text-blue-600 fill-current" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="py-1">
-                        <h4 className={`text-sm font-bold transition-colors leading-tight ${activeEpisodeId === ep.id ? 'text-blue-600' : 'text-gray-800 group-hover:text-blue-500'}`}>
-                          {ep.title}
-                        </h4>
-                        {ep.description && (
-                          <p className="text-xs text-gray-400 mt-1 line-clamp-2">{ep.description}</p>
-                        )}
-                        <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                          <Eye className="h-3 w-3" />
-                          {(episodeViews[ep.id] ?? ep.views ?? 0).toLocaleString()} views
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                  {episodes.length === 0 && (
-                    <div className="text-center py-8 text-gray-400 text-sm">
-                      No episodes available.
-                    </div>
-                  )}
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <img src={logoImg} alt="" className="h-10 w-10 rounded-full bg-cream object-contain p-1" />
+                <div className="mr-auto leading-tight">
+                  <p className="text-sm font-semibold text-cream">Kids Bible Flix</p>
+                  <p className="text-xs text-cream/55">{episodes.length} episodes</p>
                 </div>
-                <Link to="/kids/library" className="w-full mt-8 py-4 rounded-2xl bg-gray-50 text-gray-400 font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all flex items-center justify-center gap-2">
-                  View Full Series <ChevronRight className="h-3 w-3" />
-                </Link>
+                {series.topic && <span className="rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-cream">{series.topic}</span>}
+                {activeEpisode && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-cream">
+                    <Eye className="h-3.5 w-3.5" /> {(episodeViews[activeEpisode.id] ?? activeEpisode.views ?? 0).toLocaleString()} views
+                  </span>
+                )}
               </div>
 
-              <div className="p-10 rounded-[3rem] bg-gradient-to-br from-yellow-400 to-orange-400 text-yellow-950 shadow-xl relative overflow-hidden group cursor-pointer">
-                <div className="absolute -right-4 -bottom-4 opacity-20 rotate-12 group-hover:rotate-45 transition-transform duration-700">
-                  <Star className="h-32 w-32" />
-                </div>
-                <h4 className="font-display text-2xl font-bold mb-4 italic">Parent Guide</h4>
-                <p className="text-xs font-bold text-yellow-900/70 leading-relaxed mb-6">
-                  Download the "{series.name}" discussion guide to talk about {series.topic} with your little ones tonight.
-                </p>
-                <button
-                  onClick={() => window.open(`${API_URL}/kids/sample-guide?series=${encodeURIComponent(series.name)}`, '_blank')}
-                  className="w-full py-4 rounded-2xl bg-yellow-950 text-white font-bold text-xs uppercase tracking-widest shadow-lg hover:translate-y-[-2px] transition-all">
-                  Get Guide
-                </button>
-              </div>
+              {currentDesc && (
+                <details className="group mt-4 rounded-xl bg-white/[0.06] p-4 text-sm leading-relaxed text-cream/85">
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-3 [&::-webkit-details-marker]:hidden">
+                    <span className="line-clamp-2 whitespace-pre-wrap group-open:line-clamp-none">{currentDesc}</span>
+                    <ChevronDown className="mt-0.5 h-4 w-4 shrink-0 transition group-open:rotate-180" />
+                  </summary>
+                </details>
+              )}
             </div>
+
+            {/* Up next */}
+            <aside aria-label="Up next">
+              <h2 className="mb-3 text-base font-semibold text-cream">Up next</h2>
+              <ul className="space-y-2 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1 [scrollbar-width:thin]">
+                {episodes.map((ep) => {
+                  const active = activeEpisodeId === ep.id;
+                  return (
+                    <li key={ep.id}>
+                      <button
+                        onClick={() => { setActiveEpisodeId(ep.id); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                        aria-current={active ? "true" : undefined}
+                        className={`group flex w-full gap-3 rounded-xl p-2 text-left transition ${active ? "bg-white/10" : "hover:bg-white/[0.06]"}`}
+                      >
+                        <div className="relative aspect-video w-40 shrink-0 overflow-hidden rounded-lg bg-white/5 sm:w-44">
+                          <img src={mediaUrl(ep.img)} alt="" loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { (e.target as HTMLImageElement).src = series?.img || series?.image || fallbackThumb; }} />
+                          {active && (
+                            <div className="absolute inset-0 grid place-items-center bg-black/55">
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-cream">Now playing</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0 py-0.5">
+                          <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-cream">{ep.title}</h3>
+                          <p className="mt-1 text-xs text-cream/55">Kids Bible Flix</p>
+                          <p className="text-xs text-cream/55">{(episodeViews[ep.id] ?? ep.views ?? 0).toLocaleString()} views</p>
+                        </div>
+                      </button>
+                    </li>
+                  );
+                })}
+                {episodes.length === 0 && <li className="py-8 text-center text-sm text-cream/50">No episodes available yet.</li>}
+              </ul>
+            </aside>
           </div>
         </div>
       </main>

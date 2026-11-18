@@ -110,11 +110,11 @@ function SupportPage() {
    const finalAmount = amount === "Custom" ? customAmount : amount;
 
    return (
-      <div className="bg-[#FAF7EE] min-h-screen flex flex-col">
+      <div className="bg-background text-foreground min-h-screen flex flex-col">
          <SiteHeader />
          <main className="flex-grow pt-24">
             {/* Simple Hero */}
-            <section className="py-20 bg-forest-deep text-cream relative overflow-hidden">
+            <section className="py-20 bg-forest-night text-cream relative overflow-hidden">
                <div className="absolute inset-0 opacity-10">
                   <div className="absolute top-0 right-0 w-96 h-96 bg-gold blur-[120px] rounded-full" />
                </div>
@@ -128,31 +128,31 @@ function SupportPage() {
             </section>
 
             {/* Partnership Program Flyer Info */}
-            <section className="py-20 bg-cream border-b border-forest/5 relative z-10">
+            <section className="py-20 border-b border-white/5 relative z-10">
                <div className="mx-auto max-w-7xl px-6 space-y-12">
                   <div className="text-center space-y-4 max-w-3xl mx-auto">
-                     <h2 className="text-4xl lg:text-5xl font-display font-bold text-forest-deep">One Mustard Seed <br/><span className="italic text-gold">Partnership Program</span></h2>
-                     <p className="text-forest-deep/70 text-lg leading-relaxed">
+                     <h2 className="text-4xl lg:text-5xl font-display font-bold text-cream">One Mustard Seed <br/><span className="italic text-gold">Partnership Program</span></h2>
+                     <p className="text-cream/75 text-lg leading-relaxed">
                         Join a special community helping kids and families grow closer to Jesus. When you become a One Mustard Seed Partner, you are not just giving from a distance. You are joining a special group of ministry friends who receive updates, behind-the-scenes stories, project previews, and opportunities to see the impact your support is making.
                      </p>
                   </div>
 
-                  <div className="flex flex-col md:flex-row items-center justify-center gap-4 bg-white rounded-full px-8 py-3 max-w-4xl mx-auto shadow-sm border border-forest/10 text-center md:text-left">
-                     <Badge className="bg-forest-deep text-cream hover:bg-forest-deep px-4 py-1.5 border-none"><span className="uppercase text-xs font-bold tracking-widest">Our Mission</span></Badge>
-                     <span className="font-semibold text-forest-deep">Equipping parents with tools to help kids grow in their walk with Jesus.</span>
+                  <div className="flex flex-col md:flex-row items-center justify-center gap-4 bg-card rounded-full px-8 py-3 max-w-4xl mx-auto shadow-sm border border-forest/10 text-center md:text-left">
+                     <Badge className="bg-gold/15 text-gold hover:bg-gold/15 px-4 py-1.5 border-none"><span className="uppercase text-xs font-bold tracking-widest">Our Mission</span></Badge>
+                     <span className="font-semibold text-cream">Equipping parents with tools to help kids grow in their walk with Jesus.</span>
                   </div>
 
                   <div className="grid md:grid-cols-3 gap-8 pt-6">
-                     <Card className="rounded-[2rem] border border-[#819e70]/30 shadow-md bg-[#f8faf6] relative overflow-hidden flex flex-col">
+                     <Card className="rounded-[2rem] border border-[#819e70]/30 shadow-md bg-white/[0.06] relative overflow-hidden flex flex-col">
                         <CardHeader className="text-center pb-2">
-                           <div className="mx-auto bg-[#e5efe0] h-16 w-16 rounded-full flex items-center justify-center mb-2">
-                              <Heart className="h-8 w-8 text-[#547543]" />
+                           <div className="mx-auto bg-white/10 h-16 w-16 rounded-full flex items-center justify-center mb-2">
+                              <Heart className="h-8 w-8 text-gold" />
                            </div>
-                           <CardTitle className="text-2xl font-display text-forest-deep">Seed Partners</CardTitle>
-                           <CardDescription className="text-[#547543] font-bold text-sm">$25–$99/month <span className="opacity-50 mx-1">|</span> $300–$1,199/year</CardDescription>
+                           <CardTitle className="text-2xl font-display text-cream">Seed Partners</CardTitle>
+                           <CardDescription className="text-gold font-bold text-sm">$25–$99/month <span className="opacity-50 mx-1">|</span> $300–$1,199/year</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4 flex-grow text-center">
-                           <p className="text-forest-deep/80 text-sm">
+                           <p className="text-cream/80 text-sm">
                               As our thank-you gift, Seed Partners receive Rich Aguilera's signed two-volume devotional set.
                            </p>
                         </CardContent>
@@ -163,19 +163,19 @@ function SupportPage() {
                         </div>
                      </Card>
 
-                     <Card className="rounded-[2rem] border border-[#dca646]/30 shadow-md bg-[#fffdf8] relative overflow-hidden flex flex-col">
+                     <Card className="rounded-[2rem] border border-[#dca646]/30 shadow-md bg-white/[0.06] relative overflow-hidden flex flex-col">
                         <CardHeader className="text-center pb-2">
-                           <div className="mx-auto bg-[#fbf3e0] h-16 w-16 rounded-full flex items-center justify-center mb-2">
+                           <div className="mx-auto bg-white/10 h-16 w-16 rounded-full flex items-center justify-center mb-2">
                               <Sparkles className="h-8 w-8 text-[#dca646]" />
                            </div>
-                           <CardTitle className="text-2xl font-display text-forest-deep">Growth Partners</CardTitle>
+                           <CardTitle className="text-2xl font-display text-cream">Growth Partners</CardTitle>
                            <CardDescription className="text-[#c68f27] font-bold text-sm">$100–$249/month <span className="opacity-50 mx-1">|</span> $1,200–$2,999/year</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4 flex-grow text-center">
-                           <p className="text-forest-deep/80 text-sm">
+                           <p className="text-cream/80 text-sm">
                               As our thank-you gifts, Growth Partners receive:
                            </p>
-                           <ul className="text-forest-deep/80 text-sm space-y-1.5 list-disc list-inside text-left mx-auto max-w-[200px]">
+                           <ul className="text-cream/80 text-sm space-y-1.5 list-disc list-inside text-left mx-auto max-w-[200px]">
                               <li>Kids Bible Flix access</li>
                               <li>Signed two-volume devotional set</li>
                               <li>Four signed books of choice</li>
@@ -188,19 +188,19 @@ function SupportPage() {
                         </div>
                      </Card>
 
-                     <Card className="rounded-[2rem] border border-[#c26e41]/30 shadow-md bg-[#fffaf8] relative overflow-hidden flex flex-col">
+                     <Card className="rounded-[2rem] border border-[#c26e41]/30 shadow-md bg-white/[0.06] relative overflow-hidden flex flex-col">
                         <CardHeader className="text-center pb-2">
-                           <div className="mx-auto bg-[#fbebe3] h-16 w-16 rounded-full flex items-center justify-center mb-2">
-                              <Globe className="h-8 w-8 text-[#c26e41]" />
+                           <div className="mx-auto bg-white/10 h-16 w-16 rounded-full flex items-center justify-center mb-2">
+                              <Globe className="h-8 w-8 text-gold" />
                            </div>
-                           <CardTitle className="text-2xl font-display text-forest-deep">Harvest Partners</CardTitle>
+                           <CardTitle className="text-2xl font-display text-cream">Harvest Partners</CardTitle>
                            <CardDescription className="text-[#a4542a] font-bold text-sm">$250+/month <span className="opacity-50 mx-1">|</span> $3,000+/year</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4 flex-grow text-center">
-                           <p className="text-forest-deep/80 text-sm">
+                           <p className="text-cream/80 text-sm">
                               As our thank-you gifts, Harvest Partners receive:
                            </p>
-                           <ul className="text-forest-deep/80 text-sm space-y-1.5 list-disc list-inside text-left mx-auto max-w-[250px]">
+                           <ul className="text-cream/80 text-sm space-y-1.5 list-disc list-inside text-left mx-auto max-w-[250px]">
                               <li>All Seed and Growth Partner gifts</li>
                               <li>Invitation to an annual OMS weekend retreat</li>
                               <li>Special connection with the OMS team</li>
@@ -214,11 +214,11 @@ function SupportPage() {
                      </Card>
                   </div>
                   
-                  <div className="bg-white rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-6 shadow-sm border border-forest/10 max-w-4xl mx-auto mt-4 text-center sm:text-left">
-                     <div className="bg-forest text-white h-12 w-12 rounded-xl flex items-center justify-center shrink-0">
+                  <div className="bg-card rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-6 shadow-sm border border-forest/10 max-w-4xl mx-auto mt-4 text-center sm:text-left">
+                     <div className="bg-gold/15 text-gold h-12 w-12 rounded-xl flex items-center justify-center shrink-0">
                         <Heart className="h-6 w-6" />
                      </div>
-                     <p className="text-forest-deep/80 text-sm font-medium">
+                     <p className="text-cream/80 text-sm font-medium">
                         One-time gifts of any amount are also welcome. Ask us how your giving can support books, videos, live events, and family discipleship resources.
                      </p>
                   </div>
@@ -232,11 +232,11 @@ function SupportPage() {
                   {/* Left Side: Trust & Impact */}
                   <div className="lg:col-span-2 space-y-8 lg:pt-10">
                      <div className="space-y-4">
-                        <h2 className="text-4xl lg:text-5xl font-display font-bold text-forest-deep">Making an <span className="italic text-gold">Impact</span></h2>
-                        <p className="text-forest-deep/70 leading-relaxed text-base lg:text-lg">
+                        <h2 className="text-4xl lg:text-5xl font-display font-bold text-cream">Making an <span className="italic text-gold">Impact</span></h2>
+                        <p className="text-cream/75 leading-relaxed text-base lg:text-lg">
                            Every gift helps us create faith-filled resources that point kids to God and support parents in growing their children’s faith.
                         </p>
-                        <p className="text-forest-deep/70 leading-relaxed text-base lg:text-lg">
+                        <p className="text-cream/75 leading-relaxed text-base lg:text-lg">
                            Every partner will be added to our exclusive mailing list with ministry insights and behind-the-scenes details about how your gifts are making a difference!
                         </p>
                      </div>
@@ -247,11 +247,11 @@ function SupportPage() {
                            { icon: Users, label: "Tens of thousands of lives impacted annually!" },
                            { icon: Heart, label: "Wholesome, inspirational, exciting content kids and families love!" },
                         ].map((item, i) => (
-                           <div key={i} className="flex items-center gap-5 p-5 rounded-2xl bg-white border border-cream/20 shadow-sm">
-                              <div className="h-12 w-12 rounded-xl bg-forest/5 text-forest flex items-center justify-center shrink-0">
+                           <div key={i} className="flex items-center gap-5 p-5 rounded-2xl bg-card border border-white/10 shadow-sm">
+                              <div className="h-12 w-12 rounded-xl bg-white/[0.06] text-gold flex items-center justify-center shrink-0">
                                  <item.icon className="h-6 w-6" />
                               </div>
-                              <span className="text-sm font-bold text-forest-deep/80">{item.label}</span>
+                              <span className="text-sm font-bold text-cream/80">{item.label}</span>
                            </div>
                         ))}
                      </div>
@@ -259,40 +259,40 @@ function SupportPage() {
 
                   {/* Right Side: Simple Form */}
                   <div className="lg:col-span-3">
-                     <Card className="w-full max-w-xl mx-auto lg:ml-auto rounded-[3rem] border-cream/10 bg-white shadow-2xl overflow-hidden relative">
+                     <Card className="w-full max-w-xl mx-auto lg:ml-auto rounded-[3rem] border-cream/10 bg-card shadow-2xl overflow-hidden relative">
                         {showSuccess ? (
                            <div className="p-12 text-center space-y-6 animate-in fade-in zoom-in duration-500">
                               <div className="h-20 w-20 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
                                  <CheckCircle2 className="h-10 w-10" />
                               </div>
                               <div className="space-y-2">
-                                 <h3 className="text-3xl font-display font-bold text-forest-deep">Thank You!</h3>
-                                 <p className="text-muted-foreground">Your ${finalAmount} gift has been processed successfully.</p>
+                                 <h3 className="text-3xl font-display font-bold text-cream">Thank You!</h3>
+                                 <p className="text-cream/70">Your ${finalAmount} gift has been processed successfully.</p>
                               </div>
                               <Button onClick={() => setShowSuccess(false)} variant="outline" className="rounded-xl px-10 h-12">Make Another Gift</Button>
                            </div>
                         ) : (
                            <div className="p-8 sm:p-12 space-y-8">
                               {/* Toggle */}
-                              <div className="flex bg-cream/50 p-1 rounded-2xl border border-cream/10">
+                              <div className="flex bg-white/[0.06] p-1 rounded-2xl border border-white/10">
                                  <button
                                     type="button"
                                     onClick={() => setGivingType("monthly")}
-                                    className={`flex-1 py-3 rounded-xl font-bold text-[11px] uppercase tracking-widest transition-all ${givingType === "monthly" ? "bg-forest-deep text-white shadow-lg" : "text-forest-deep/40 hover:text-forest-deep"}`}
+                                    className={`flex-1 min-h-11 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${givingType === "monthly" ? "bg-gold text-forest-deep shadow-lg" : "text-cream/70 hover:bg-white/10 hover:text-cream"}`}
                                  >
                                     Monthly
                                  </button>
                                  <button
                                     type="button"
                                     onClick={() => setGivingType("annual")}
-                                    className={`flex-1 py-3 rounded-xl font-bold text-[11px] uppercase tracking-widest transition-all ${givingType === "annual" ? "bg-forest-deep text-white shadow-lg" : "text-forest-deep/40 hover:text-forest-deep"}`}
+                                    className={`flex-1 min-h-11 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${givingType === "annual" ? "bg-gold text-forest-deep shadow-lg" : "text-cream/70 hover:bg-white/10 hover:text-cream"}`}
                                  >
                                     Annual
                                  </button>
                                  <button
                                     type="button"
                                     onClick={() => setGivingType("one-time")}
-                                    className={`flex-1 py-3 rounded-xl font-bold text-[11px] uppercase tracking-widest transition-all ${givingType === "one-time" ? "bg-forest-deep text-white shadow-lg" : "text-forest-deep/40 hover:text-forest-deep"}`}
+                                    className={`flex-1 min-h-11 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${givingType === "one-time" ? "bg-gold text-forest-deep shadow-lg" : "text-cream/70 hover:bg-white/10 hover:text-cream"}`}
                                  >
                                     One-time
                                  </button>
@@ -300,9 +300,9 @@ function SupportPage() {
 
                               {campaigns.length > 0 && (
                                  <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-forest-deep/60">Direct My Gift To</label>
+                                    <label className="text-xs font-bold uppercase tracking-widest text-cream/70">Direct My Gift To</label>
                                     <select
-                                       className="w-full h-12 rounded-xl bg-cream/20 border-cream/50 text-forest-deep font-medium px-4 outline-none focus:ring-2 focus:ring-gold/50"
+                                       className="w-full h-12 rounded-xl bg-cream/20 border-white/10 text-cream font-medium px-4 outline-none focus:ring-2 focus:ring-gold/50"
                                        value={selectedCampaign}
                                        onChange={(e) => setSelectedCampaign(e.target.value)}
                                     >
@@ -321,7 +321,7 @@ function SupportPage() {
                                        key={amt}
                                        type="button"
                                        onClick={() => setAmount(amt)}
-                                       className={`py-4 rounded-2xl border-2 font-bold text-lg transition-all ${amount === amt ? "border-gold bg-gold/5 text-forest-deep" : "border-cream/20 text-forest-deep/40 hover:border-gold/30"}`}
+                                       className={`py-4 rounded-2xl border-2 font-bold text-lg transition-all ${amount === amt ? "border-gold bg-gold/15 text-gold" : "border-white/15 text-cream/80 hover:border-gold/50"}`}
                                     >
                                        {amt === "Custom" ? "..." : `$${amt}`}
                                     </button>
@@ -333,7 +333,7 @@ function SupportPage() {
                                     <Input
                                        type="number"
                                        placeholder="Enter custom amount"
-                                       className="h-14 rounded-2xl border-gold/30 text-lg font-bold"
+                                       className="h-14 rounded-2xl border-gold/30 bg-white/[0.06] text-lg font-bold text-cream"
                                        value={customAmount}
                                        onChange={e => setCustomAmount(e.target.value)}
                                     />
@@ -343,14 +343,14 @@ function SupportPage() {
                               {/* Quick Form */}
                               <form onSubmit={handleDonate} className="space-y-4">
                                  <div className="grid grid-cols-2 gap-4">
-                                    <Input placeholder="First Name" required className="h-12 rounded-xl bg-cream/20" value={firstName} onChange={e => setFirstName(e.target.value)} />
-                                    <Input placeholder="Last Name" required className="h-12 rounded-xl bg-cream/20" value={lastName} onChange={e => setLastName(e.target.value)} />
+                                    <Input aria-label="First name" autoComplete="given-name" placeholder="First name" required className="h-12 rounded-xl bg-white/[0.06] border-white/15 text-cream placeholder:text-cream/50" value={firstName} onChange={e => setFirstName(e.target.value)} />
+                                    <Input aria-label="Last name" autoComplete="family-name" placeholder="Last name" required className="h-12 rounded-xl bg-white/[0.06] border-white/15 text-cream placeholder:text-cream/50" value={lastName} onChange={e => setLastName(e.target.value)} />
                                  </div>
-                                 <Input type="email" placeholder="Email Address" required className="h-12 rounded-xl bg-cream/20" value={email} onChange={e => setEmail(e.target.value)} />
+                                 <Input type="email" aria-label="Email address" autoComplete="email" placeholder="Email address" required className="h-12 rounded-xl bg-white/[0.06] border-white/15 text-cream placeholder:text-cream/50" value={email} onChange={e => setEmail(e.target.value)} />
 
                                  <Button
                                     type="submit"
-                                    className="w-full h-14 rounded-2xl bg-forest-deep text-white text-sm font-bold uppercase tracking-[0.2em] shadow-xl hover:scale-[1.02] active:scale-95 transition-all gap-3"
+                                    className="w-full h-14 rounded-2xl bg-gradient-gold text-gold-foreground text-sm font-bold uppercase tracking-[0.2em] shadow-xl hover:scale-[1.02] active:scale-95 transition-all gap-3"
                                     disabled={isProcessing}
                                  >
                                     {isProcessing ? "Processing..." : `Donate $${finalAmount || '0'} Now`}
@@ -359,11 +359,11 @@ function SupportPage() {
 
                                  <div className="flex items-center gap-3 pt-2">
                                     <input type="checkbox" id="legacy" className="rounded text-gold focus:ring-gold" checked={isLegacy} onChange={e => setIsLegacy(e.target.checked)} />
-                                    <label htmlFor="legacy" className="text-xs text-forest-deep/60 cursor-pointer">I am interested in legacy or planned giving options.</label>
+                                    <label htmlFor="legacy" className="text-xs text-cream/70 cursor-pointer">I am interested in legacy or planned giving options.</label>
                                  </div>
                               </form>
 
-                              <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-forest-deep/30 uppercase tracking-widest pt-2">
+                              <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-cream/70 uppercase tracking-widest pt-2">
                                  <ShieldCheck className="h-3 w-3" /> SSL Secured & Encrypted
                               </div>
                            </div>
@@ -376,18 +376,18 @@ function SupportPage() {
 
             {/* Current Needs & Projected Goals (Campaigns) */}
             {campaigns.length > 0 && (
-               <section className="py-20 bg-cream relative z-10 border-t border-forest/5">
+               <section className="py-20 relative z-10 border-t border-white/5">
                   <div className="mx-auto max-w-7xl px-6 space-y-12">
                      <div className="text-center space-y-4 max-w-2xl mx-auto">
-                        <h2 className="text-4xl md:text-[50px] leading-tight font-display font-bold text-forest-deep">Current <span className="italic text-gold">Needs</span></h2>
-                        <p className="text-forest-deep/60 md:text-lg">Help us reach our funding goals for these specific projects and campaigns.</p>
+                        <h2 className="text-4xl md:text-[50px] leading-tight font-display font-bold text-cream">Current <span className="italic text-gold">Needs</span></h2>
+                        <p className="text-cream/70 md:text-lg">Help us reach our funding goals for these specific projects and campaigns.</p>
                      </div>
 
                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {campaigns.map(campaign => {
                            const percent = campaign.goalAmount > 0 ? Math.min(100, Math.round((campaign.raisedAmount / campaign.goalAmount) * 100)) : 0;
                            return (
-                              <Card key={campaign._id} className="rounded-[2rem] border-none shadow-xl overflow-hidden bg-white">
+                              <Card key={campaign._id} className="rounded-[2rem] border-none shadow-xl overflow-hidden bg-card">
                                  {campaign.image && (
                                     <div className="h-48 w-full bg-muted overflow-hidden">
                                        <img
@@ -399,14 +399,14 @@ function SupportPage() {
                                     </div>
                                  )}
                                  <CardHeader>
-                                    <CardTitle className="text-[30px] leading-tight font-display text-forest-deep">{campaign.title}</CardTitle>
+                                    <CardTitle className="text-[30px] leading-tight font-display text-cream">{campaign.title}</CardTitle>
                                     <CardDescription className="line-clamp-2 text-base mt-2">{campaign.description}</CardDescription>
                                  </CardHeader>
                                  <CardContent className="space-y-4 pb-8">
                                     <div className="space-y-2">
-                                       <div className="flex justify-between text-sm font-bold text-forest-deep">
+                                       <div className="flex justify-between text-sm font-bold text-cream">
                                           <span>${campaign.raisedAmount.toLocaleString()} raised</span>
-                                          <span className="text-forest-deep/50">Goal: ${campaign.goalAmount.toLocaleString()}</span>
+                                          <span className="text-cream/70">Goal: ${campaign.goalAmount.toLocaleString()}</span>
                                        </div>
                                        <Progress value={percent} className="h-2 bg-cream" indicatorColor="bg-gold" />
                                     </div>
@@ -430,15 +430,15 @@ function SupportPage() {
             )}
 
             {/* Financial Transparency & Testimonials */}
-            <section className="py-24 bg-forest text-cream">
+            <section className="py-24 bg-forest-night text-cream">
                <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
                   <div className="space-y-8">
                      <Badge className="bg-white/10 text-cream font-bold border-none px-4 py-1.5 uppercase tracking-widest text-[10px]">Transparency</Badge>
                      <h2 className="text-4xl lg:text-5xl font-display font-bold">Financial <span className="italic text-gold">Stewardship</span></h2>
-                     <p className="text-cream/70 leading-relaxed text-base lg:text-lg">
+                     <p className="text-cream/80 leading-relaxed text-base lg:text-lg">
                         We work hard to steward every gift with care. At this stage of our ministry, our events help cover the day-to-day operating and support costs of One Mustard Seed, allowing donor gifts to be directed toward creating Bible-based content and sharing it with children and families around the world.
                      </p>
-                     <p className="text-cream/70 leading-relaxed text-base lg:text-lg mt-4">
+                     <p className="text-cream/80 leading-relaxed text-base lg:text-lg mt-4">
                         The need is growing, and so is the opportunity. The more support we receive, the more stories, songs, shows, and resources we can create and distribute to help kids know God.
                      </p>
                      <div className="space-y-6 pt-4 mt-6">
@@ -485,10 +485,10 @@ function SupportPage() {
 
                         {/* Slider Controls */}
                         <div className="absolute bottom-10 right-10 flex items-center gap-2">
-                           <button onClick={scrollPrev} className="h-10 w-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                           <button onClick={scrollPrev} aria-label="Previous testimonial" className="h-11 w-11 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
                               <ChevronLeft className="h-5 w-5 text-gold" />
                            </button>
-                           <button onClick={scrollNext} className="h-10 w-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                           <button onClick={scrollNext} aria-label="Next testimonial" className="h-11 w-11 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
                               <ChevronRight className="h-5 w-5 text-gold" />
                            </button>
                         </div>

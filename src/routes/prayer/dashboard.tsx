@@ -9,7 +9,7 @@ export const Route = createFileRoute("/prayer/dashboard")({
 
 function DashboardPage() {
   return (
-    <div className="bg-background min-h-screen flex flex-col">
+    <div className="theme-cinema min-h-screen flex flex-col">
       <SiteHeader />
       <main className="flex-grow pt-24 bg-muted/20">
         <div className="mx-auto max-w-7xl px-6 py-12">

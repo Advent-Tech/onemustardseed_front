@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Gift, Calendar, Send } from "lucide-react";
 import Swal from "sweetalert2";
 import image7 from "@/assets/logo2/image7.png";
+import { Reveal } from "@/components/oms/Reveal";
 import { API_URL } from "@/lib/api";
 
 export function BirthdayClub() {
@@ -67,9 +68,9 @@ export function BirthdayClub() {
   };
 
   return (
-    <section id="birthday-club" className="relative overflow-hidden bg-cream py-12 sm:py-16">
-      <div className="mx-auto max-w-[1440px] px-6">
-        <div className="relative overflow-hidden rounded-[2.5rem] bg-white shadow-elevated border border-cream/30">
+    <section id="birthday-club" className="relative overflow-hidden py-12 sm:py-20">
+      <Reveal from="scale" className="mx-auto max-w-[1440px] px-6">
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-white shadow-elevated ring-4 ring-gold/40">
           <div className="grid lg:grid-cols-2">
             {/* Image Side */}
             <div className="relative h-80 lg:h-auto bg-forest-deep">
@@ -100,18 +101,18 @@ export function BirthdayClub() {
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <Label htmlFor="parentName" className="text-forest-deep font-semibold">Parent's Name</Label>
-                    <Input id="parentName" name="parentName" required placeholder="John Doe" className="bg-cream/50 border-forest-deep/20 focus-visible:ring-gold transition-shadow" />
+                    <Input id="parentName" name="parentName" required placeholder="John Doe" className="h-11 bg-cream/50 border-forest-deep/20 focus-visible:ring-gold transition-shadow" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="parentEmail" className="text-forest-deep font-semibold">Parent's Email</Label>
-                    <Input id="parentEmail" name="parentEmail" type="email" required placeholder="john@example.com" className="bg-cream/50 border-forest-deep/20 focus-visible:ring-gold transition-shadow" />
+                    <Input id="parentEmail" name="parentEmail" type="email" required placeholder="john@example.com" className="h-11 bg-cream/50 border-forest-deep/20 focus-visible:ring-gold transition-shadow" />
                   </div>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <Label htmlFor="childName" className="text-forest-deep font-semibold">Child's Name</Label>
-                    <Input id="childName" name="childName" required placeholder="Jane" className="bg-cream/50 border-forest-deep/20 focus-visible:ring-gold transition-shadow" />
+                    <Input id="childName" name="childName" required placeholder="Jane" className="h-11 bg-cream/50 border-forest-deep/20 focus-visible:ring-gold transition-shadow" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="childDob" className="text-forest-deep font-semibold flex justify-between items-baseline">
@@ -119,7 +120,7 @@ export function BirthdayClub() {
                       <span className="text-[10px] uppercase tracking-wider text-forest-deep/50">Incl. Year</span>
                     </Label>
                     <div className="relative">
-                      <Input id="childDob" name="childDob" type="date" required className="bg-cream/50 border-forest-deep/20 focus-visible:ring-gold pl-10 transition-shadow block w-full" />
+                      <Input id="childDob" name="childDob" type="date" required className="h-11 bg-cream/50 border-forest-deep/20 focus-visible:ring-gold pl-10 transition-shadow block w-full" />
                       <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-forest-deep/50 pointer-events-none" />
                     </div>
                   </div>
@@ -131,7 +132,7 @@ export function BirthdayClub() {
                     id="instructions" 
                     name="instructions" 
                     placeholder="Any specific requests or pronunciation guides..."
-                    className="bg-cream/50 border-forest-deep/20 focus-visible:ring-gold min-h-[100px] resize-y transition-shadow" 
+                    className="h-11 bg-cream/50 border-forest-deep/20 focus-visible:ring-gold min-h-[100px] resize-y transition-shadow" 
                   />
                 </div>
 
@@ -147,7 +148,7 @@ export function BirthdayClub() {
             </div>
           </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

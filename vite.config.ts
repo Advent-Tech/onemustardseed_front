@@ -1,4 +1,8 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import netlify from "@netlify/vite-plugin-tanstack-start";
+
+// Netlify sets NETLIFY=true during its builds. The VPS/Docker build is unaffected.
+const onNetlify = process.env.NETLIFY === "true";
 
 export default defineConfig({
   tanstackStart: {
@@ -6,6 +10,7 @@ export default defineConfig({
   },
   cloudflare: false,
   vite: {
+    plugins: onNetlify ? [netlify()] : [],
     server: {
       proxy: {
         "/api": {

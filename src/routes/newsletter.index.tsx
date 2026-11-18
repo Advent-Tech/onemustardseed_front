@@ -75,7 +75,7 @@ function NewsletterPage() {
             <img 
               src={logoImg} 
               alt="OMS Newsletter" 
-              className="w-auto h-24 md:h-32 lg:h-40 object-contain drop-shadow-2xl hover:bg-white rounded-3xl p-4 transition-all duration-300 mb-6" 
+              className="w-auto h-24 md:h-32 lg:h-40 object-contain drop-shadow-2xl hover:bg-card rounded-3xl p-4 transition-all duration-300 mb-6" 
             />
             <p className="text-base sm:text-lg text-cream/80 leading-relaxed max-w-xl">
               Immersive storytelling, ministry milestones, and behind-the-scenes glimpses
@@ -95,6 +95,7 @@ function NewsletterPage() {
       </section>
 
       <main className="pb-24">
+        <h1 className="sr-only">One Mustard Seed Newsletter</h1>
         <div className="container px-6 mx-auto pt-10">
 
           {loading && (
@@ -126,7 +127,7 @@ function NewsletterPage() {
                           />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-forest/20 to-gold/10 flex items-center justify-center">
-                            <Archive className="w-24 h-24 text-forest/20" />
+                            <Archive className="w-24 h-24 text-gold/20" />
                           </div>
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-forest-deep/95 via-forest-deep/40 to-transparent" />
@@ -165,7 +166,7 @@ function NewsletterPage() {
                 {/* Pagination / Load More Placeholder */}
                 {newsletters.length > 8 && (
                   <div className="mt-12 flex justify-center animate-fade-in">
-                    <Button variant="outline" className="border-border/40 text-foreground font-bold tracking-widest uppercase text-xs gap-3 rounded-full px-8 h-12 hover:bg-forest/5 hover:text-forest transition-colors">
+                    <Button variant="outline" className="border-border/40 text-foreground font-bold tracking-widest uppercase text-xs gap-3 rounded-full px-8 h-12 hover:bg-forest/5 hover:text-gold transition-colors">
                       Load Next Page <ArrowRight className="w-4 h-4" />
                     </Button>
                   </div>
@@ -206,7 +207,7 @@ function NewsletterPage() {
 
                   {/* Search */}
                   <div className="relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-forest" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-gold" />
                     <Input
                       placeholder="Search archive..."
                       value={search}
@@ -235,17 +236,17 @@ function NewsletterPage() {
                               }}
                               className={`w-full text-left p-4 rounded-2xl flex items-center gap-4 transition-all hover:bg-forest/5 group ${selected?._id === nl._id ? "bg-forest/10 shadow-inner" : ""}`}
                             >
-                              <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-border/40 group-hover:border-forest/20 transition-colors shadow-sm">
+                              <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-border/40 group-hover:border-white/10 transition-colors shadow-sm">
                                 {nl.featuredImage ? (
                                   <img src={imgSrc(nl.featuredImage)} alt="" className="w-full h-full object-cover" />
                                 ) : (
                                   <div className="w-full h-full bg-forest/5 flex items-center justify-center">
-                                    <Archive className="w-5 h-5 text-forest/30" />
+                                    <Archive className="w-5 h-5 text-gold/30" />
                                   </div>
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h4 className={`font-bold text-sm truncate transition-colors ${selected?._id === nl._id ? "text-forest" : "text-foreground group-hover:text-forest"}`}>
+                                <h4 className={`font-bold text-sm truncate transition-colors ${selected?._id === nl._id ? "text-gold" : "text-foreground group-hover:text-gold"}`}>
                                   {nl.title}
                                 </h4>
                                 <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mt-1">

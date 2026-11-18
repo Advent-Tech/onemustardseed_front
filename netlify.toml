@@ -1,0 +1,37 @@
+# Netlify config for One Mustard Seed (front end only).
+# The API and uploads live on the VPS, so Netlify proxies them — the browser only ever
+# talks to the Netlify domain (no CORS, no mixed-content warnings).
+
+[build]
+  command = "npm run build"
+  # TanStack Start output is wired up by @netlify/vite-plugin-tanstack-start (see vite.config.ts)
+  publish = "dist/client"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# --- Backend proxy -------------------------------------------------------------
+# Confirm this is the production backend before launch. Netlify cannot read env vars in redirects.
+[[redirects]]
+  from = "/api/*"
+  to = "http://165.101.215.46:5001/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/uploads/*"
+  to = "http://165.101.215.46:5001/uploads/:splat"
+  status = 200
+  force = true
+
+# --- Security headers ----------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

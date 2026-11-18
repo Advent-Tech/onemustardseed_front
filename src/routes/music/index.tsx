@@ -5,6 +5,9 @@ import applePodcastsLogo from "@/assets/logo/Apple Podcasts.png";
 import spotifyLogo from "@/assets/logo/Spotify.png";
 import youtubeMusicLogo from "@/assets/logo/YouTube Music.png";
 import logoImg from "@/assets/logo2/image1.png";
+import familySinging from "@/assets/oms/music-family-singing.webp";
+import { Reveal } from "@/components/oms/Reveal";
+import { GivingBanner } from "@/components/oms/GivingBanner";
 import { API_URL, mediaUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/music/")({
@@ -51,17 +54,19 @@ function MusicPage() {
     <div className="bg-background min-h-screen flex flex-col">
       <main className="flex-grow pt-24">
         {/* Music Hero (Matching Podcast Hero Style) */}
-        <section className="relative py-24 overflow-hidden bg-forest-deep text-cream">
-          <div className="absolute inset-0 opacity-15 bg-[radial-gradient(circle_at_20%_30%,var(--gold),transparent_60%)]" />
+        <section className="relative isolate py-28 sm:py-36 overflow-hidden bg-forest-night text-cream">
+          <img src={familySinging} alt="" className="absolute inset-0 -z-20 h-full w-full object-cover " />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-forest-night via-forest-night/80 to-forest-night/25" />
+          <div className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-forest-deep to-transparent" />
           <div className="relative mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-16 items-center">
             <div className="animate-fade-up">
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/20 text-gold text-[10px] font-bold uppercase tracking-widest mb-6">
                 <Music className="h-3 w-3" /> Kids' Bible Beats
               </span>
-              <h1 className="text-5xl sm:text-6xl font-bold tracking-tight leading-none" style={{ fontFamily: 'HelveticaNeue, Arial, "Open Sans"' }}>
+              <h1 className="text-5xl sm:text-6xl font-bold tracking-tight leading-none">
                 Welcome to Kids’ Bible Beats!
               </h1>
-              <p className="mt-8 text-lg text-cream/75 leading-relaxed max-w-xl" style={{ fontFamily: 'HelveticaNeue, Arial, "Open Sans"' }}>
+              <p className="mt-8 text-lg text-cream/75 leading-relaxed max-w-xl">
                 Each album is packed with original music about a Bible character, helping kids learn their story through fresh lyrics, dynamic beats, and uplifting melodies that point hearts to God.
               </p>
             </div>
@@ -73,11 +78,11 @@ function MusicPage() {
         </section>
 
         {/* Albums Grid (Matching Explore Seasons) */}
-        <section className="py-24 bg-background">
+        <section className="py-24">
           <div className="mx-auto max-w-7xl px-6">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
               <div>
-                <h2 className="text-4xl font-medium text-foreground" style={{ fontFamily: 'HelveticaNeue, Arial, "Open Sans"' }}>Explore <span className="italic text-primary">Albums</span></h2>
+                <h2 className="text-4xl font-medium text-foreground">Explore <span className="italic text-primary">Albums</span></h2>
                 <p className="mt-4 text-muted-foreground text-[18px]">Music That Gets Kids Singing, Moving, and Loving God!</p>
               </div>
               <div className="flex gap-2">
@@ -87,8 +92,8 @@ function MusicPage() {
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               {albums.map((album, index) => (
+                <Reveal key={album.id} delay={(index % 3) * 90}>
                 <Link
-                  key={album.id}
                   to="/music/$albumId"
                   params={{ albumId: album.id }}
                   className="group cursor-pointer block"
@@ -98,7 +103,7 @@ function MusicPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
                     <div className="absolute bottom-8 left-8 right-8">
                       <p className="text-[10px] font-bold uppercase tracking-widest text-gold/90 mb-2">Album {index + 1} • {album.songs.length} Tracks</p>
-                      <h3 className="text-2xl font-medium text-cream group-hover:text-gold transition-colors" style={{ fontFamily: 'HelveticaNeue, Arial, "Open Sans"' }}>{album.title}</h3>
+                      <h3 className="text-2xl font-medium text-cream group-hover:text-gold transition-colors">{album.title}</h3>
                       <p className="mt-3 text-sm text-cream/70 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">{album.description}</p>
                     </div>
                     {/* Play Button Overlay */}
@@ -109,10 +114,13 @@ function MusicPage() {
                     </div>
                   </div>
                 </Link>
+                </Reveal>
               ))}
             </div>
           </div>
         </section>
+
+        <GivingBanner compact />
 
       </main>
     </div>

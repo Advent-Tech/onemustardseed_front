@@ -33,7 +33,7 @@ function WatchPage() {
   };
 
   return (
-    <div className="bg-foreground min-h-screen flex flex-col">
+    <div className="theme-cinema theme-promo min-h-screen flex flex-col">
       <SiteHeader />
       <main className="flex-grow pt-24 bg-black">
         <div className="mx-auto max-w-[1600px] px-6 py-8">

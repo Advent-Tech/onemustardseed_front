@@ -71,35 +71,33 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ONE MUSTARD SEED" },
-      { name: "description", content: "ONE MUSTARD SEEDGenerated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "ONE MUSTARD SEED" },
-      { property: "og:description", content: "ONE MUSTARD SEEDGenerated Project" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#1c3a28" },
+      { title: "One Mustard Seed — Helping Kids Know God" },
+      {
+        name: "description",
+        content:
+          "One Mustard Seed creates Bible-based media, live events, music, podcasts and resources that help kids know God.",
+      },
+      { name: "author", content: "One Mustard Seed" },
+      { property: "og:title", content: "One Mustard Seed — Helping Kids Know God" },
+      {
+        property: "og:description",
+        content: "Media, live events and resources that help kids know God.",
+      },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    // Adds `js-motion` before first paint so scroll-reveal content is only hidden when JS can reveal it.
+    scripts: [{ children: "document.documentElement.classList.add('js-motion')" }],
     links: [
       {
         rel: "icon",
         type: "image/svg+xml",
         href: "/favicon.svg",
       },
-      {
-        rel: "preconnect",
-        href: "https://fonts.googleapis.com",
-      },
-      {
-        rel: "preconnect",
-        href: "https://fonts.gstatic.com",
-        crossOrigin: "anonymous",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap",
-      },
+      { rel: "preload", as: "font", type: "font/woff2", href: "/fonts/baloo-2-latin-800-normal.woff2", crossOrigin: "anonymous" },
+      { rel: "preload", as: "font", type: "font/woff2", href: "/fonts/open-sans-latin-400-normal.woff2", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
         href: appCss,
@@ -131,6 +129,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-gold focus:px-5 focus:py-3 focus:text-sm focus:font-bold focus:text-forest-night">Skip to content</a>
       <Outlet />
     </QueryClientProvider>
   );

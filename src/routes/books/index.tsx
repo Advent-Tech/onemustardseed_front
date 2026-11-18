@@ -77,10 +77,10 @@ function BooksLandingPage() {
               Explore our collection of cinematic literature, children's stories, and theological resources designed to inspire wonder and faith.
             </p>
             
-            <div className="mt-12 flex max-w-md mx-auto items-center rounded-full bg-cream/10 border border-cream/20 p-2 backdrop-blur-md">
+            <div className="mt-12 flex max-w-md mx-auto items-center rounded-full bg-white/[0.01] border border-white/10 p-2 backdrop-blur-md">
               <Search className="ml-4 h-5 w-5 text-cream/40" />
-              <input type="text" placeholder="Search for titles, authors..." className="flex-1 bg-transparent px-4 py-2 text-sm focus:outline-none placeholder:text-cream/30" />
-              <button className="rounded-full bg-gold px-6 py-2 text-xs font-bold uppercase tracking-widest text-gold-foreground">Search</button>
+              <input type="text" aria-label="Search for titles or authors" placeholder="Search for titles, authors..." className="flex-1 bg-transparent px-4 py-3 text-sm focus:outline-none placeholder:text-cream/30" />
+              <button className="rounded-full bg-gold px-6 min-h-11 text-xs font-bold uppercase tracking-widest text-gold-foreground">Search</button>
             </div>
           </div>
         </section>
@@ -93,7 +93,7 @@ function BooksLandingPage() {
                 <button 
                   key={cat} 
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all hover:bg-muted ${
+                  className={`px-5 min-h-11 rounded-full text-xs font-bold uppercase tracking-widest transition-all hover:bg-muted ${
                     activeCategory === cat 
                       ? "bg-primary text-primary-foreground shadow-lg" 
                       : "bg-transparent text-muted-foreground"
@@ -103,7 +103,7 @@ function BooksLandingPage() {
                 </button>
               ))}
             </div>
-            <button className="flex items-center gap-2 px-5 py-2 rounded-full border border-border text-xs font-bold uppercase tracking-widest hover:bg-muted">
+            <button className="flex items-center gap-2 px-5 min-h-11 rounded-full border border-border text-xs font-bold uppercase tracking-widest hover:bg-muted">
               <Filter className="h-4 w-4" /> Filter
             </button>
           </div>

@@ -24,7 +24,7 @@ function KidsSeriesPage() {
   ];
 
   return (
-    <div className="bg-[#FAF7EE] min-h-screen flex flex-col">
+    <div className="theme-cinema min-h-screen flex flex-col">
       <SiteHeader />
       <main className="flex-grow pt-24">
         {/* Header Section */}
@@ -53,9 +53,9 @@ function KidsSeriesPage() {
         </section>
 
         {/* Filter Section */}
-        <section className="py-10 bg-white/50 border-b border-cream/10 backdrop-blur-sm sticky top-24 z-30">
+        <section className="py-10 bg-black/80 border-b border-white/10 backdrop-blur-sm sticky top-24 z-30">
            <div className="mx-auto max-w-7xl px-6 flex items-center gap-4 overflow-x-auto no-scrollbar">
-              <div className="flex items-center gap-2 text-forest-deep/40 mr-4">
+              <div className="flex items-center gap-2 text-cream/40 mr-4">
                  <Filter className="h-4 w-4" />
                  <span className="text-[10px] font-bold uppercase tracking-widest">Filter By:</span>
               </div>
@@ -63,7 +63,7 @@ function KidsSeriesPage() {
                 <button
                   key={cat}
                   onClick={() => setFilter(cat)}
-                  className={`px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap ${filter === cat ? "bg-forest-deep text-white shadow-xl scale-105" : "bg-white text-forest-deep/60 hover:bg-white/80 border border-cream/10"}`}
+                  className={`px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap ${filter === cat ? "bg-cream text-black shadow-xl scale-105" : "bg-white/10 text-cream/80 hover:bg-white/20 border border-white/10"}`}
                 >
                   {cat}
                 </button>
@@ -76,7 +76,7 @@ function KidsSeriesPage() {
            <div className="mx-auto max-w-7xl px-6">
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-12">
                  {SERIES.filter(s => filter === "All" || s.type === filter || s.type.includes(filter)).map((s) => (
-                   <Link key={s.id} to={`/kids/watch/${s.id}` as any} className="group flex flex-col bg-white rounded-[3.5rem] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-cream/10">
+                   <Link key={s.id} to={`/kids/watch/${s.id}` as any} className="group flex flex-col bg-card rounded-[3.5rem] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-white/10">
                       <div className="relative aspect-video overflow-hidden">
                          <img src={s.img} alt={s.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                          <div className="absolute inset-0 bg-forest-deep/20 group-hover:bg-transparent transition-all" />
@@ -89,17 +89,17 @@ function KidsSeriesPage() {
                       </div>
                       <div className="p-10 flex-grow space-y-5">
                          <div className="flex items-center justify-between">
-                            <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest text-forest-deep border-forest-deep/10 px-4 py-1">{s.type}</Badge>
-                            <span className="text-[10px] font-bold text-forest-deep/40 uppercase tracking-widest">{s.eps} Episodes</span>
+                            <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest text-cream border-forest-deep/10 px-4 py-1">{s.type}</Badge>
+                            <span className="text-[10px] font-bold text-cream/40 uppercase tracking-widest">{s.eps} Episodes</span>
                          </div>
-                         <h3 className="text-3xl font-display font-bold text-forest-deep leading-tight group-hover:text-gold transition-colors">{s.title}</h3>
-                         <p className="text-sm text-forest-deep/60 leading-relaxed line-clamp-2">{s.desc}</p>
+                         <h3 className="text-3xl font-display font-bold text-cream leading-tight group-hover:text-gold transition-colors">{s.title}</h3>
+                         <p className="text-sm text-cream/60 leading-relaxed line-clamp-2">{s.desc}</p>
                          
-                         <div className="pt-6 flex items-center justify-between border-t border-cream/10">
-                            <div className="flex items-center gap-2 text-forest-deep font-bold text-xs uppercase tracking-widest group-hover:translate-x-2 transition-transform">
+                         <div className="pt-6 flex items-center justify-between border-t border-white/10">
+                            <div className="flex items-center gap-2 text-cream font-bold text-xs uppercase tracking-widest group-hover:translate-x-2 transition-transform">
                                Start Watching <ChevronRight className="h-4 w-4 text-gold" />
                             </div>
-                            <div className="h-12 w-12 rounded-full bg-cream/50 flex items-center justify-center text-forest-deep group-hover:bg-gold group-hover:text-forest-deep transition-all shadow-sm">
+                            <div className="h-12 w-12 rounded-full bg-white/[0.05] flex items-center justify-center text-forest-deep group-hover:bg-gold group-hover:text-forest-deep transition-all shadow-sm">
                                <Play className="h-5 w-5 fill-current ml-1" />
                             </div>
                          </div>

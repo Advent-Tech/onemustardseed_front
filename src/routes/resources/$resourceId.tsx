@@ -97,7 +97,7 @@ function ResourceDetailsPage() {
                 <div className="p-8 rounded-[2rem] bg-forest-deep text-cream text-center">
                   <h4 className="font-display text-xl mb-3">Need Technical Help?</h4>
                   <p className="text-xs text-cream/60 leading-relaxed mb-6">Our support team is available to help you set up your streaming or printing systems.</p>
-                  <button className="w-full py-3 rounded-xl border border-cream/20 text-cream font-bold text-xs uppercase tracking-widest hover:bg-cream/10 transition-all">Contact Support</button>
+                  <button className="w-full py-3 rounded-xl border border-white/10 text-cream font-bold text-xs uppercase tracking-widest hover:bg-white/[0.01] transition-all">Contact Support</button>
                 </div>
               </div>
             </div>

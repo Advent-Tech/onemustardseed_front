@@ -63,9 +63,10 @@ function PrayerLandingPage() {
   }
 
   return (
-    <div className="bg-background min-h-screen flex flex-col">
+    <div className="theme-cinema min-h-screen flex flex-col">
       <SiteHeader />
       <main className="flex-grow pt-24">
+        <h1 className="sr-only">Week of Prayer Online</h1>
 
         {/* Hero */}
         <section className="relative py-32 overflow-hidden bg-forest-deep text-cream">
@@ -127,7 +128,7 @@ function PrayerLandingPage() {
                           {series.year}
                         </span>
                         <div className="flex items-center gap-1.5 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full">
-                          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-card animate-pulse" />
                           Available Now
                         </div>
                       </div>

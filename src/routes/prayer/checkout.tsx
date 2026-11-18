@@ -101,17 +101,17 @@ function PrayerCheckoutPage() {
       <div className="min-h-screen bg-background flex items-center justify-center text-center">
         <div>
           <h1 className="text-2xl font-bold mb-4">Series not found</h1>
-          <Link to="/prayer" className="text-forest underline">Back to Week of Prayer</Link>
+          <Link to="/prayer" className="text-gold underline">Back to Week of Prayer</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#FAF7EE] min-h-screen flex flex-col text-forest-deep">
+    <div className="theme-cinema min-h-screen flex flex-col text-cream">
       <SiteHeader />
       <main className="flex-grow pt-32 pb-24 flex items-center justify-center px-6">
-        <div className="max-w-4xl w-full grid md:grid-cols-2 bg-white rounded-[3rem] border border-[#EFECE3] shadow-2xl overflow-hidden">
+        <div className="max-w-4xl w-full grid md:grid-cols-2 bg-card rounded-[3rem] border border-white/10 shadow-2xl overflow-hidden">
           {/* Left Column: Details */}
           <div className="p-12 bg-forest-deep text-cream flex flex-col justify-between relative overflow-hidden">
             <div className="absolute inset-0 opacity-10">
@@ -155,19 +155,19 @@ function PrayerCheckoutPage() {
           </div>
 
           {/* Right Column: Checkout Confirmation */}
-          <div className="p-12 flex flex-col justify-between bg-white">
+          <div className="p-12 flex flex-col justify-between bg-card">
             <div className="space-y-8">
               <div className="space-y-2">
                 <h2 className="font-display text-3xl font-bold">Secure checkout</h2>
                 <p className="text-muted-foreground text-sm">Complete your registration to unlock instant access.</p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-[#FAF7EE] border border-[#EFECE3] space-y-4">
+              <div className="p-6 rounded-2xl bg-background border border-white/10 space-y-4">
                 <div className="flex justify-between text-sm">
                   <span className="font-medium">Registration Fee</span>
                   <span className="font-bold">${series.price || 29}.00</span>
                 </div>
-                <div className="flex justify-between text-sm pt-3 border-t border-[#EFECE3] font-bold text-lg">
+                <div className="flex justify-between text-sm pt-3 border-t border-white/10 font-bold text-lg">
                   <span>Total Due</span>
                   <span>${series.price || 29}.00</span>
                 </div>

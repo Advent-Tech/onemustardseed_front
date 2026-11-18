@@ -1,1099 +1,441 @@
-import { API_URL, mediaUrl, getVimeoEmbedUrl } from "../lib/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, Calendar, MapPin, Ticket, CalendarX2 } from "lucide-react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import {
-  Calendar,
-  MapPin,
-  Ticket,
-  Clock,
-  ArrowRight,
-  Sparkles,
-  Globe,
-  Users,
-  ChevronDown,
-  ChevronUp,
-  Mail,
-  Phone,
-  MessageCircle,
-  CheckCircle,
-  AlertCircle,
-  XCircle,
-  X,
-  CreditCard,
-  Navigation,
-  Car,
-  Accessibility,
-  ExternalLink,
-  Star,
-} from "lucide-react";
-import { INITIAL_EVENTS, type CityScreening, type Showtime } from "../data/events-data";
-import { toast } from "sonner";
+import { Reveal } from "@/components/oms/Reveal";
+import { SectionHeading } from "@/components/oms/PageHero";
+import { GivingBanner } from "@/components/oms/GivingBanner";
+import { Ticker } from "@/components/oms/Ticker";
+import { API_URL, mediaUrl } from "../lib/api";
 
-
+import dinoLogo from "@/assets/oms/logo-dinosaur-encounter.webp";
+import creationLogo from "@/assets/oms/logo-creation-case-live.webp";
+import actionCroc from "@/assets/oms/events-action-croc.webp";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
-      { title: "Events — One Mustard Seed" },
-      { name: "description", content: "Join us for upcoming live events, workshops, and worship nights across multiple cities." },
+      { title: "Live Events — One Mustard Seed" },
+      {
+        name: "description",
+        content:
+          "Immersive, multimedia live experiences for the whole family — Dinosaur Encounter and The Creation Case LIVE. Find a show near you and buy tickets.",
+      },
     ],
   }),
   component: EventsPage,
 });
 
-const statusConfig = {
-  available: { label: "Available", icon: CheckCircle, color: "text-emerald-500", bg: "bg-emerald-500/10 border-emerald-500/20" },
-  limited: { label: "Limited Spots", icon: AlertCircle, color: "text-amber-500", bg: "bg-amber-500/10 border-amber-500/20" },
-  "sold-out": { label: "Sold Out", icon: XCircle, color: "text-red-500", bg: "bg-red-500/10 border-red-500/20" },
+type OmsEvent = {
+  _id: string;
+  name: string;
+  location?: string;
+  date?: string;
+  dateLabel?: string;
+  image?: string;
+  ticketUrl?: string;
+  status?: "Active" | "Draft" | "Past" | "Sold Out";
 };
 
-function ShowtimeCard({ showtime, onBook }: { showtime: Showtime; onBook: () => void }) {
-  const cfg = statusConfig[showtime.status];
-  const Icon = cfg.icon;
-  const pct = Math.round((showtime.spotsLeft / showtime.totalSpots) * 100);
+function formatDates(e: OmsEvent) {
+  if (e.dateLabel) return e.dateLabel;
+  if (!e.date) return "Dates coming soon";
+  const d = new Date(e.date);
+  return isNaN(d.getTime())
+    ? e.date
+    : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+/** Show artwork falls back to the matching logo when an event has no uploaded image. */
+function eventArt(e: OmsEvent) {
+  if (e.image && e.image !== "no-photo.jpg") return { src: mediaUrl(e.image), isLogo: false };
+  const n = e.name.toLowerCase();
+  if (n.includes("creation")) return { src: creationLogo, isLogo: true };
+  return { src: dinoLogo, isLogo: true };
+}
+
+/* ───────────────────────────── Hero ───────────────────────────── */
+
+function EventsHero() {
+  const video = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    // Respect reduced-motion: show the poster frame instead of autoplaying.
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) video.current?.pause();
+  }, []);
 
   return (
-    <div className={`p-4 rounded-2xl border ${cfg.bg} space-y-3`}>
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.25em] text-cream/50 mb-1">{showtime.day}</div>
-          <div className="font-display text-lg text-cream font-medium">{showtime.date}</div>
-          <div className="flex items-center gap-2 text-sm text-cream/70 mt-1">
-            <Clock className="h-3.5 w-3.5" />
-            {showtime.time} {showtime.timezone}
-          </div>
-        </div>
-        <div className={`flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full ${cfg.bg} ${cfg.color}`}>
-          <Icon className="h-3 w-3" />
-          {cfg.label}
+    <section className="relative isolate flex min-h-[92svh] items-end overflow-hidden bg-black">
+      <video
+        ref={video}
+        className="absolute inset-0 -z-20 h-full w-full object-cover"
+        src="/media/events-hero.mp4"
+        poster="/media/events-hero-poster.jpg"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-hidden
+      />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-deep via-forest-deep/25 to-black/55" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_30%_80%,rgba(0,0,0,0.55),transparent_65%)]" />
+
+      <div className="mx-auto w-full max-w-7xl px-6 pb-20 pt-40 sm:pb-28">
+        <span className="glass animate-fade-up inline-flex items-center gap-2.5 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.28em] text-cream">
+          <span className="live-dot h-2 w-2 rounded-full bg-live" aria-hidden />
+          Live Events
+        </span>
+
+        <h1 className="animate-fade-up mt-7 font-display font-light leading-[0.86] tracking-[-0.035em] text-cream [animation-delay:150ms] text-[clamp(4.2rem,14vw,13rem)]">
+          Live<br /><span className="italic text-gold">Events</span><span className="text-gold">.</span>
+        </h1>
+
+        <p className="animate-fade-up mt-8 max-w-2xl text-lg font-light leading-relaxed text-cream/90 [animation-delay:300ms] sm:text-xl">
+          One Mustard Seed creates immersive, multimedia experiences designed to engage the whole family. Through
+          powerful visuals, storytelling, music, and live production, our events explore faith, creation, science, and
+          the Bible in ways that are exciting, memorable, and easy to connect with.
+        </p>
+
+        <div className="animate-fade-up mt-10 flex flex-wrap gap-4 [animation-delay:450ms]">
+          <a href="#tickets" className="cta cta-gold">
+            Get tickets <span className="cta-dot"><Ticket className="h-5 w-5" /></span>
+          </a>
+          <a href="#shows" className="cta cta-ghost">
+            Meet the shows <span className="cta-dot"><ArrowRight className="h-5 w-5" /></span>
+          </a>
         </div>
       </div>
+    </section>
+  );
+}
 
-      {showtime.totalSpots < 99999 && (
-        <div>
-          <div className="flex justify-between text-xs text-cream/50 mb-1.5">
-            <span>{showtime.spotsLeft === 0 ? "No spots remaining" : `${showtime.spotsLeft} spots left`}</span>
-            <span>{pct}% available</span>
-          </div>
-          <div className="h-1.5 rounded-full bg-white/10">
-            <div
-              className={`h-1.5 rounded-full transition-all ${showtime.status === "available" ? "bg-emerald-500" : showtime.status === "limited" ? "bg-amber-500" : "bg-red-500"}`}
-              style={{ width: `${pct}%` }}
+/* ───────────────────── Ticket bubbles (admin-managed) ───────────────────── */
+
+function EventBubble({ event, index }: { event: OmsEvent; index: number }) {
+  const art = eventArt(event);
+  const soldOut = event.status === "Sold Out";
+  const canBuy = !!event.ticketUrl && !soldOut;
+
+  const onMove = (e: React.MouseEvent<HTMLElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
+
+  return (
+    <Reveal delay={index * 100} className="w-full">
+      {/* A ticket: artwork above the tear line, details and the buy button on the stub below it */}
+      <article
+        onMouseMove={onMove}
+        className="spotlight group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-forest-raise shadow-card ring-1 ring-white/10 transition duration-500 hover:-translate-y-2 hover:rotate-[-0.6deg] hover:shadow-elevated hover:ring-gold/40"
+      >
+        <div className="relative aspect-[5/4] overflow-hidden bg-forest-night">
+          {art.isLogo ? (
+            <div className="grid h-full place-items-center bg-[radial-gradient(circle_at_50%_40%,#35353a,#0d0d0f)] p-8">
+              <img src={art.src} alt={event.name} className="h-full max-h-52 w-auto object-contain drop-shadow-[0_18px_28px_rgba(0,0,0,0.55)] transition duration-700 group-hover:scale-110 group-hover:-rotate-2" />
+            </div>
+          ) : (
+            <img src={art.src} alt={event.name} loading="lazy" className="h-full w-full object-cover transition duration-[1200ms] group-hover:scale-105" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-forest-raise via-transparent to-transparent" />
+          <span className="glass absolute left-4 top-4 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-cream">
+            {!soldOut && <span className="live-dot h-1.5 w-1.5 rounded-full bg-live" aria-hidden />}
+            {soldOut ? "Sold out" : "On sale now"}
+          </span>
+          <span className="absolute right-4 top-4 font-display text-xs font-semibold uppercase tracking-[0.3em] text-cream/70 [writing-mode:vertical-rl]">Admit one</span>
+        </div>
+
+        <div className="flex flex-1 flex-col px-6 pb-6 pt-1 sm:px-7">
+          <h3 className="font-display text-3xl font-light leading-tight text-cream">{event.name}</h3>
+          <dl className="mt-5 grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <dt className="eyebrow !text-[0.7rem] !tracking-[0.22em] before:hidden"><MapPin className="h-3.5 w-3.5" aria-hidden /> City</dt>
+              <dd className="mt-1.5 text-cream">{event.location || "To be announced"}</dd>
+            </div>
+            <div>
+              <dt className="eyebrow !text-[0.7rem] !tracking-[0.22em] before:hidden"><Calendar className="h-3.5 w-3.5" aria-hidden /> Dates</dt>
+              <dd className="mt-1.5 text-cream">{formatDates(event)}</dd>
+            </div>
+          </dl>
+        </div>
+
+        {/* Tear-off stub */}
+        <div className="relative px-6 pb-6 pt-7 sm:px-7">
+          <span className="perforation absolute inset-x-6 top-0" aria-hidden />
+          <span className="absolute -left-3.5 -top-3.5 h-7 w-7 rounded-full bg-forest-deep ring-1 ring-white/10" aria-hidden />
+          <span className="absolute -right-3.5 -top-3.5 h-7 w-7 rounded-full bg-forest-deep ring-1 ring-white/10" aria-hidden />
+          {canBuy ? (
+            <a href={event.ticketUrl} target="_blank" rel="noopener noreferrer" className="cta cta-gold w-full justify-between">
+              Buy Tickets
+              <span className="cta-dot"><Ticket className="h-5 w-5" /></span>
+            </a>
+          ) : (
+            <span aria-disabled="true" className="flex min-h-12 w-full cursor-not-allowed items-center justify-center rounded-full bg-white/5 text-sm font-bold uppercase tracking-widest text-cream/40">
+              {soldOut ? "Sold out" : "Tickets coming soon"}
+            </span>
+          )}
+          <div aria-hidden className="mt-5 h-6 opacity-30 [background:repeating-linear-gradient(90deg,var(--cream)_0_2px,transparent_2px_5px,var(--cream)_5px_6px,transparent_6px_10px)]" />
+        </div>
+      </article>
+    </Reveal>
+  );
+}
+
+function TicketsSection() {
+  const [events, setEvents] = useState<OmsEvent[] | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    fetch(`${API_URL}/events`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (!d?.success) throw new Error("bad response");
+        // Only live shows. Draft and Past are hidden — the Past section was removed on request.
+        const list = (d.data as OmsEvent[]).filter((e) => e.status === "Active" || e.status === "Sold Out");
+        setEvents(list);
+      })
+      .catch(() => {
+        setFailed(true);
+        setEvents([]);
+      });
+  }, []);
+
+  return (
+    <section id="tickets" className="relative scroll-mt-24 py-20 sm:py-28">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionHeading eyebrow="Tickets" title="Find a show" accent="near you" />
+        <Reveal delay={100}>
+          <p className="mt-4 max-w-2xl text-cream/70">
+            Tickets are sold securely through Zeffy. Choose a show below to pick your seats.
+          </p>
+        </Reveal>
+
+        <div className="mt-12 grid justify-center gap-6 [grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),380px))]">
+          {events === null &&
+            [0, 1].map((i) => <div key={i} className="skeleton aspect-[4/5] rounded-[2rem]" aria-hidden />)}
+
+          {events?.map((e, i) => <EventBubble key={e._id} event={e} index={i} />)}
+        </div>
+
+        {events && events.length === 0 && (
+          <Reveal className="mx-auto mt-4 max-w-xl rounded-[2rem] border border-dashed border-white/20 bg-white/[0.03] p-10 text-center">
+            <CalendarX2 className="mx-auto h-8 w-8 text-gold" aria-hidden />
+            <h3 className="mt-4 font-display text-2xl text-cream">
+              {failed ? "We couldn’t load the schedule" : "New dates are on the way"}
+            </h3>
+            <p className="mt-2 text-cream/70">
+              {failed
+                ? "Please refresh the page, or contact us and we’ll help you find a show."
+                : "Join the newsletter and we’ll tell you the moment tickets go on sale."}
+            </p>
+            <Link
+              to={failed ? "/contact" : "/newsletter"}
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-xs font-bold uppercase tracking-widest text-forest-night transition hover:scale-105"
+            >
+              {failed ? "Contact us" : "Join the newsletter"} <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </Reveal>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ───────────────────────── The two shows ───────────────────────── */
+
+const SHOWS = [
+  {
+    id: "dinosaur-encounter",
+    logo: dinoLogo,
+    name: "Dinosaur Encounter",
+    body: "Dinosaur Encounter is a live multimedia family experience that uses the fascination of dinosaurs to explore questions about fossils, origins, and the biblical account of creation. Through dramatic visuals, special effects, video, music, and storytelling, the show helps families look at dinosaurs through a faith-based lens while connecting biblical history with the evidence found in the natural world.",
+  },
+  {
+    id: "creation-case-live",
+    logo: creationLogo,
+    name: "The Creation Case LIVE",
+    body: "The Creation Case LIVE is a multimedia stage spin-off of the original The Creation Case television series. Using immersive video, large-screen visuals, music, storytelling, and cinematic media, the show explores the creation-versus-evolution conversation and examines how scientific evidence can connect with the biblical account of creation.",
+  },
+];
+
+function ShowsSection() {
+  return (
+    <section id="shows" className="relative scroll-mt-24 bg-forest-night/60 py-20 sm:py-28">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionHeading eyebrow="The shows" title="Two productions," accent="one purpose" />
+
+        <div className="mt-16 space-y-20 sm:space-y-28">
+          {SHOWS.map((s, i) => {
+            const flip = i % 2 === 1;
+            return (
+              <div key={s.id} className="grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
+                <Reveal from={flip ? "right" : "left"} className={flip ? "lg:order-2" : ""}>
+                  <div className="relative mx-auto aspect-square w-full max-w-md">
+                    <div className="absolute inset-[8%] rounded-full bg-gold/15 blur-3xl" aria-hidden />
+                    <div className="absolute inset-0 rounded-[2.5rem] bg-[radial-gradient(circle_at_50%_35%,#35353a,#0d0d0f)] ring-1 ring-white/10" />
+                    <img
+                      src={s.logo}
+                      alt={`${s.name} logo`}
+                      loading="lazy"
+                      className="relative h-full w-full object-contain p-10 drop-shadow-[0_20px_30px_rgba(0,0,0,0.55)] transition duration-700 hover:rotate-[-2deg] hover:scale-105"
+                    />
+                  </div>
+                </Reveal>
+
+                <Reveal from={flip ? "left" : "right"} delay={120} className={flip ? "lg:order-1" : ""}>
+                  <h3 className="font-display text-4xl font-light leading-tight text-cream sm:text-5xl">{s.name}</h3>
+                  <p className="mt-6 text-lg leading-relaxed text-cream/80 text-pretty">{s.body}</p>
+                  <a
+                    href="#tickets"
+                    className="group mt-8 inline-flex min-h-11 items-center gap-2 text-sm font-bold uppercase tracking-widest text-gold"
+                  >
+                    See upcoming dates
+                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1.5" />
+                  </a>
+                </Reveal>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ───────────────────────── Experience ───────────────────────── */
+
+function ExperienceSection() {
+  return (
+    <section className="relative py-20 sm:py-28">
+      <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+        <Reveal from="left">
+          <div className="relative mx-auto max-w-md">
+            <div className="absolute -inset-3 rotate-2 rounded-[2.25rem] border border-gold/30" aria-hidden />
+            <img
+              src={actionCroc}
+              alt="Rich Aguilera performing on stage during a One Mustard Seed live event"
+              loading="lazy"
+              width={1400}
+              height={2100}
+              className="relative aspect-[4/5] w-full rounded-[2rem] object-cover shadow-elevated"
             />
           </div>
-        </div>
-      )}
+        </Reveal>
 
-      <button
-        onClick={onBook}
-        disabled={showtime.status === "sold-out"}
-        className={`w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-95 ${showtime.status === "sold-out"
-          ? "bg-white/5 text-cream/30 cursor-not-allowed"
-          : "bg-gold text-forest-deep hover:bg-gold/90 shadow-lg"
-          }`}
-      >
-        {showtime.status === "sold-out" ? "Sold Out" : "Register / Book →"}
-      </button>
-    </div>
+        <Reveal from="right" delay={120}>
+          <span className="text-[11px] font-bold uppercase tracking-[0.32em] text-gold">Our experience</span>
+          <h2 className="mt-3 font-display text-4xl font-light leading-tight text-cream text-balance sm:text-6xl">
+            More than a decade of <span className="italic text-gold">live ministry</span>
+          </h2>
+          <p className="mt-7 text-lg leading-relaxed text-cream/80 text-pretty">
+            For more than a decade, One Mustard Seed has been creating and touring live events designed to inspire kids
+            and families. Through engaging stories, powerful visuals, and memorable experiences, these programs have
+            helped audiences grow deeper in their faith, better understand the Bible, and see how God’s truth connects
+            with the world around them.
+          </p>
+          <p className="mt-5 text-lg leading-relaxed text-cream/80 text-pretty">
+            Our goal has always been bigger than entertainment. We want families to leave encouraged, inspired, and
+            thinking more deeply about what they believe.
+          </p>
+        </Reveal>
+      </div>
+    </section>
   );
 }
 
-function CityPanel({ city, eventId, onBookRequest }: { city: CityScreening; eventId: string; onBookRequest: (city: string, showtimeId: string) => void }) {
-  const [expanded, setExpanded] = useState(false);
+/* ───────────────────────── Faith comes to life ───────────────────────── */
 
-  const handleBook = (showtimeId: string) => {
-    onBookRequest(city.city, showtimeId);
-  };
-
+function FaithSection() {
   return (
-    <div className="rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur overflow-hidden">
-      {/* City Header */}
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between p-6 text-left hover:bg-white/5 transition-colors"
-      >
-        <div className="flex items-center gap-4">
-          <span className="text-3xl">{city.flag}</span>
-          <div>
-            <div className="font-display text-xl text-cream font-medium flex items-center gap-2">
-              {city.city}
-              {city.isOnline && (
-                <span className="text-[9px] font-black uppercase tracking-[0.3em] bg-gold/20 text-gold px-2 py-0.5 rounded-full">Online</span>
-              )}
-            </div>
-            <div className="text-sm text-cream/50 flex items-center gap-1.5 mt-0.5">
-              <MapPin className="h-3.5 w-3.5" />
-              {city.venue.name} · {city.country}
-            </div>
+    <section className="relative bg-forest-night/60 py-20 sm:py-28">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
+          <Reveal>
+            <span className="text-[11px] font-bold uppercase tracking-[0.32em] text-gold">Every show</span>
+            <h2 className="mt-3 font-display text-4xl font-light leading-tight text-cream text-balance sm:text-6xl">
+              Faith comes <span className="italic text-gold">to life</span>
+            </h2>
+            <p className="mt-7 text-lg leading-relaxed text-cream/80 text-pretty">
+              From dinosaurs and creation to science, storytelling, and multimedia experiences, each One Mustard Seed
+              touring production looks a little different. But the purpose remains the same: create unforgettable
+              experiences that help families discover more about God and His world together.
+            </p>
+          </Reveal>
+
+          <div className="space-y-8">
+            <Reveal delay={100}>
+              <blockquote className="border-l-2 border-gold pl-6 font-display text-2xl font-light italic leading-snug text-cream sm:text-3xl">
+                We believe some of the most powerful ministry happens when parents and children experience something
+                together.
+              </blockquote>
+              <p className="mt-5 pl-6 text-lg leading-relaxed text-cream/75 text-pretty">
+                Our live programs are designed to give families those shared moments—moments that can lead to
+                questions, conversations, and deeper faith long after the show ends.
+              </p>
+            </Reveal>
+            <Reveal delay={200}>
+              <p className="rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-6 text-lg leading-relaxed text-cream/80 text-pretty">
+                Our touring productions combine storytelling, multimedia, audience interaction, and memorable moments
+                into experiences families can enjoy together.
+              </p>
+            </Reveal>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="text-right text-sm text-cream/50">
-            <div>{city.showtimes.length} showtime{city.showtimes.length > 1 ? "s" : ""}</div>
-            <div className="text-xs">
-              {city.showtimes.filter((s) => s.status === "available").length > 0
-                ? "Spots available"
-                : city.showtimes.some((s) => s.status === "limited")
-                  ? "Limited spots"
-                  : "Sold out"}
-            </div>
-          </div>
-          {expanded ? <ChevronUp className="h-5 w-5 text-cream/40" /> : <ChevronDown className="h-5 w-5 text-cream/40" />}
-        </div>
-      </button>
-
-      {expanded && (
-        <div className="border-t border-white/10 p-6 space-y-6">
-          {/* Venue Details */}
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-gold/80">Venue</div>
-              <div className="space-y-2">
-                <div className="font-bold text-cream">{city.venue.name}</div>
-                <div className="text-sm text-cream/60 leading-relaxed">
-                  {city.venue.address}<br />
-                  {city.venue.city}{city.venue.state ? `, ${city.venue.state}` : ""}<br />
-                  {city.venue.country}{city.venue.zipCode ? ` ${city.venue.zipCode}` : ""}
-                </div>
-                {!city.isOnline && (
-                  <a
-                    href={city.venue.mapUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-gold hover:text-gold/80 font-bold transition-colors mt-1"
-                  >
-                    <Navigation className="h-3.5 w-3.5" /> Open in Maps <ExternalLink className="h-3 w-3" />
-                  </a>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-gold/80 mb-2">
-                  <Car className="h-3.5 w-3.5" /> Parking
-                </div>
-                <p className="text-xs text-cream/60 leading-relaxed">{city.venue.parkingInfo}</p>
-              </div>
-              <div>
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-gold/80 mb-2">
-                  <Accessibility className="h-3.5 w-3.5" /> Accessibility
-                </div>
-                <p className="text-xs text-cream/60 leading-relaxed">{city.venue.accessibilityInfo}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact */}
-          {(city.venue.phone || city.venue.email) && (
-            <div className="flex flex-wrap gap-3 pt-2 border-t border-white/10">
-              {city.venue.email && (
-                <a href={`mailto:${city.venue.email}`} className="inline-flex items-center gap-2 text-xs text-cream/60 hover:text-gold transition-colors">
-                  <Mail className="h-3.5 w-3.5" /> {city.venue.email}
-                </a>
-              )}
-              {city.venue.phone && (
-                <a href={`tel:${city.venue.phone}`} className="inline-flex items-center gap-2 text-xs text-cream/60 hover:text-gold transition-colors">
-                  <Phone className="h-3.5 w-3.5" /> {city.venue.phone}
-                </a>
-              )}
-            </div>
-          )}
-
-          {/* Showtimes */}
-          <div>
-            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-gold/80 mb-3">Showtimes</div>
-            <div className="grid sm:grid-cols-2 gap-3">
-              {city.showtimes.map((st) => (
-                <ShowtimeCard key={st.id} showtime={st} onBook={() => handleBook(st.id)} />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
+    </section>
   );
 }
 
-import { useEffect } from "react";
+/* ───────────────────────── Closing marquee ───────────────────────── */
+
+function MomentsBand() {
+  const words = ["Live.", "Interactive.", "Unforgettable."];
+  return (
+    <section className="relative overflow-hidden py-20 sm:py-28" aria-label="Creating moments families remember">
+      <Reveal className="mx-auto max-w-4xl px-6 text-center">
+        <h2 className="font-display text-4xl font-light leading-tight text-cream text-balance sm:text-6xl">
+          Creating moments <span className="italic text-gold">families remember</span>
+        </h2>
+      </Reveal>
+
+      <div className="mt-14 flex w-max animate-marquee gap-12 whitespace-nowrap" aria-hidden>
+        {[...Array(2)].map((_, k) => (
+          <div key={k} className="flex shrink-0 gap-12">
+            {[...words, ...words].map((w, i) => (
+              <span
+                key={`${k}-${i}`}
+                className={`font-display text-6xl font-medium italic sm:text-8xl ${
+                  i % 3 === 1 ? "text-gold" : "text-transparent [-webkit-text-stroke:1.5px_var(--cream)]"
+                }`}
+              >
+                {w}
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+      <p className="sr-only">Live. Interactive. Unforgettable.</p>
+    </section>
+  );
+}
 
 function EventsPage() {
-  const [events, setEvents] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-  const [eventFilter, setEventFilter] = useState<"active" | "past">("active");
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [pendingBookingDetails, setPendingBookingDetails] = useState<{ city: string, showtimeId: string } | null>(null);
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [paymentForm, setPaymentForm] = useState({ name: "", cardNumber: "", expiry: "", cvc: "" });
-  const [selectedCategoryName, setSelectedCategoryName] = useState<string>("");
-  const [ticketQuantity, setTicketQuantity] = useState<number>(1);
-  const [promoCode, setPromoCode] = useState("");
-  const [discountPercentage, setDiscountPercentage] = useState(0);
-  const [isPromoValidating, setIsPromoValidating] = useState(false);
-
-  const [reviewForm, setReviewForm] = useState({ name: "", rating: 5, comment: "" });
-  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
-  const [eventsHeroVimeo, setEventsHeroVimeo] = useState("");
-  const [eventsHeroTitle, setEventsHeroTitle] = useState("");
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const res = await fetch(`${API_URL}/events`);
-        const data = await res.json();
-        if (data.success && data.data.length > 0) {
-          const mapped = data.data.map((e: any) => ({ ...e, id: e._id }));
-          setEvents(mapped);
-
-          const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
-          const paramId = searchParams ? searchParams.get('id') : null;
-          const matchedEvent = mapped.find((e: any) => e.id === paramId);
-          if (matchedEvent) {
-            setSelectedEventId(matchedEvent.id);
-            if (matchedEvent.status === "Past") {
-              setEventFilter("past");
-            } else {
-              setEventFilter("active");
-            }
-          } else {
-            setSelectedEventId(mapped[0].id);
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching events:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEvents();
-  }, []);
-
-  // Load hero settings for Events page
-  useEffect(() => {
-    fetch(`${API_URL}/settings`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          if (data.data.events_hero_vimeo) setEventsHeroVimeo(data.data.events_hero_vimeo);
-          if (data.data.events_hero_title) setEventsHeroTitle(data.data.events_hero_title);
-        }
-      })
-      .catch(err => console.error("Failed to load event settings:", err));
-  }, []);
-
-  const displayedEvents = events.filter(e => eventFilter === "active" ? e.status !== "Past" : e.status === "Past");
-  const selectedEvent = displayedEvents.find((e) => e.id === selectedEventId) || displayedEvents[0];
-
-  const handleReviewSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const token = localStorage.getItem("user_token");
-    if (!token) {
-      toast.error("Please login first to submit a review.");
-      window.location.href = "/login";
-      return;
-    }
-    setIsSubmittingReview(true);
-    try {
-      const res = await fetch(`${API_URL}/events/${selectedEvent?.id}/reviews`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(reviewForm)
-      });
-      const data = await res.json();
-      if (data.success) {
-        toast.success("Review added successfully!");
-        setReviewForm({ name: "", rating: 5, comment: "" });
-        setEvents(events.map(ev => ev.id === selectedEvent?.id ? { ...data.data, id: data.data._id } : ev));
-      } else {
-        toast.error(data.message || "Failed to add review");
-      }
-    } catch (err) {
-      toast.error("Network error");
-    } finally {
-      setIsSubmittingReview(false);
-    }
-  };
-
-  const handleBookRequest = (city: string, showtimeId: string) => {
-    const token = localStorage.getItem("user_token");
-    if (!token) {
-      toast.error("Please login first to book a ticket.");
-      window.location.href = "/login";
-      return;
-    }
-    setPendingBookingDetails({ city, showtimeId });
-    setTicketQuantity(1);
-    setSelectedCategoryName(selectedEvent?.categories?.[0]?.name || "");
-    setPromoCode("");
-    setDiscountPercentage(0);
-    setIsPaymentModalOpen(true);
-  };
-
-  const handleGlobalBook = () => {
-    const token = localStorage.getItem("user_token");
-    if (!token) {
-      toast.error("Please login first to book a ticket.");
-      window.location.href = "/login";
-      return;
-    }
-    setPendingBookingDetails({ city: "Global", showtimeId: "General" });
-    setTicketQuantity(1);
-    setSelectedCategoryName(selectedEvent?.categories?.[0]?.name || "");
-    setPromoCode("");
-    setDiscountPercentage(0);
-    setIsPaymentModalOpen(true);
-  };
-
-  const processPayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const token = localStorage.getItem("user_token");
-    if (!token || !pendingBookingDetails) return;
-
-    setIsProcessingPayment(true);
-
-    try {
-      const res = await fetch(`${API_URL}/payment/create-checkout-session`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          type: "event_ticket",
-          eventId: selectedEventId,
-          city: pendingBookingDetails.city,
-          showtimeId: pendingBookingDetails.showtimeId,
-          categoryName: selectedCategoryName,
-          quantity: ticketQuantity,
-          promoCode: discountPercentage > 0 ? promoCode : undefined,
-          successUrl: `${window.location.origin}/payment/success`,
-          cancelUrl: window.location.href
-        })
-      });
-      const data = await res.json();
-      if (data.success) {
-        window.location.href = data.url;
-      } else {
-        toast.error(data.message || "Failed to create checkout session");
-        setIsProcessingPayment(false);
-      }
-    } catch (err) {
-      toast.error("Network error");
-      setIsProcessingPayment(false);
-    }
-  };
-
-  const supportIcons: Record<string, typeof Mail> = {
-    email: Mail,
-    phone: Phone,
-    whatsapp: MessageCircle,
-    chat: MessageCircle,
-  };
-
-  let ticketPriceValue = 0;
-  if (selectedEvent?.categories && selectedEvent.categories.length > 0) {
-    const cat = selectedEvent.categories.find((c: any) => c.name === selectedCategoryName);
-    if (cat) ticketPriceValue = cat.price;
-  } else {
-    ticketPriceValue = parseFloat((selectedEvent?.price || "0").replace(/[^0-9.]/g, ''));
-  }
-
-  const baseTotal = ticketPriceValue * ticketQuantity;
-  const discountAmount = (baseTotal * discountPercentage) / 100;
-  const totalDue = baseTotal - discountAmount;
-  const formattedTotal = totalDue > 0 ? `$${totalDue.toFixed(2)}` : "Free";
-
-  const handleApplyPromo = async () => {
-    if (!promoCode) return;
-    setIsPromoValidating(true);
-    try {
-      const res = await fetch(`${API_URL}/promocodes/validate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: promoCode })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setDiscountPercentage(data.data.discountPercentage);
-        toast.success(`Promo code applied! ${data.data.discountPercentage}% off.`);
-      } else {
-        setDiscountPercentage(0);
-        toast.error(data.message || "Invalid promo code");
-      }
-    } catch (err) {
-      setDiscountPercentage(0);
-      toast.error("Error validating promo code");
-    } finally {
-      setIsPromoValidating(false);
-    }
-  };
-
   return (
-    <div className="bg-[#050704] min-h-screen flex flex-col text-cream selection:bg-gold/30">
+    <div className="theme-cinema theme-promo">
       <SiteHeader />
-      <main className="flex-grow">
-        {loading ? (
-          <div className="flex items-center justify-center min-h-[70vh]">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-16 h-16 border-4 border-gold/30 border-t-gold rounded-full animate-spin"></div>
-              <p className="text-cream/50 text-sm font-black uppercase tracking-widest animate-pulse">Loading Events...</p>
-            </div>
-          </div>
-        ) : (
-          <>
-            {/* Hero */}
-            <section className="relative min-h-[70vh] flex items-center justify-center pt-24 overflow-hidden">
-              <div className="absolute inset-0 z-0 bg-[#050704]">
-                {eventsHeroVimeo && eventsHeroVimeo.match(/vimeo\.com\/(\d+)/i) ? (
-                  <iframe
-                    src={`https://player.vimeo.com/video/${eventsHeroVimeo.match(/vimeo\.com\/(\d+)/i)?.[1]}?autoplay=1&loop=1&byline=0&title=0&muted=1&controls=0&autopause=0`}
-                    className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-60"
-                    frameBorder="0"
-                    allow="autoplay; fullscreen"
-                  />
-                ) : (
-                  <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover opacity-60 scale-105 transition-opacity duration-1000"
-                  >
-                    <source
-                      src={eventsHeroVimeo && eventsHeroVimeo.match(/\.(mp4|webm|ogg)$/i) ? eventsHeroVimeo : "https://vjs.zencdn.net/v/oceans.mp4"}
-                      type="video/mp4"
-                    />
-                  </video>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-b from-[#050704]/30 via-transparent to-[#050704]/90" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#050704]/30 via-transparent to-[#050704]/30" />
-              </div>
-
-              <div className="relative z-10 mx-auto max-w-5xl px-6 text-center space-y-6">
-                <div className={`inline-flex items-center gap-3 px-4 py-1.5 rounded-full border text-[10px] font-bold uppercase tracking-[0.4em] backdrop-blur-md ${eventFilter === "active" ? "bg-gold/10 border-gold/20 text-gold" : "bg-white/5 border-white/10 text-cream/60"}`}>
-                  <Sparkles className={`w-3 h-3 ${eventFilter === "active" ? "animate-pulse" : ""}`} /> {eventFilter === "active" ? "Live Events" : "Past Events"}
-                </div>
-                <h1 className="font-display text-6xl sm:text-8xl lg:text-9xl font-medium tracking-tighter leading-[0.9]">
-                  {eventsHeroTitle || (eventFilter === "active" ? "Live" : "Past")} <span className="italic text-gold block sm:inline">Events</span>
-                </h1>
-                <p className="mx-auto max-w-2xl text-lg text-cream/60 font-light leading-relaxed">
-                  {eventFilter === "active" ? "Immersive gatherings in cities around the world — and online for everyone." : "Explore our archive of past gatherings, screenings, and events."}
-                </p>
-                {/* Stats */}
-                <div className="flex flex-wrap justify-center gap-8 pt-4 text-sm text-cream/50">
-                  {[
-                    { icon: Globe, v: `${displayedEvents.reduce((acc, e) => acc + (e.cities?.length ?? 0), 0)}`, l: "Locations" },
-                    { icon: Calendar, v: `${displayedEvents.length}`, l: "Events" },
-                    { icon: Users, v: `${displayedEvents.reduce((acc, e) => acc + (e.ticketsSold || 0), 0).toLocaleString()}+`, l: "Registered" },
-                    { icon: Ticket, v: "Free – $45", l: "Ticket Range" },
-                  ].map(({ icon: Icon, v, l }) => (
-                    <div key={l} className="flex items-center gap-2">
-                      <Icon className="h-4 w-4 text-gold/60" />
-                      <span className="font-bold text-cream">{v}</span>
-                      <span>{l}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Event Selector Tabs */}
-            <section className="sticky top-16 z-20 border-b border-white/10 bg-[#050704]/95 backdrop-blur-xl">
-              <div className="max-w-7xl mx-auto px-6">
-                <div className="flex flex-col md:flex-row md:items-center gap-4 py-2 md:py-0">
-                  {/* Filter Toggle */}
-                  <div className="flex items-center gap-2 bg-white/5 rounded-lg p-1 w-fit md:mr-4">
-                    <button
-                      onClick={() => { setEventFilter("active"); setSelectedEventId(null); }}
-                      className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-md transition-all ${eventFilter === "active" ? "bg-forest text-white shadow-md" : "text-cream/50 hover:text-cream/80"}`}
-                    >
-                      Active
-                    </button>
-                    <button
-                      onClick={() => { setEventFilter("past"); setSelectedEventId(null); }}
-                      className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-md transition-all ${eventFilter === "past" ? "bg-forest text-white shadow-md" : "text-cream/50 hover:text-cream/80"}`}
-                    >
-                      Past
-                    </button>
-                  </div>
-
-                  {/* Event Tabs */}
-                  <div className="flex gap-0 overflow-x-auto scrollbar-hide flex-grow">
-                    {displayedEvents.map((ev) => (
-                      <button
-                        key={ev.id}
-                        onClick={() => setSelectedEventId(ev.id)}
-                        className={`flex-shrink-0 px-5 py-4 text-xs font-bold uppercase tracking-widest border-b-2 transition-all whitespace-nowrap ${selectedEvent?.id === ev.id
-                          ? "border-gold text-gold"
-                          : "border-transparent text-cream/40 hover:text-cream/70"
-                          }`}
-                      >
-                        {ev.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Selected Event Detail */}
-            {selectedEvent ? (
-              <div className="max-w-7xl mx-auto px-6 py-16 space-y-16">
-
-                {/* Event Overview */}
-                <div className="grid lg:grid-cols-3 gap-12">
-                  <div className="lg:col-span-2 space-y-6">
-                    {/* Event Video / Image */}
-                    {selectedEvent.recapVideoUrl ? (
-                      <div className="w-full aspect-video rounded-[2rem] overflow-hidden border border-white/10 mb-8 shadow-2xl relative bg-black">
-                        <iframe
-                          src={(() => {
-                            const url = selectedEvent.recapVideoUrl;
-                            const ytMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
-                            if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-                            if (url.includes("vimeo.com")) return getVimeoEmbedUrl(url, { autoplay: 1, loop: 1, byline: 0, title: 0, muted: 1, controls: 0, autopause: 0 });
-                            return url;
-                          })()}
-                          className="absolute inset-0 w-full h-full"
-                          allowFullScreen
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        />
-                      </div>
-                    ) : selectedEvent.image && selectedEvent.image !== 'no-photo.jpg' && (
-                      <div className="w-full h-[300px] sm:h-[400px] rounded-[2rem] overflow-hidden border border-white/10 mb-8 shadow-2xl">
-                        <img
-                          src={mediaUrl(selectedEvent.image)}
-                          onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80"; }}
-                          alt={selectedEvent.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                    <div>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {selectedEvent.tags?.map((tag: string) => (
-                          <span key={tag} className="text-[10px] font-black uppercase tracking-[0.25em] px-3 py-1 rounded-full bg-white/5 text-cream/60 border border-white/10">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      <h2 className="font-display text-4xl sm:text-5xl font-medium text-cream">{selectedEvent.name}</h2>
-                      <p className="text-gold/80 text-lg mt-2">{selectedEvent.subtitle}</p>
-                      <div className="flex items-center gap-2 text-cream mt-4 font-medium text-sm tracking-wide">
-                        <MapPin className="h-5 w-5 text-gold" />
-                        <span>{selectedEvent.location || "Global"}</span>
-                      </div>
-                      <p className="text-cream/60 mt-4 leading-relaxed">{selectedEvent.description}</p>
-                    </div>
-
-                    <EventCountdown eventDate={selectedEvent.date} showtimes={selectedEvent.cities?.[0]?.showtimes} />
-
-                    {/* Quick Info */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                      {[
-                        { icon: Calendar, label: "Date", value: !isNaN(new Date(selectedEvent.date).getTime()) ? new Date(selectedEvent.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : selectedEvent.date },
-                        { icon: Clock, label: "Duration", value: selectedEvent.duration || "TBA" },
-                        { icon: Users, label: "Age", value: selectedEvent.ageRating || "All Ages" },
-                        { icon: Globe, label: "Language", value: selectedEvent.language || "English" },
-                      ].map(({ icon: Icon, label, value }) => (
-                        <div key={label} className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
-                          <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.25em] text-cream/40">
-                            <Icon className="h-3.5 w-3.5 text-gold/60" /> {label}
-                          </div>
-                          <div className="text-sm font-bold text-cream">{value}</div>
-                        </div>
-                      ))}
-                    </div>
-
-
-                    {/* Event Photo Gallery */}
-                    {selectedEvent.gallery && selectedEvent.gallery.length > 0 && (
-                      <div className="pt-8">
-                        <h3 className="text-xl font-display font-bold text-cream mb-4">Event Gallery</h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                          {selectedEvent.gallery.map((img: string, idx: number) => (
-                            <div key={idx} className="aspect-square rounded-2xl overflow-hidden border border-white/10 hover:border-gold/50 transition-colors shadow-lg">
-                              <img
-                                src={mediaUrl(img)}
-                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                                alt={`${selectedEvent.name} Gallery ${idx}`}
-                                className="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer"
-                                onClick={() => window.open(mediaUrl(img), '_blank')}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Ticket Card */}
-                  <div className="h-fit lg:sticky lg:top-32 p-8 rounded-[2rem] bg-gradient-to-b from-forest-deep to-[#0a1a0a] border border-white/10 space-y-6 shadow-2xl">
-                    <div>
-                      <div className="text-[10px] font-black uppercase tracking-[0.35em] text-gold/70 mb-1">From</div>
-                      <div className="font-display text-5xl font-medium text-gold">{selectedEvent.price}</div>
-                      <div className="text-cream/50 text-sm mt-1">per person</div>
-                    </div>
-                    {/* Show Categories and Facilities */}
-                    {selectedEvent.categories && selectedEvent.categories.length > 0 ? (
-                      <div className="space-y-4 pt-4 border-t border-white/10">
-                        <div className="text-[10px] font-black uppercase tracking-[0.35em] text-gold/70">Ticket Categories</div>
-                        {selectedEvent.categories.map((cat: any) => (
-                          <div key={cat.name} className="bg-white/5 rounded-xl p-4 border border-white/10">
-                            <div className="flex justify-between items-center mb-2">
-                              <div className="font-bold text-cream">{cat.name}</div>
-                              <div className="text-gold font-mono">${cat.price}</div>
-                            </div>
-                            {cat.facilities && (
-                              <ul className="space-y-1.5 mt-2">
-                                {cat.facilities.split(',').map((f: string, i: number) => (
-                                  <li key={i} className="flex items-start gap-2 text-xs text-cream/70">
-                                    <CheckCircle className="h-3 w-3 text-gold flex-shrink-0 mt-0.5" />
-                                    <span>{f.trim()}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    ) : selectedEvent.includes && (
-                      <ul className="space-y-2 pt-4 border-t border-white/10">
-                        {selectedEvent.includes.map((item: string) => (
-                          <li key={item} className="flex items-start gap-3 text-sm text-cream/70">
-                            <CheckCircle className="h-4 w-4 text-gold flex-shrink-0 mt-0.5" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {selectedEvent.status !== "Past" ? (
-                      <button
-                        onClick={handleGlobalBook}
-                        className="w-full py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all active:scale-95 bg-gold text-forest-deep hover:bg-gold/90 shadow-lg"
-                      >
-                        Buy Ticket Now →
-                      </button>
-                    ) : (
-                      <button
-                        disabled
-                        className="w-full py-4 rounded-xl text-sm font-black uppercase tracking-widest bg-white/5 text-cream/30 cursor-not-allowed shadow-lg"
-                      >
-                        Event Ended
-                      </button>
-                    )}
-                    {selectedEvent.cities && selectedEvent.cities.length > 0 && (
-                      <div className="text-xs text-cream/40 text-center">Or select a specific city & showtime below</div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Cities & Showtimes */}
-                {selectedEvent.cities && selectedEvent.cities.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-4 mb-8">
-                      <div>
-                        <div className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/70 mb-1">Select Your City</div>
-                        <h3 className="font-display text-3xl text-cream">
-                          {selectedEvent.cities.length} {selectedEvent.cities.length === 1 ? "Location" : "Locations"}
-                        </h3>
-                      </div>
-                      <span className="h-px flex-grow bg-white/10" />
-                    </div>
-                    <div className="space-y-4">
-                      {selectedEvent.cities.map((city: CityScreening) => (
-                        <CityPanel key={city.cityId} city={city} eventId={selectedEvent.id} onBookRequest={handleBookRequest} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Support */}
-                {selectedEvent.support && selectedEvent.support.length > 0 && (
-                  <div className="rounded-[2rem] bg-white/5 border border-white/10 p-10">
-                    <div className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/70 mb-2">Need Help?</div>
-                    <h3 className="font-display text-3xl text-cream mb-8">Event Support</h3>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {selectedEvent.support.map((contact: { type: string; label: string; value: string; available: string }) => {
-                        const Icon = supportIcons[contact.type] || Mail;
-                        const href =
-                          contact.type === "email"
-                            ? `mailto:${contact.value}`
-                            : contact.type === "phone" || contact.type === "whatsapp"
-                              ? `tel:${contact.value}`
-                              : "#";
-                        return (
-                          <a
-                            key={contact.label}
-                            href={href}
-                            className="group p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-gold/30 hover:bg-gold/5 transition-all space-y-3"
-                          >
-                            <div className="h-10 w-10 rounded-xl bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
-                              <Icon className="h-5 w-5 text-gold" />
-                            </div>
-                            <div>
-                              <div className="font-bold text-cream text-sm">{contact.label}</div>
-                              <div className="text-xs text-cream/60 mt-0.5 break-all">{contact.value}</div>
-                              <div className="text-[10px] text-cream/40 mt-2 flex items-center gap-1">
-                                <Clock className="h-3 w-3" /> {contact.available}
-                              </div>
-                            </div>
-                          </a>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-                {/* Testimonials */}
-                <div>
-                  <div className="flex items-center justify-between mb-8">
-                    <div>
-                      <div className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/70 mb-2">Testimonials</div>
-                      <h3 className="font-display text-3xl text-cream">Community Voices</h3>
-                    </div>
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-6">
-                      {selectedEvent.reviews && selectedEvent.reviews.length > 0 ? selectedEvent.reviews.map((r: any, i: number) => (
-                        <div key={i} className="p-6 rounded-[2rem] bg-white/5 border border-white/10 space-y-4">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <div className="font-bold text-cream">{r.name}</div>
-                              <div className="text-[10px] text-cream/40 uppercase tracking-widest">{new Date(r.createdAt).toLocaleDateString()}</div>
-                            </div>
-                            <div className="flex items-center gap-1 text-gold">
-                              {[...Array(5)].map((_, j) => (
-                                <Star key={j} className={`w-3 h-3 ${j < r.rating ? "fill-gold" : "opacity-30"}`} />
-                              ))}
-                            </div>
-                          </div>
-                          <p className="text-sm text-cream/70 italic">"{r.comment}"</p>
-                        </div>
-                      )) : (
-                        <div className="text-sm text-cream/40 italic">No reviews yet. Be the first to share your experience!</div>
-                      )}
-                    </div>
-
-                    {/* Leave a Review Form */}
-                    <div className="p-8 rounded-[2rem] bg-gradient-to-b from-forest-deep to-[#0a1a0a] border border-white/10 h-fit">
-                      <h4 className="font-bold text-lg text-cream mb-6">Leave a Review</h4>
-                      <form onSubmit={handleReviewSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-cream/50">Your Name</label>
-                          <input
-                            required
-                            type="text"
-                            value={reviewForm.name}
-                            onChange={e => setReviewForm({ ...reviewForm, name: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-gold/50"
-                            placeholder="e.g. John Doe"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-cream/50">Rating (1-5)</label>
-                          <input
-                            required
-                            type="number"
-                            min="1"
-                            max="5"
-                            value={reviewForm.rating}
-                            onChange={e => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-gold/50"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-cream/50">Your Experience</label>
-                          <textarea
-                            required
-                            value={reviewForm.comment}
-                            onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm h-24 focus:outline-none focus:border-gold/50"
-                            placeholder="Share your thoughts about this event..."
-                          />
-                        </div>
-                        <button
-                          type="submit"
-                          disabled={isSubmittingReview}
-                          className="w-full py-3 rounded-xl bg-gold text-forest-deep font-bold text-sm tracking-widest uppercase hover:bg-gold/90 transition-all disabled:opacity-50"
-                        >
-                          {isSubmittingReview ? "Submitting..." : "Submit Review"}
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-
-                {/* FAQ */}
-                {selectedEvent.faq && selectedEvent.faq.length > 0 && (
-                  <div>
-                    <div className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/70 mb-2">FAQ</div>
-                    <h3 className="font-display text-3xl text-cream mb-8">Frequently Asked Questions</h3>
-                    <div className="space-y-3 max-w-3xl">
-                      {selectedEvent.faq.map((item: { q: string; a: string }, i: number) => (
-                        <div key={i} className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-                          <button
-                            onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                            className="w-full flex items-center justify-between p-5 text-left hover:bg-white/5 transition-colors"
-                          >
-                            <span className="font-bold text-cream text-sm pr-4">{item.q}</span>
-                            {openFaq === i ? (
-                              <ChevronUp className="h-4 w-4 text-gold flex-shrink-0" />
-                            ) : (
-                              <ChevronDown className="h-4 w-4 text-cream/40 flex-shrink-0" />
-                            )}
-                          </button>
-                          {openFaq === i && (
-                            <div className="px-5 pb-5 text-sm text-cream/60 leading-relaxed border-t border-white/10 pt-4">
-                              {item.a}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Host CTA */}
-                {/* <div className="text-center py-16 space-y-6">
-              <div className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/70">Host a Screening</div>
-              <h3 className="font-display text-4xl text-cream">Bring the Event to Your City</h3>
-              <p className="text-cream/50 max-w-xl mx-auto">
-                Interested in hosting a One Mustard Seed event in your city, school, or church? We partner with communities around the world.
-              </p>
-              <a
-                href="mailto:partners@onemustardSeed.org"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gold text-forest-deep font-black text-sm uppercase tracking-widest hover:bg-gold/90 active:scale-95 transition-all shadow-xl"
-              >
-                <Mail className="h-4 w-4" /> Contact Our Partners Team
-              </a>
-            </div> */}
-              </div>
-            ) : (
-              <div className="py-32 text-center text-cream/50 flex flex-col items-center justify-center space-y-4">
-                <Calendar className="w-12 h-12 text-cream/20" />
-                <p>{eventFilter === "active" ? "No upcoming events at this moment. Please check back later!" : "No past events found."}</p>
-              </div>
-            )}
-
-            {/* Payment Modal */}
-            {isPaymentModalOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                <div className="bg-[#0a1a0a] w-full max-w-md rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl">
-                  <div className="p-6 border-b border-white/10 flex justify-between items-center bg-forest-deep text-cream">
-                    <h3 className="font-display text-2xl font-medium">Complete Purchase</h3>
-                    <button onClick={() => setIsPaymentModalOpen(false)} className="opacity-50 hover:opacity-100 transition-opacity">
-                      <XCircle className="w-6 h-6" />
-                    </button>
-                  </div>
-                  <form onSubmit={processPayment} className="p-6 space-y-4">
-                    <div className="bg-white/5 p-4 rounded-xl border border-white/10 mb-6">
-                      <div className="text-xs text-cream/50 uppercase tracking-widest mb-1">Order Summary</div>
-                      <div className="font-bold text-lg text-cream">{selectedEvent?.name}</div>
-                      <div className="text-sm text-cream/70">{pendingBookingDetails?.city} • {pendingBookingDetails?.showtimeId}</div>
-
-                      {selectedEvent?.categories && selectedEvent.categories.length > 0 && (
-                        <div className="mt-4 space-y-3">
-                          <div>
-                            <label className="text-[10px] font-bold uppercase tracking-[0.25em] text-cream/50 mb-1 block">Select Category</label>
-                            <select
-                              value={selectedCategoryName}
-                              onChange={(e) => setSelectedCategoryName(e.target.value)}
-                              className="w-full h-11 bg-[#0a1a0a] border border-white/10 rounded-xl px-4 text-sm text-cream focus:outline-none focus:border-gold/50 transition-colors"
-                            >
-                              {selectedEvent.categories.map((c: any) => (
-                                <option key={c.name} value={c.name} className="bg-forest-deep text-cream" disabled={c.available < ticketQuantity}>
-                                  {c.name} - ${c.price} ({c.available} available)
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          {selectedEvent.categories.find((c: any) => c.name === selectedCategoryName)?.facilities && (
-                            <div className="p-3 bg-white/5 rounded-xl border border-white/10">
-                              <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold/70 mb-1.5">Category Includes</div>
-                              <ul className="space-y-1">
-                                {selectedEvent.categories.find((c: any) => c.name === selectedCategoryName)?.facilities?.split(',').map((f: string, i: number) => (
-                                  <li key={i} className="flex items-start gap-2 text-xs text-cream/80">
-                                    <CheckCircle className="h-3 w-3 text-gold flex-shrink-0 mt-0.5" />
-                                    {f.trim()}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      <div className="mt-4">
-                        <label className="text-[10px] font-bold uppercase tracking-[0.25em] text-cream/50 mb-1 block">Quantity</label>
-                        <input
-                          type="number"
-                          min="1"
-                          max={selectedEvent?.categories?.find((c: any) => c.name === selectedCategoryName)?.available || selectedEvent?.capacity || 10}
-                          value={ticketQuantity}
-                          onChange={(e) => setTicketQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                          className="w-full h-11 bg-[#0a1a0a] border border-white/10 rounded-xl px-4 text-sm text-cream focus:outline-none focus:border-gold/50 transition-colors"
-                        />
-                      </div>
-
-                      <div className="mt-6 pt-4 border-t border-white/10">
-                        <label className="text-[10px] font-bold uppercase tracking-[0.25em] text-cream/50 mb-1 block">Promo Code</label>
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={promoCode}
-                            onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                            placeholder="ENTER CODE"
-                            className="flex-grow h-11 bg-white/5 border border-white/10 rounded-xl px-4 text-sm text-cream font-mono uppercase focus:outline-none focus:border-gold/50 transition-colors placeholder:text-cream/30"
-                          />
-                          <button
-                            type="button"
-                            onClick={handleApplyPromo}
-                            disabled={!promoCode || isPromoValidating}
-                            className="h-11 px-6 rounded-xl bg-white/10 hover:bg-white/20 text-cream text-xs font-bold uppercase tracking-widest transition-all disabled:opacity-50"
-                          >
-                            {isPromoValidating ? "..." : "Apply"}
-                          </button>
-                        </div>
-                        {discountPercentage > 0 && (
-                          <div className="text-emerald-500 text-xs mt-2 font-bold tracking-wide">
-                            <CheckCircle className="inline-block w-3 h-3 mr-1 mb-0.5" /> Promo applied: {discountPercentage}% off!
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center text-cream">
-                        <span>Total due</span>
-                        <div className="text-right">
-                          {discountPercentage > 0 && (
-                            <div className="text-xs text-cream/40 line-through mb-0.5">${baseTotal.toFixed(2)}</div>
-                          )}
-                          <span className="font-bold text-xl text-gold">{formattedTotal}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4 p-5 rounded-2xl border border-white/10 bg-white/5 text-center">
-                      <div className="h-10 w-10 rounded-xl bg-gold/10 text-gold flex items-center justify-center mx-auto">
-                        <CreditCard className="h-5 w-5" />
-                      </div>
-                      <div className="text-[10px] font-bold uppercase tracking-widest leading-relaxed text-cream/70">
-                        Secure checkout via Stripe <br />
-                        <span className="text-white/40 font-medium">You will be redirected to Stripe to pay securely.</span>
-                      </div>
-                    </div>
-                    <button
-                      type="submit"
-                      disabled={isProcessingPayment}
-                      className="w-full mt-6 py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all active:scale-95 bg-gold text-forest-deep hover:bg-gold/90 shadow-lg disabled:opacity-50 flex justify-center items-center gap-2"
-                    >
-                      {isProcessingPayment ? (
-                        <span className="animate-pulse">Processing...</span>
-                      ) : (
-                        <>Pay {formattedTotal} →</>
-                      )}
-                    </button>
-                  </form>
-                </div>
-              </div>
-            )}
-
-          </>
-        )}
+      <main>
+        <EventsHero />
+        <Ticker items={["Dinosaur Encounter", "The Creation Case LIVE", "Live. Interactive. Unforgettable.", "Family friendly"]} />
+        <TicketsSection />
+        <ShowsSection />
+        <ExperienceSection />
+        <FaithSection />
+        <MomentsBand />
+        <GivingBanner />
       </main>
       <SiteFooter />
-    </div>
-  );
-}
-
-function EventCountdown({ eventDate, showtimes }: { eventDate: string, showtimes?: any[] }) {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [isLive, setIsLive] = useState(false);
-
-  useEffect(() => {
-    // Default fallback to 14 days if date parsing fails
-    let targetTime = new Date().getTime() + 14 * 24 * 60 * 60 * 1000;
-
-    // Attempt parsing from showtimes if available
-    if (showtimes && showtimes.length > 0) {
-      const firstShowtime = showtimes[0];
-      // e.g. "August 18, 2026 19:00:00"
-      const parsedDate = new Date(`${firstShowtime.date} ${firstShowtime.time}`);
-      if (!isNaN(parsedDate.getTime()) && parsedDate.getTime() > new Date().getTime()) {
-        targetTime = parsedDate.getTime();
-      }
-    } else if (eventDate) {
-      // Attempt to parse string directly, fallback to current year if missing
-      let parsedDate = new Date(eventDate);
-      if (isNaN(parsedDate.getTime())) {
-        parsedDate = new Date(`${eventDate} ${new Date().getFullYear()}`);
-      }
-      if (!isNaN(parsedDate.getTime()) && parsedDate.getTime() > new Date().getTime()) {
-        targetTime = parsedDate.getTime();
-      }
-    }
-
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = targetTime - now;
-
-      if (distance < 0) {
-        clearInterval(interval);
-        setIsLive(true);
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-      } else {
-        setIsLive(false);
-        setTimeLeft({
-          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-          seconds: Math.floor((distance % (1000 * 60)) / 1000),
-        });
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [eventDate, showtimes]);
-
-  if (isLive) {
-    return (
-      <div className="flex items-center gap-3 p-4 rounded-2xl border border-gold/30 bg-gold/5 mb-8 shadow-inner shadow-gold/10">
-        <div className="h-3 w-3 rounded-full bg-gold animate-pulse shadow-[0_0_10px_var(--gold)]" />
-        <span className="font-display font-bold text-lg text-gold">Event is Live Now!</span>
-      </div>
-    );
-  }
-
-  return (
-    <div className="mb-8">
-      <div className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/70 mb-3 flex items-center gap-2">
-        <Clock className="w-3.5 h-3.5" /> Event Starts In
-      </div>
-      <div className="grid grid-cols-4 gap-3 sm:gap-4 p-6 sm:p-8 rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-sm">
-        <div className="text-center">
-          <div className="text-3xl sm:text-5xl font-display font-bold text-gold tabular-nums tracking-tighter">{timeLeft.days}</div>
-          <div className="text-[9px] sm:text-[10px] uppercase font-bold text-cream/40 tracking-[0.2em] mt-2">Days</div>
-        </div>
-        <div className="text-center">
-          <div className="text-3xl sm:text-5xl font-display font-bold text-gold tabular-nums tracking-tighter">{timeLeft.hours.toString().padStart(2, '0')}</div>
-          <div className="text-[9px] sm:text-[10px] uppercase font-bold text-cream/40 tracking-[0.2em] mt-2">Hours</div>
-        </div>
-        <div className="text-center">
-          <div className="text-3xl sm:text-5xl font-display font-bold text-gold tabular-nums tracking-tighter">{timeLeft.minutes.toString().padStart(2, '0')}</div>
-          <div className="text-[9px] sm:text-[10px] uppercase font-bold text-cream/40 tracking-[0.2em] mt-2">Mins</div>
-        </div>
-        <div className="text-center">
-          <div className="text-3xl sm:text-5xl font-display font-bold text-gold tabular-nums tracking-tighter">{timeLeft.seconds.toString().padStart(2, '0')}</div>
-          <div className="text-[9px] sm:text-[10px] uppercase font-bold text-cream/40 tracking-[0.2em] mt-2">Secs</div>
-        </div>
-      </div>
     </div>
   );
 }

@@ -64,7 +64,7 @@ function IndividualBookPage() {
                   A timeless exploration of the divine presence in the smallest details of creation. This book invites readers to slow down and see the world as a sacred canvas of the Creator's heart.
                 </p>
 
-                <div className="mt-12 p-8 rounded-3xl bg-cream/5 border border-border">
+                <div className="mt-12 p-8 rounded-3xl bg-white/[0.01] border border-border">
                   <div className="flex items-end justify-between">
                     <div>
                       <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Hardcover Edition</p>

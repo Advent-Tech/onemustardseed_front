@@ -11,17 +11,17 @@ export const Route = createFileRoute("/kids/topics")({
 function KidsTopicsPage() {
   const TOPICS = [
     { name: "Kindness", icon: Heart, color: "text-rose-500", bg: "bg-rose-50", desc: "Learning to love others as Jesus loves us." },
-    { name: "Courage", icon: ShieldCheck, color: "text-forest-deep", bg: "bg-forest-deep/10", desc: "Being brave because God is with us always." },
+    { name: "Courage", icon: ShieldCheck, color: "text-cream", bg: "bg-forest-deep/10", desc: "Being brave because God is with us always." },
     { name: "Creation", icon: Sparkles, color: "text-gold", bg: "bg-gold/10", desc: "Exploring the wonder of God's handiwork." },
     { name: "Worship", icon: Music, color: "text-earth", bg: "bg-earth/10", desc: "Singing and praising with joyful hearts." },
     { name: "Honesty", icon: Star, color: "text-gold", bg: "bg-gold/5", desc: "The value of telling the truth in all things." },
     { name: "Joy", icon: Sun, color: "text-gold", bg: "bg-gold/10", desc: "Finding happiness in the Lord's goodness." },
     { name: "Peace", icon: Cloud, color: "text-sage", bg: "bg-sage/10", desc: "Trusting God when things feel stormy." },
-    { name: "Faith", icon: Anchor, color: "text-forest-deep", bg: "bg-forest-deep/5", desc: "Holding on to God's promises forever." },
+    { name: "Faith", icon: Anchor, color: "text-cream", bg: "bg-forest-deep/5", desc: "Holding on to God's promises forever." },
   ];
 
   return (
-    <div className="bg-[#FAF7EE] min-h-screen flex flex-col">
+    <div className="theme-cinema min-h-screen flex flex-col">
       <SiteHeader />
       <main className="flex-grow pt-24">
         {/* Header Section */}
@@ -42,12 +42,12 @@ function KidsTopicsPage() {
            <div className="mx-auto max-w-7xl px-6">
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
                  {TOPICS.map((t, i) => (
-                   <div key={i} className="group p-10 rounded-[3.5rem] bg-white border border-cream/10 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col items-center text-center">
+                   <div key={i} className="group p-10 rounded-[3.5rem] bg-card border border-white/10 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col items-center text-center">
                       <div className={`h-24 w-24 rounded-[2.5rem] ${t.bg} ${t.color} flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500`}>
                          <t.icon className="h-10 w-10" />
                       </div>
-                      <h3 className="text-2xl font-display font-bold text-forest-deep mb-4 group-hover:text-gold transition-colors">{t.name}</h3>
-                      <p className="text-forest-deep/60 text-sm leading-relaxed mb-8 flex-grow">{t.desc}</p>
+                      <h3 className="text-2xl font-display font-bold text-cream mb-4 group-hover:text-gold transition-colors">{t.name}</h3>
+                      <p className="text-cream/60 text-sm leading-relaxed mb-8 flex-grow">{t.desc}</p>
                       <Link to="/kids/library" className={`w-full py-4 rounded-2xl ${t.bg} ${t.color} font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 group-hover:shadow-md transition-all`}>
                          Explore {t.name} <ChevronRight className="h-4 w-4" />
                       </Link>

@@ -37,6 +37,7 @@ export function SiteHeader() {
   const [cartCount, setCartCount] = useState(0);
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const isCinema = /^\/(kids|films|prayer|events)(\/|$)/.test(location.pathname);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -76,23 +77,24 @@ export function SiteHeader() {
   }, []);
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${!isHome || scrolled
-          ? "bg-forest-deep/95 backdrop-blur-xl shadow-elevated border-b border-cream/5"
-          : "bg-transparent"
+    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4">
+      <div
+        className={`mx-auto flex h-16 max-w-[1320px] items-center justify-between rounded-full px-3 pl-3 pr-3 transition-all duration-500 sm:h-[4.5rem] sm:pl-4 sm:pr-4 ${
+          !isHome || scrolled
+            ? `${isCinema ? "bg-black/70" : "bg-forest-night/70"} backdrop-blur-2xl shadow-elevated ring-1 ring-white/10`
+            : "bg-black/20 backdrop-blur-md ring-1 ring-white/10"
         }`}
-    >
-      <div className="mx-auto flex h-24 max-w-[1440px] items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-4 group">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-cream p-1.5 transition-all duration-300 group-hover:scale-105 shadow-md">
+      >
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-cream p-1 transition-all duration-300 group-hover:scale-105 shadow-md">
             <img src={logoImg} alt="One Mustard Seed Logo" className="h-full w-full object-contain" />
           </div>
-          <span className="font-display text-xl sm:text-2xl font-bold tracking-tight text-[#faf7ee] whitespace-nowrap" style={{ fontFamily: 'Fraunces, Cormorant Garamond, serif' }}>
+          <span className="font-display text-lg sm:text-xl font-semibold tracking-tight text-[#faf7ee] whitespace-nowrap">
             One Mustard Seed
           </span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-4">
+        <nav className="hidden xl:flex items-center gap-1">
           {NAV_GROUPS.map((group) => {
             const isGroupActive = group.links?.some(link => location.pathname.startsWith(link.href)) || 
                                  (group.href && location.pathname.startsWith(group.href));
@@ -106,7 +108,7 @@ export function SiteHeader() {
               >
                 {group.links ? (
                   <>
-                    <button className={`flex flex-col items-center gap-0.5 px-4 py-2 text-[11px] font-bold tracking-[0.2em] transition-all ${isGroupActive ? "text-gold" : "text-[#faf7ee]/70 hover:text-[#faf7ee]"}`}>
+                    <button className={`flex min-h-11 flex-col items-center justify-center gap-0.5 px-3 py-2 text-[11px] font-bold tracking-[0.2em] transition-all ${isGroupActive ? "text-gold" : "text-[#faf7ee]/70 hover:text-[#faf7ee]"}`}>
                       <span className="flex items-center gap-1">
                         {group.label}
                         <ChevronDown className="h-3 w-3 transition-transform duration-300 group-hover/nav:rotate-180" strokeWidth={2.5} />
@@ -114,7 +116,7 @@ export function SiteHeader() {
                       {isGroupActive && <div className="h-0.5 w-4 bg-gold rounded-full" />}
                     </button>
                     <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover/nav:opacity-100 group-hover/nav:translate-y-0 group-hover/nav:pointer-events-auto transition-all duration-300">
-                      <div className="bg-forest-deep border border-cream/10 rounded-2xl p-3 shadow-2xl min-w-[200px]">
+                      <div className="bg-forest-night border border-cream/10 rounded-2xl p-3 shadow-2xl min-w-[200px]">
                         {group.links.map((link) => {
                           const isLinkActive = location.pathname.startsWith(link.href);
                           const isExternal = link.href.startsWith("http");
@@ -150,7 +152,7 @@ export function SiteHeader() {
                         href={group.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`flex flex-col items-center gap-0.5 px-4 py-2 text-[11px] font-bold tracking-[0.2em] transition-all ${isActive ? "text-gold" : "text-[#faf7ee]/70 hover:text-[#faf7ee]"}`}
+                        className={`flex min-h-11 flex-col items-center justify-center gap-0.5 px-3 py-2 text-[11px] font-bold tracking-[0.2em] transition-all ${isActive ? "text-gold" : "text-[#faf7ee]/70 hover:text-[#faf7ee]"}`}
                       >
                         {group.label}
                         {isActive && <div className="h-0.5 w-4 bg-gold rounded-full" />}
@@ -158,10 +160,13 @@ export function SiteHeader() {
                     ) : (
                       <Link
                         to={group.href!}
-                        className={`flex flex-col items-center gap-0.5 px-4 py-2 text-[11px] font-bold tracking-[0.2em] transition-all ${isActive ? "text-gold" : "text-[#faf7ee]/70 hover:text-[#faf7ee]"}`}
+                        className={`group/link flex min-h-11 flex-col items-center justify-center gap-0.5 px-3 py-2 text-[11px] font-bold tracking-[0.2em] transition-all ${isActive ? "text-gold" : "text-[#faf7ee]/70 hover:text-[#faf7ee]"}`}
                       >
-                        {group.label}
-                        {isActive && <div className="h-0.5 w-4 bg-gold rounded-full" />}
+                        <span className="flex items-center gap-2">
+                          {group.label === "EVENTS" && <span className="live-dot h-1.5 w-1.5 rounded-full bg-live" aria-hidden />}
+                          {group.label}
+                        </span>
+                        <div className={`h-0.5 rounded-full bg-gold transition-all duration-300 ${isActive ? "w-4" : "w-0 group-hover/link:w-4"}`} />
                       </Link>
                     );
                   })()
@@ -171,21 +176,21 @@ export function SiteHeader() {
           })}
           <Link 
             to="/support" 
-            className={`ml-4 px-6 py-2.5 rounded-full text-[10px] font-bold tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-lg ${location.pathname.startsWith('/support') ? "bg-[#faf7ee] text-forest-deep" : "bg-gold text-forest-deep"}`}
+            className={`ml-3 px-5 py-2.5 rounded-full text-[10px] font-bold tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-lg ${location.pathname.startsWith('/support') ? "bg-[#faf7ee] text-forest-deep" : "bg-gold text-forest-deep"}`}
           >
             SUPPORT
           </Link>
         </nav>
 
-        <div className="flex items-center gap-4">
-          <button aria-label="Search" className="text-[#faf7ee]/80 hover:text-[#faf7ee] transition">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <button aria-label="Search" className="grid h-11 w-11 place-items-center rounded-full text-[#faf7ee]/80 transition hover:bg-white/10 hover:text-[#faf7ee]">
             <Search className="h-5 w-5" strokeWidth={2.5} />
           </button>
           
           <Link 
             to="/cart" 
             aria-label="Cart" 
-            className="relative text-[#faf7ee]/80 hover:text-[#faf7ee] transition group"
+            className="relative grid h-11 w-11 place-items-center rounded-full text-[#faf7ee]/80 transition hover:bg-white/10 hover:text-[#faf7ee] group"
           >
             <ShoppingBag className="h-5 w-5" strokeWidth={2.5} />
             {cartCount > 0 && (
@@ -204,7 +209,7 @@ export function SiteHeader() {
               <User className="h-6 w-6" strokeWidth={2} />
             </Link>
           ) : (
-            <div className="hidden sm:flex items-center gap-3">
+            <div className="hidden items-center gap-2 sm:flex">
               <Link 
                 to="/login"
                 className="text-[10px] font-bold tracking-[0.2em] text-[#faf7ee]/80 hover:text-[#faf7ee] transition px-2"
@@ -220,14 +225,14 @@ export function SiteHeader() {
             </div>
           )}
 
-          <button onClick={() => setOpen((s) => !s)} aria-label="Menu" className="lg:hidden text-[#faf7ee]">
+          <button onClick={() => setOpen((s) => !s)} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} className="grid h-11 w-11 place-items-center rounded-full text-[#faf7ee] transition hover:bg-white/10 xl:hidden">
             {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
 
       {open && (
-        <div className="lg:hidden border-t border-cream/10 bg-forest-deep/95 backdrop-blur-xl max-h-[80vh] overflow-y-auto">
+        <div className="mx-auto mt-2 max-w-[1320px] overflow-y-auto rounded-3xl bg-forest-night/95 ring-1 ring-white/10 backdrop-blur-2xl max-h-[78vh] xl:hidden">
           <nav className="mx-auto flex max-w-[1440px] flex-col px-6 py-6 space-y-6">
             {NAV_GROUPS.map((group) => (
               <div key={group.label} className="space-y-3">

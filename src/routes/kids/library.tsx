@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { Play, Search, Tv, ChevronRight, Mic2, FileVideo, Lock, Crown, X } from "lucide-react";
+import { Search, Lock, Crown, X, Check } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Badge } from "../../components/ui/badge";
-import { LayoutGrid } from "lucide-react";
+import { ChipBar, VideoCard, VideoGridSkeleton, VIDEO_GRID } from "@/components/oms/cinema";
+import logoImg from "@/assets/logo2/image3.png";
 import { mediaUrl, API_URL } from "@/lib/api";
 
 
@@ -103,90 +103,59 @@ function KidsLibraryPage() {
     return true;
   });
 
+  const cardImage = (s: any) => mediaUrl(s.image || s.img) || "https://images.unsplash.com/photo-1502086223501-7ea2443054f1?w=800&h=450&fit=crop";
+
   if (checkingAccess) {
     return (
-      <div className="bg-[#FAF7EE] min-h-screen flex flex-col">
+      <div className="theme-cinema flex min-h-screen flex-col">
         <SiteHeader />
-        <main className="flex-grow pt-32 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <div className="animate-spin h-10 w-10 border-4 border-gold border-t-transparent rounded-full" />
-            <p className="text-muted-foreground font-medium uppercase tracking-widest text-sm">Checking Access...</p>
-          </div>
-        </main>
-        <SiteFooter />
+        <main className="mx-auto w-full max-w-[1700px] flex-grow px-4 pt-28 sm:px-6"><VideoGridSkeleton count={8} /></main>
       </div>
     );
   }
 
-  // No access — paywall
+  // No access — paywall with a locked preview
   if (!hasAccess) {
     return (
-      <div className="bg-[#FAF7EE] min-h-screen flex flex-col">
+      <div className="theme-cinema flex min-h-screen flex-col">
         <SiteHeader />
         <main className="flex-grow pt-24">
-          {/* Blurred preview */}
-          <section className="py-20 bg-forest-deep text-cream relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--gold),transparent_70%)]" />
-            <div className="relative mx-auto max-w-7xl px-6 text-center">
-              <div className="inline-flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10 mb-8 backdrop-blur-md">
-                <Lock className="h-4 w-4 text-gold" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Premium Content</span>
-              </div>
-              <h1 className="font-display text-6xl font-bold tracking-tight mb-6">Explore the <span className="italic text-gold">Vault</span></h1>
-              <p className="text-cream/70 text-lg max-w-2xl mx-auto">Subscribe to unlock the full KidsBibleFlix library of video and audio adventures.</p>
-            </div>
-          </section>
-
-          {/* Paywall Card */}
-          <section className="py-24">
-            <div className="mx-auto max-w-2xl px-6">
-              <div className="bg-white rounded-[3rem] p-12 text-center border border-[#EFECE3] shadow-2xl">
-                <div className="h-20 w-20 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-8">
-                  <Lock className="h-10 w-10 text-gold" />
-                </div>
-                <h2 className="font-display text-4xl font-bold text-forest-deep mb-4">Unlock Full Access</h2>
-                <p className="text-muted-foreground mb-8 leading-relaxed">
-                  Get unlimited access to all series, audio stories, Creation Case episodes, and OMS kids resources.
-                  Start your <strong>{7}-day free trial</strong> today or get lifetime access for just <strong>$99</strong>.
-                </p>
-                <div className="grid sm:grid-cols-2 gap-4 mb-8">
-                  {["100% Ad-free content", "All series & audio stories", "Creation Case episodes", "Downloadable guides", "New content added regularly", "Cancel anytime"].map(f => (
-                    <div key={f} className="flex items-center gap-2 text-sm font-medium text-forest-deep">
-                      <div className="h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                        <svg className="h-3 w-3 text-emerald-600" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                      </div>
-                      {f}
-                    </div>
-                  ))}
-                </div>
-                <Link to="/kids/subscribe" className="block w-full py-5 rounded-3xl bg-forest-deep text-cream font-bold text-sm uppercase tracking-widest shadow-xl hover:bg-forest-deep/90 transition-all">
-                  View Plans & Subscribe →
-                </Link>
-                <p className="text-xs text-muted-foreground mt-4">Already subscribed? <Link to="/login" search={{ redirect: "/kids/library", theme: "kids" }} className="text-gold font-bold underline-offset-2 hover:underline">Sign in</Link></p>
-              </div>
-            </div>
-          </section>
-
-          {/* Blurred preview of series */}
-          <section className="py-12 pb-24">
-            <div className="mx-auto max-w-7xl px-6">
-              <h3 className="font-display text-2xl font-bold text-forest-deep text-center mb-10">Preview What's Inside</h3>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 relative">
-                {seriesList.slice(0, 6).map((s) => (
-                  <div key={s._id || s.id} className="group bg-white rounded-[3rem] overflow-hidden border border-cream/10 shadow-sm flex flex-col relative">
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      <img src={mediaUrl(s.image || s.img)} alt={s.name || s.title} className="w-full h-full object-cover blur-sm opacity-60" onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1502086223501-7ea2443054f1?w=400&h=200&fit=crop"; }} />
-                      <div className="absolute inset-0 bg-forest-deep/40 flex items-center justify-center">
-                        <Lock className="h-8 w-8 text-white opacity-80" />
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <p className="text-xs font-bold uppercase tracking-widest text-gold mb-2">{s.topic}</p>
-                      <h3 className="text-lg font-display font-bold text-forest-deep">{s.name || s.title}</h3>
-                    </div>
-                  </div>
+          <section className="mx-auto max-w-2xl px-4 py-14 sm:px-6">
+            <div className="rounded-3xl border border-white/10 bg-cinema-raise p-8 text-center sm:p-12">
+              <div className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-full bg-gold/10"><Lock className="h-8 w-8 text-gold" /></div>
+              <h1 className="font-display text-4xl font-semibold text-cream">Unlock full access</h1>
+              <p className="mt-4 leading-relaxed text-cream/70">
+                Unlimited access to all series, audio stories, Creation Case episodes, and OMS kids resources. Start your <strong className="text-cream">7-day free trial</strong> or get lifetime access for <strong className="text-cream">$99</strong>.
+              </p>
+              <ul className="mt-7 grid gap-3 text-left sm:grid-cols-2">
+                {["100% ad-free content", "All series & audio stories", "Creation Case episodes", "Downloadable guides", "New content added regularly", "Cancel anytime"].map((f) => (
+                  <li key={f} className="flex items-center gap-2 text-sm text-cream"><Check className="h-4 w-4 shrink-0 text-gold" />{f}</li>
                 ))}
-              </div>
+              </ul>
+              <Link to="/kids/subscribe" className="btn-sheen mt-8 block w-full rounded-full bg-cream py-4 text-sm font-bold uppercase tracking-widest text-black transition hover:scale-[1.02]">View plans & subscribe →</Link>
+              <p className="mt-4 text-xs text-cream/50">
+                Already subscribed?{" "}
+                <Link to="/login" search={{ redirect: "/kids/library", theme: "kids" }} className="font-bold text-gold hover:underline">Sign in</Link>
+              </p>
+            </div>
+          </section>
+
+          <section className="mx-auto max-w-[1700px] px-4 pb-20 sm:px-6">
+            <h2 className="mb-6 text-lg font-semibold text-cream">Preview what’s inside</h2>
+            <div className={VIDEO_GRID}>
+              {seriesList.slice(0, 8).map((s, i) => (
+                <VideoCard
+                  key={s._id || s.id}
+                  index={i}
+                  to="/kids/subscribe"
+                  image={cardImage(s)}
+                  title={s.name || s.title}
+                  avatar={logoImg}
+                  channel="Kids Bible Flix"
+                  meta={s.topic}
+                  locked={<div className="absolute inset-0 grid place-items-center bg-black/55 backdrop-blur-[2px]"><Lock className="h-7 w-7 text-cream/90" /></div>}
+                />
+              ))}
             </div>
           </section>
         </main>
@@ -196,169 +165,57 @@ function KidsLibraryPage() {
   }
 
   return (
-    <div className="bg-[#FAF7EE] min-h-screen flex flex-col">
+    <div className="theme-cinema flex min-h-screen flex-col">
       <SiteHeader />
-      <main className="flex-grow pt-24">
-        {/* Header Section */}
-        <section className="py-20 bg-forest-deep text-cream relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--gold),transparent_70%)]" />
-          <div className="relative mx-auto max-w-7xl px-6 text-center">
-            <div className="inline-flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10 mb-6 backdrop-blur-md">
-              <Crown className="h-4 w-4 text-gold" />
-              <span className="text-[10px] font-bold uppercase tracking-widest capitalize">{accessType || "Premium"} Member</span>
+      <main className="flex-grow pt-20 sm:pt-24">
+        <div className="mx-auto max-w-[1700px] px-4 sm:px-6">
+          <div className="flex flex-wrap items-center gap-4 pt-4">
+            <img src={logoImg} alt="" className="h-14 w-14 rounded-full bg-cream object-contain p-1.5" />
+            <div className="mr-auto">
+              <h1 className="font-display text-3xl font-semibold text-cream">Library</h1>
+              <p className="flex items-center gap-1.5 text-sm text-cream/60"><Crown className="h-3.5 w-3.5 text-gold" />{accessType || "Premium"} member</p>
             </div>
-            <div className="inline-flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10 mb-8 backdrop-blur-md ml-2">
-              <LayoutGrid className="h-4 w-4 text-gold" />
-              <span className="text-[10px] font-bold uppercase tracking-widest">Wonder Library</span>
-            </div>
-            <h1 className="font-display text-6xl font-bold tracking-tight mb-6">Explore the <span className="italic text-gold">Vault</span></h1>
-            <p className="text-cream/70 text-lg max-w-2xl mx-auto">Access every video and audio adventure in the KidsBibleFlix collection.</p>
-          </div>
-        </section>
-
-        {/* Search + Filters */}
-        <section className="py-6 border-b border-cream/20 bg-[#FAF7EE]/90 backdrop-blur-xl sticky top-20 z-30 shadow-sm transition-all">
-          <div className="mx-auto max-w-7xl px-6 space-y-5">
-
-            {/* Top Row: Search & Type */}
-            <div className="flex flex-col md:flex-row gap-2 md:gap-4 bg-white p-2 rounded-[2rem] shadow-sm border border-[#EFECE3] transition-all focus-within:ring-4 focus-within:ring-forest/5 focus-within:border-forest/20">
-              {/* Search */}
-              <div className="relative flex-1 min-w-[250px]">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-forest-deep/40" />
-                <input
-                  type="text"
-                  placeholder="Find a story, series, or topic..."
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-12 py-3.5 bg-transparent text-sm font-medium text-forest-deep placeholder:text-forest-deep/40 focus:outline-none"
-                />
-                {searchQuery && (
-                  <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-forest-deep/40 hover:text-forest-deep transition-colors bg-[#FAF7EE] p-1.5 rounded-full">
-                    <X className="h-3 w-3" />
-                  </button>
-                )}
-              </div>
-
-              {/* Separator on desktop */}
-              <div className="hidden md:block w-px h-8 bg-[#EFECE3] self-center" />
-
-              {/* Content Type Tabs */}
-              <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar px-2 pb-2 md:pb-0 md:px-0">
-                {["All", "Audio Story", "Creation Case", "OMS Resource"].map((tab) => {
-                  const valMap: any = { "Audio Story": "Audio", "OMS Resource": "OMS" };
-                  const val = valMap[tab] || tab;
-                  const isActive = activeTab === val;
-
-                  return (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(val)}
-                      className={`whitespace-nowrap flex items-center justify-center gap-2 px-5 py-3 rounded-2xl font-bold text-[10px] sm:text-[11px] uppercase tracking-widest transition-all duration-300 ${isActive ? "bg-forest-deep text-gold shadow-md scale-100" : "bg-transparent text-forest-deep/50 hover:bg-[#FAF7EE] hover:text-forest-deep active:scale-95"}`}
-                    >
-                      {tab}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Bottom Row: Topics Scroll */}
-            <div className="flex items-center overflow-x-auto hide-scrollbar pb-2 pt-1 px-1 -mx-2 sm:mx-0 sm:px-0">
-              <div className="flex items-center gap-2 px-2 shrink-0">
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-forest-deep/40 mr-2 flex items-center gap-1.5 shrink-0 hidden sm:flex">
-                  <LayoutGrid className="w-3.5 h-3.5" /> Topics
-                </span>
-                {TOPICS.map(topic => {
-                  const isActive = activeTopic === topic;
-                  return (
-                    <button
-                      key={topic}
-                      onClick={() => setActiveTopic(topic)}
-                      className={`shrink-0 px-5 py-2.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-widest transition-all duration-300 border ${isActive ? "bg-gold text-forest-deep border-gold shadow-sm scale-105" : "bg-white text-forest-deep/60 border-[#EFECE3] hover:border-gold/50 hover:bg-gold/10 hover:text-forest-deep active:scale-95"}`}
-                    >
-                      {topic}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* Library Grid */}
-        <section className="py-16">
-          <div className="mx-auto max-w-7xl px-6">
-            <div className="flex items-center justify-between mb-8">
-              <p className="text-sm text-muted-foreground font-medium">
-                {filteredContent.length} {filteredContent.length === 1 ? "series" : "series"} found
-              </p>
-              {(searchQuery || activeTopic !== "All" || activeTab !== "All") && (
-                <button
-                  onClick={() => { setSearchQuery(""); setActiveTopic("All"); setActiveTab("All"); }}
-                  className="flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-forest-deep transition-colors"
-                >
-                  <X className="h-3.5 w-3.5" /> Clear filters
-                </button>
+            <label className="relative w-full sm:w-96">
+              <span className="sr-only">Search the library</span>
+              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-cream/50" />
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search stories, series, or topics"
+                className="h-11 w-full rounded-full border border-white/15 bg-white/[0.06] pl-11 pr-10 text-sm text-cream placeholder:text-cream/40 focus:border-gold focus:outline-none"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 text-cream/60 hover:text-cream"><X className="h-4 w-4" /></button>
               )}
-            </div>
+            </label>
+          </div>
 
+          <ChipBar chips={TOPICS} active={activeTopic} onChange={setActiveTopic} label="Filter by topic" />
+
+          <section className="py-8" aria-live="polite">
             {isLoading ? (
-              <div className="flex justify-center items-center py-20">
-                <div className="animate-spin h-10 w-10 border-4 border-gold border-t-transparent rounded-full" />
-              </div>
-            ) : filteredContent.length > 0 ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                {filteredContent.map((s) => (
-                  <Link key={s._id || s.id} to="/kids/watch/$seriesId" params={{ seriesId: (s._id || s.id).toString() }} className="group bg-white rounded-[3rem] overflow-hidden border border-cream/10 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col">
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      <img
-                        src={mediaUrl(s.image || s.img)}
-                        alt={s.name || s.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1502086223501-7ea2443054f1?w=400&h=200&fit=crop"; }}
-                      />
-                      <div className="absolute inset-0 bg-forest-deep/20 group-hover:bg-transparent transition-all" />
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100">
-                        <div className="h-16 w-16 rounded-full bg-gold text-forest-deep flex items-center justify-center shadow-2xl">
-                          <Play className="h-6 w-6 fill-current ml-1" />
-                        </div>
-                      </div>
-                      <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white text-[10px] font-mono px-3 py-1 rounded-full">
-                        {s.episodeCount ?? s.episodes ?? 0} EPS
-                      </div>
-                      {s.audioLink && (
-                        <div className="absolute top-4 left-4 bg-gold/90 text-forest-deep text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-1">
-                          <Mic2 className="h-3 w-3" /> Audio
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-8 space-y-4 flex-grow flex flex-col">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-gold">{s.topic || "Series"}</span>
-                        <div className="flex items-center gap-1 text-[10px] text-forest-deep/40 font-bold uppercase">
-                          {s.audioLink ? <><Mic2 className="w-3 h-3" /> Audio</> : <><Tv className="w-3 h-3" /> Video</>}
-                        </div>
-                      </div>
-                      <h3 className="text-2xl font-display font-bold text-forest-deep group-hover:text-gold transition-colors">{s.name || s.title}</h3>
-                      <p className="text-muted-foreground text-xs leading-relaxed line-clamp-2 mt-2">{s.description || s.desc}</p>
-                      <div className="pt-4 mt-auto flex items-center justify-between border-t border-cream/10">
-                        <span className="text-xs font-bold text-forest-deep/40">
-                          {s.audioLink ? "Listen Now" : "Watch Now"}
-                        </span>
-                        <ChevronRight className="h-4 w-4 text-gold group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </Link>
+              <VideoGridSkeleton />
+            ) : filteredContent.length === 0 ? (
+              <p className="rounded-2xl border border-dashed border-white/15 p-12 text-center text-cream/60">Nothing matches that yet. Try another topic or search.</p>
+            ) : (
+              <div className={VIDEO_GRID}>
+                {filteredContent.map((s, i) => (
+                  <VideoCard
+                    key={s._id || s.id}
+                    index={i}
+                    to="/kids/watch/$seriesId"
+                    params={{ seriesId: (s._id || s.id).toString() }}
+                    image={cardImage(s)}
+                    title={s.name || s.title}
+                    avatar={logoImg}
+                    channel="Kids Bible Flix"
+                    meta={[s.topic || "Series", s.episodeCount ? `${s.episodeCount} episodes` : ""].filter(Boolean).join(" · ")}
+                  />
                 ))}
               </div>
-            ) : (
-              <div className="text-center py-20 text-muted-foreground font-medium text-lg border-2 border-dashed border-cream/20 rounded-[2rem] bg-white/50">
-                {searchQuery ? `No series found for "${searchQuery}"` : activeTab === "Audio" ? "Audio content is coming soon!" : "No series available yet. Check back later!"}
-              </div>
             )}
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
       <SiteFooter />
     </div>

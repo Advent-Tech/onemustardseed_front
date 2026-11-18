@@ -133,7 +133,7 @@ function SeasonDetailsPage() {
               </div>
               <div className="pb-4">
                 <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary/70">Podcast Season</span>
-                <h1 className="mt-4 font-display text-5xl sm:text-7xl font-medium tracking-tight text-foreground" style={{ fontFamily: 'HelveticaNeue, Arial, "Open Sans"' }}>
+                <h1 className="mt-4 font-display text-5xl sm:text-7xl font-medium tracking-tight text-foreground">
                   {season.title}
                 </h1>
                 <p className="mt-4 text-muted-foreground text-lg">{season.description}</p>

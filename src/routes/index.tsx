@@ -3,21 +3,20 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Hero } from "../pages/Home/sections/Hero";
 import { FeaturedProjects } from "../pages/Home/sections/FeaturedProjects";
-import { Films } from "../pages/Home/sections/Films";
 import { BirthdayClub } from "../pages/Home/sections/BirthdayClub";
-import { Support } from "../pages/Home/sections/Support";
-import { Events } from "../pages/Home/sections/Events";
+import { GivingBanner } from "@/components/oms/GivingBanner";
+import { Ticker } from "@/components/oms/Ticker";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "One Mustard Seed — Faith-centered media for families, churches & schools" },
+      { title: "One Mustard Seed — Helping Kids Know God" },
       {
         name: "description",
         content:
           "One Mustard Seed (OMS) is a faith-centered multimedia ministry creating films, podcasts, events, and resources for families, churches, and schools.",
       },
-      { property: "og:title", content: "One Mustard Seed — Wonder. Explore. Belong." },
+      { property: "og:title", content: "One Mustard Seed — Helping Kids Know God" },
       {
         property: "og:description",
         content:
@@ -35,11 +34,10 @@ function Index() {
       <SiteHeader />
       <main>
         <Hero />
+        <Ticker items={["Kids Bible Flix", "Live Stage Shows", "God’s Great Earth", "Week of Prayer", "Kids Bible Beats", "Rich’s Birthday Club"]} />
         <FeaturedProjects />
-        <Events />
-        <Films />
         <BirthdayClub />
-        <Support />
+        <GivingBanner />
       </main>
       <SiteFooter />
     </div>

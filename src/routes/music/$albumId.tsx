@@ -80,7 +80,7 @@ function AlbumDetailsPage() {
             </Link>
 
             <div className="flex flex-col md:flex-row gap-12 md:items-end">
-              <div className="relative w-64 md:w-80 shrink-0 aspect-square rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-cream/10 animate-fade-up">
+              <div className="relative w-64 md:w-80 shrink-0 aspect-square rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-white/10 animate-fade-up">
                 <img src={mediaUrl(album.cover)} alt={album.title} className="w-full h-full object-cover" />
               </div>
               
@@ -88,7 +88,7 @@ function AlbumDetailsPage() {
                 <span className="inline-flex items-center gap-2 text-gold text-[10px] font-bold uppercase tracking-widest mb-4">
                   <Music className="h-3 w-3" /> Kids' Bible Beats
                 </span>
-                <h1 className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter text-white mb-6" style={{ fontFamily: 'HelveticaNeue, Arial, "Open Sans"' }}>
+                <h1 className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter text-white mb-6">
                   {album.title}
                 </h1>
                 <p className="text-cream/80 text-lg max-w-2xl leading-relaxed mb-10">
@@ -96,7 +96,7 @@ function AlbumDetailsPage() {
                 </p>
                 <button
                   onClick={() => togglePlay(album.songs[0])}
-                  className="rounded-full bg-gold px-10 py-5 text-sm font-bold uppercase tracking-widest text-gold-foreground shadow-[0_10px_30px_rgba(234,179,8,0.2)] hover:scale-105 hover:bg-white hover:text-forest-deep hover:shadow-[0_10px_30px_rgba(255,255,255,0.2)] transition-all cursor-pointer inline-flex items-center gap-3"
+                  className="rounded-full bg-gold px-10 py-5 text-sm font-bold uppercase tracking-widest text-gold-foreground shadow-[0_10px_30px_rgba(234,179,8,0.2)] hover:scale-105 hover:bg-card hover:text-forest-deep hover:shadow-[0_10px_30px_rgba(255,255,255,0.2)] transition-all cursor-pointer inline-flex items-center gap-3"
                 >
                   <Play className="w-5 h-5 fill-current" /> Play Album
                 </button>
@@ -107,7 +107,7 @@ function AlbumDetailsPage() {
 
         {/* Tracklist Matching Screenshot */}
         <div className="pt-24">
-          <h2 className="text-3xl font-medium text-foreground mb-10 text-center" style={{ fontFamily: 'HelveticaNeue, Arial, "Open Sans"' }}>Album Tracklist</h2>
+          <h2 className="text-3xl font-medium text-foreground mb-10 text-center">Album Tracklist</h2>
           
           <div className="bg-[#f9f8f3] rounded-3xl p-6 md:p-10 border border-[#e8e6df] shadow-sm max-w-3xl mx-auto animate-fade-up [animation-delay:300ms]">
             {/* Tracklist Header */}

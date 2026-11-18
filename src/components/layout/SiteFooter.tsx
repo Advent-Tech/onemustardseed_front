@@ -22,7 +22,7 @@ export function SiteFooter() {
   }, []);
 
   return (
-    <footer className="relative overflow-hidden bg-forest-deep text-cream">
+    <footer className="relative overflow-hidden bg-forest-night text-cream border-t border-white/5">
       <div className="absolute inset-0 opacity-[0.07] [background-image:radial-gradient(circle_at_20%_20%,var(--gold),transparent_55%),radial-gradient(circle_at_80%_60%,var(--sky),transparent_50%)]" />
       <div className="relative mx-auto max-w-[1440px] px-6 py-20">
         <div className="grid gap-12 lg:grid-cols-[1.3fr_2fr_1.2fr]">
@@ -31,14 +31,14 @@ export function SiteFooter() {
               <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-cream p-2 shadow-md">
                 <img src={logoImg} alt="One Mustard Seed Logo" className="h-full w-full object-contain" />
               </div>
-              <div className="font-display text-2xl font-bold tracking-tight" style={{ fontFamily: 'Fraunces, Cormorant Garamond, serif' }}>One Mustard Seed</div>
+              <div className="font-display text-2xl font-bold tracking-tight">One Mustard Seed</div>
             </div>
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-cream/70">
               Helping kids know God through Bible-based media, music, live events, and resources for families, churches, and schools.
             </p>
             <div className="mt-6 flex gap-3">
               {[Facebook, Instagram, Youtube, Mail].map((Icon, i) => (
-                <a key={i} href="#" aria-label="social" className="grid h-10 w-10 place-items-center rounded-full border border-cream/15 hover:border-gold hover:text-gold transition">
+                <a key={i} href="#" aria-label={["Facebook", "Instagram", "YouTube", "Email"][i]} className="grid h-11 w-11 place-items-center rounded-full border border-cream/15 hover:border-gold hover:text-gold transition">
                   <Icon className="h-4 w-4" />
                 </a>
               ))}
@@ -53,9 +53,9 @@ export function SiteFooter() {
                   {c.items.map((i) => (
                     <li key={i.label}>
                       {i.to !== "#" ? (
-                        <Link to={i.to as any} className="hover:text-gold transition">{i.label}</Link>
+                        <Link to={i.to as any} className="inline-block py-3 hover:text-gold transition">{i.label}</Link>
                       ) : (
-                        <a href={i.to} className="hover:text-gold transition">{i.label}</a>
+                        <a href={i.to} className="inline-block py-3 hover:text-gold transition">{i.label}</a>
                       )}
                     </li>
                   ))}
@@ -80,11 +80,16 @@ export function SiteFooter() {
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-cream/10 pt-8 text-xs text-cream/55 sm:flex-row">
           <span>© {new Date().getFullYear()} One Mustard Seed Ministries. All rights reserved.</span>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-gold">Privacy</a>
-            <a href="#" className="hover:text-gold">Terms</a>
+            <a href="#" className="inline-block py-3 hover:text-gold">Privacy</a>
+            <a href="#" className="inline-block py-3 hover:text-gold">Terms</a>
             <Link to="/contact" className="px-3 py-1 -my-1 rounded-full bg-white/5 border border-white/10 hover:bg-gold hover:text-forest-deep transition-all font-medium">Contact</Link>
             {/* <a href="/admin" className="hover:text-gold">Admin</a> */}
           </div>
+        </div>
+      </div>
+      <div aria-hidden className="pointer-events-none select-none overflow-hidden px-4 pb-2 pt-4 text-center">
+        <div className="whitespace-nowrap font-display text-[clamp(2.2rem,10.8vw,13rem)] font-light italic leading-[0.9] tracking-tight outline-text">
+          One Mustard Seed
         </div>
       </div>
     </footer>

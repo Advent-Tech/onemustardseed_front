@@ -115,7 +115,7 @@ function MusicLayout() {
 
   return (
     <MusicContext.Provider value={{ playSong, currentSong, isPlaying, setIsPlaying }}>
-      <div className="music-layout flex flex-col min-h-screen bg-background" style={{ fontFamily: 'HelveticaNeue, Arial, "Open Sans", sans-serif' }}>
+      <div className="music-layout flex flex-col min-h-screen bg-background">
         <SiteHeader />
         
         <main className="flex-1">
@@ -127,13 +127,13 @@ function MusicLayout() {
         {/* Floating Audio Player */}
         {currentSong && (
           <div className="fixed bottom-6 left-6 right-6 z-50 animate-fade-up">
-            <div className="mx-auto max-w-5xl rounded-[2rem] border border-cream/15 bg-forest-deep/95 px-6 py-4 text-cream shadow-elevated backdrop-blur-md grid grid-cols-1 md:grid-cols-[1.5fr_2fr_1.2fr] items-center gap-4">
+            <div className="mx-auto max-w-5xl rounded-[2rem] border border-white/10 bg-forest-deep/95 px-6 py-4 text-cream shadow-elevated backdrop-blur-md grid grid-cols-1 md:grid-cols-[1.5fr_2fr_1.2fr] items-center gap-4">
               {/* Song Info */}
               <div className="flex items-center gap-4">
                 <img 
                   src={currentSong.coverImage || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=800&fit=crop"} 
                   alt={currentSong.title} 
-                  className="h-14 w-14 rounded-2xl object-cover border border-cream/10 flex-shrink-0"
+                  className="h-14 w-14 rounded-2xl object-cover border border-white/10 flex-shrink-0"
                 />
                 <div className="min-w-0">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-gold">{currentSong.albumTitle || "Kids' Bible Beats"}</span>
@@ -159,7 +159,7 @@ function MusicLayout() {
                     max={duration || (currentSong.duration ? parseInt(currentSong.duration.split(':')[0]) * 60 + parseInt(currentSong.duration.split(':')[1]) : 100)}
                     value={currentTime}
                     onChange={handleSeek}
-                    className="flex-1 h-1 bg-cream/20 rounded-lg appearance-none cursor-pointer accent-gold focus:outline-none"
+                    className="flex-1 h-1 bg-white/[0.02] rounded-lg appearance-none cursor-pointer accent-gold focus:outline-none"
                   />
                   <span className="w-10 text-left">{formatTime(duration || (currentSong.duration ? parseInt(currentSong.duration.split(':')[0]) * 60 + parseInt(currentSong.duration.split(':')[1]) : 0))}</span>
                 </div>
@@ -178,7 +178,7 @@ function MusicLayout() {
                     step="0.05"
                     value={isMuted ? 0 : volume}
                     onChange={handleVolumeChange}
-                    className="w-20 h-1 bg-cream/20 rounded-lg appearance-none cursor-pointer accent-gold focus:outline-none"
+                    className="w-20 h-1 bg-white/[0.02] rounded-lg appearance-none cursor-pointer accent-gold focus:outline-none"
                   />
                 </div>
                 <button 
@@ -186,7 +186,7 @@ function MusicLayout() {
                     setCurrentSong(null);
                     setIsPlaying(false);
                   }}
-                  className="h-8 w-8 rounded-full bg-cream/10 text-cream/70 hover:text-cream grid place-items-center cursor-pointer transition-colors"
+                  className="h-8 w-8 rounded-full bg-white/[0.01] text-cream/70 hover:text-cream grid place-items-center cursor-pointer transition-colors"
                 >
                   <X className="h-4 w-4" />
                 </button>

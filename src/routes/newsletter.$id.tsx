@@ -170,11 +170,11 @@ function NewsletterDetailPage() {
 
             {nl.description && (
               <div className="animate-fade-up mb-16">
-                <div className="prose prose-lg md:prose-xl lg:prose-2xl prose-slate max-w-none prose-p:text-forest-deep prose-p:leading-[2.2]">
+                <div className="prose prose-lg md:prose-xl lg:prose-2xl prose-slate max-w-none prose-p:text-cream prose-p:leading-[2.2]">
                   {nl.description.split('\n').map((para: string, idx: number) => {
                     if (!para.trim()) return <br key={idx} />;
                     return (
-                      <p key={idx} className={idx === 0 ? "text-2xl md:text-3xl font-display text-forest-deep leading-relaxed font-medium mb-10" : "text-xl md:text-[1.35rem] text-forest-deep/90"}>
+                      <p key={idx} className={idx === 0 ? "text-2xl md:text-3xl font-display text-cream leading-relaxed font-medium mb-10" : "text-xl md:text-[1.35rem] text-cream/90"}>
                         {para}
                       </p>
                     );
@@ -280,9 +280,9 @@ function NewsletterDetailPage() {
                 // ── News block ──
                 if (block.type === "news") {
                   rendered.push(
-                    <div key={block._id || i} className="animate-fade-up my-12 bg-gradient-to-br from-forest/5 to-gold/5 border border-forest/15 rounded-2xl p-8 md:p-10 relative overflow-hidden group/news transition-all hover:-translate-y-1 hover:shadow-lg" style={{ animationDelay: `${i * 80}ms` }}>
+                    <div key={block._id || i} className="animate-fade-up my-12 bg-gradient-to-br from-forest/5 to-gold/5 border border-white/10 rounded-2xl p-8 md:p-10 relative overflow-hidden group/news transition-all hover:-translate-y-1 hover:shadow-lg" style={{ animationDelay: `${i * 80}ms` }}>
                       <div className="absolute top-0 right-0 p-6 opacity-5 group-hover/news:scale-110 transition-transform duration-700 pointer-events-none">
-                        <FileText className="w-48 h-48 text-forest" />
+                        <FileText className="w-48 h-48 text-gold" />
                       </div>
                       <div className="relative z-10">
                         <Badge className="mb-5 bg-forest text-white px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest border-none">
@@ -403,7 +403,7 @@ function NewsletterDetailPage() {
           {/* Back link */}
           <div className="max-w-3xl mx-auto pt-16 pb-6 mt-16 border-t border-border/50 flex justify-start">
             <Link to="/newsletter">
-              <Button variant="outline" className="rounded-full gap-2 px-6 py-5 border-border text-muted-foreground hover:text-forest hover:border-forest uppercase tracking-widest text-xs font-bold transition-all">
+              <Button variant="outline" className="rounded-full gap-2 px-6 py-5 border-border text-muted-foreground hover:text-gold hover:border-forest uppercase tracking-widest text-xs font-bold transition-all">
                 <ArrowLeft className="w-4 h-4" /> Back to Archive
               </Button>
             </Link>

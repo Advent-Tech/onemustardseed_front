@@ -295,7 +295,7 @@ function ProfilePage() {
         </div>
         {/* Ticket Print Modal */}
         {selectedTicket && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm print:bg-white print:p-0 print:block">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm print:bg-card print:p-0 print:block">
             <div className="bg-card w-full max-w-2xl rounded-[2rem] border border-border overflow-hidden shadow-2xl print:shadow-none print:border-none print:rounded-none">
               <div className="p-6 border-b border-border flex justify-between items-center bg-forest-deep text-cream print:hidden">
                 <h3 className="font-display text-2xl font-medium">Your Ticket</h3>
@@ -313,20 +313,20 @@ function ProfilePage() {
               <div className="p-8 print:p-0 print:text-black">
                 <div className="border-4 border-forest-deep rounded-[2rem] overflow-hidden flex flex-col md:flex-row print:border-black print:rounded-3xl">
                   {/* Left Side (Image) */}
-                  <div className="md:w-1/3 bg-forest-deep p-6 text-center text-cream flex flex-col items-center justify-center print:bg-gray-100 print:text-black print:border-r print:border-black">
+                  <div className="md:w-1/3 bg-forest-deep p-6 text-center text-cream flex flex-col items-center justify-center print:bg-white/5 print:text-black print:border-r print:border-black">
                     <TicketIcon className="w-16 h-16 text-gold mb-4 print:text-black" />
                     <h2 className="font-display text-2xl font-bold uppercase tracking-widest">Admit One</h2>
                     <div className="text-[10px] uppercase tracking-[0.3em] mt-2 opacity-70">OMS Events</div>
                   </div>
 
                   {/* Right Side (Details) */}
-                  <div className="md:w-2/3 p-8 bg-white text-forest-deep relative">
+                  <div className="md:w-2/3 p-8 bg-card text-cream relative">
                     <div className="absolute top-4 right-4 flex flex-col items-end">
                       <Barcode className="w-24 h-12 opacity-80" />
                       <div className="text-[10px] font-mono mt-1 font-bold">{selectedTicket.ticketId}</div>
                     </div>
                     <div className="pr-20">
-                      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold print:text-gray-500 mb-1">Event Ticket</div>
+                      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold print:text-cream/70 mb-1">Event Ticket</div>
                       <h3 className="font-display text-3xl font-bold mb-4 leading-tight">{selectedTicket.event?.name}</h3>
 
                       <div className="grid grid-cols-2 gap-4 mb-6">

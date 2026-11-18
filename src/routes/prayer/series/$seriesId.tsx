@@ -145,7 +145,7 @@ function PrayerSeriesPage() {
   };
 
   return (
-    <div className="bg-background min-h-screen flex flex-col">
+    <div className="theme-cinema min-h-screen flex flex-col">
       <SiteHeader />
 
       {/* Video Modal Overlay */}
@@ -366,7 +366,7 @@ function PrayerSeriesPage() {
                           <div className={`absolute inset-0 flex items-center justify-center ${isAccessible ? "bg-black/30 group-hover:bg-black/20" : "bg-black/60"}`}>
                             {isAccessible ? (
                               <div className="h-10 w-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                                <Play className="h-4 w-4 text-forest-deep fill-forest-deep ml-0.5" />
+                                <Play className="h-4 w-4 text-cream fill-forest-deep ml-0.5" />
                               </div>
                             ) : (
                               <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
